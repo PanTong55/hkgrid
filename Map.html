@@ -141,12 +141,33 @@
     } 
     .goto-row {
       display: grid;
-      grid-template-columns: 20px 100px 1fr;
+      grid-template-columns: 20px 80px 120px;
       align-items: center;
       gap: 8px;
-      margin-bottom: 10px;
     }
-
+    
+    #clearBtn {
+      background: #f8bfc4;
+    }
+    
+    #clearBtn:hover {
+      background-color: #d9534f;
+      color: white;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+    
+    #goBtn {
+      background: #3d7728;
+      color: white;
+    }
+    
+    #goBtn:hover {
+      background-color: #1e4f1b;
+      color: white;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -175,14 +196,14 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    padding: 16px 20px;
+    padding: 15px 15px;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
-    width: 300px;
+    width: 250px;
     z-index: 1100;
     ">
 
-    <h3 style="margin-top: 0;">Go To Point</h3>
+    <h4 style="margin-top: 0;">Go To Point</h4>
     
     <div class="goto-row">
       <input type="radio" name="coordMode" value="hk1980" id="modeHK" />
@@ -209,8 +230,16 @@
       <input id="inputLng" type="number" placeholder="e.g. 114.101" />
     </div>
 
-    <button id="clearBtn" style="background: #f8bfc4; border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button>
-    <button id="goBtn" style="background: #3d7728; color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
+    <button id="clearBtn"
+      style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">
+      Clear All Point
+    </button>
+    
+    <button id="goBtn"
+      style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">
+      Go
+    </button>
+
   </div>
 
   
@@ -488,6 +517,7 @@
         coordDisplay.textContent = `X: ${Math.round(hk1980[0])}  Y: ${Math.round(hk1980[1])}`;
       }
     });
+    
     // 加 Go To Point
     document.getElementById('gotoToggleBtn').addEventListener('click', () => {
       const panel = document.getElementById('gotoPanel');
