@@ -365,19 +365,23 @@
       domElement.style.top = `${top}px`;
     }
 
-    function adjustTooltipPosition(tooltip, point) {
-      const mapSize = map.getSize();
-      let left = point.x + 15;
-      let top = point.y + 15;
-
-      if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
-      if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
-      if (left < 0) left = 10;
-      if (top < 0) top = 10;
-
-      tooltip.style.left = left + 'px';
-      tooltip.style.top = top + 'px';
-    }
+      function adjustTooltipPosition(tooltip, point) {
+        if (getComputedStyle(tooltip).position !== 'absolute') {
+          tooltip.style.position = 'absolute';
+        }
+      
+        const mapSize = map.getSize();
+        let left = point.x + 15;
+        let top = point.y + 15;
+      
+        if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
+        if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
+        if (left < 0) left = 10;
+        if (top < 0) top = 10;
+      
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      }
 
     function updateAllLockedTooltips() {
       lockedLayers.forEach((layer, index) => {
@@ -438,9 +442,11 @@
       tooltipElements.push(tooltip);
       manualMoved.push(false);
 
-      const centerLatLng = layer.getBounds().getCenter();
-      positionTooltipToSameOffset(tooltip, centerLatLng);
-
+      const centerPoint = map.latLngToContainerPoint(layer.getBounds().getCenter());
+      setTimeout(() => {
+        adjustTooltipPosition(tooltip, centerPoint);
+      }, 30); // 延後一點點確保 DOM 實際繪製完成
+     
       makeTooltipDraggable(tooltip, lockedLayers.length - 1);
     }
 
@@ -452,7 +458,9 @@
 
       if (idx !== -1) {
         const layer = lockedLayers[idx];
-        layer.setStyle({ color: '#666', weight: 1, fillColor: '#41b6c4', fillOpacity: 0.3 });
+        const gridNo = layer.feature.properties.Grid_No;
+        const count = speciesData[gridNo] ? speciesData[gridNo].count : 0;
+        layer.setStyle(getGridStyle(count));
         lockedLayers.splice(idx, 1);
         tooltipElements[idx].remove();
         tooltipElements.splice(idx, 1);
