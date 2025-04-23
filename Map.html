@@ -153,12 +153,17 @@
     }
     
     .goto-row label {
-      width: 110px;
+      display: inline-block;
+      width: 100px;
+      min-width: 100px;
+      text-align: right;
       font-weight: normal;
+      margin-right: 8px;
     }
-    
+
     .goto-row input[type="number"] {
-      flex: 1;
+      flex: unset;
+      width: 160px; /* 固定寬度可幫助對齊 */
       padding: 6px 8px;
       border: 1px solid #ccc;
       border-radius: 6px;
