@@ -24,7 +24,7 @@
         width: 100%;
       }
     }
-
+    
     .floatingTooltip {
       position: absolute;
       background: rgba(255,255,255,0.95);
@@ -139,40 +139,14 @@
       margin-bottom: 4px;
       font-weight: normal;
     } 
-     .goto-row {
-      display: flex;
+    .goto-row {
+      display: grid;
+      grid-template-columns: 20px 100px 1fr;
       align-items: center;
       gap: 8px;
       margin-bottom: 10px;
     }
-    
-    .goto-row input[type="radio"] {
-      margin-left: 0;
-      transform: scale(1.1);
-      accent-color: #4CAF50;
-    }
-    
-    .goto-row label {
-      display: inline-block;
-      width: 100px;
-      min-width: 100px;
-      text-align: right;
-      font-weight: normal;
-      margin-right: 8px;
-    }
 
-    .goto-row input[type="number"] {
-      flex: unset;
-      width: 160px; /* 固定寬度可幫助對齊 */
-      padding: 6px 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
-    
-    .goto-row.indent {
-      padding-left: 20px;
-    }
   </style>
 </head>
 <body>
@@ -210,32 +184,31 @@
 
     <h3 style="margin-top: 0;">Go To Point</h3>
     
-    <!-- HK1980: Easting -->
     <div class="goto-row">
-      <input type="radio" name="coordMode" value="hk1980" id="modeHK" checked />
+      <input type="radio" name="coordMode" value="hk1980" id="modeHK" />
       <label for="modeHK">Easting (X):</label>
       <input id="inputX" type="number" placeholder="e.g. 828988" />
     </div>
     
-    <!-- HK1980: Northing（無radio） -->
-    <div class="goto-row indent">
+    <div class="goto-row">
+      <span></span>
       <label>Northing (Y):</label>
       <input id="inputY" type="number" placeholder="e.g. 824199" />
     </div>
     
-    <!-- WGS84: Latitude -->
+        
     <div class="goto-row">
       <input type="radio" name="coordMode" value="wgs84" id="modeWGS" />
       <label for="modeWGS">Latitude:</label>
       <input id="inputLat" type="number" placeholder="e.g. 22.356" />
     </div>
     
-    <!-- WGS84: Longitude（無radio） -->
-    <div class="goto-row indent">
+    <div class="goto-row">
+      <span></span>
       <label>Longitude:</label>
       <input id="inputLng" type="number" placeholder="e.g. 114.101" />
     </div>
-  
+
     <button id="clearBtn" style="background: #f8bfc4; border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button>
     <button id="goBtn" style="background: #3d7728; color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
   </div>
