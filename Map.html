@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Leaflet Map</title>
+  <title>Hong Kong Bat Acoustic Project</title>
 
   <!-- Leaflet核心 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -168,6 +168,17 @@
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
       cursor: pointer;
     }
+    
+    .info.legend {
+      background: rgba(255,255,255,0.95);
+      padding: 8px 12px;
+      font: 13px Arial, sans-serif;
+      color: #333;
+      line-height: 1.4;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      border: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
@@ -242,7 +253,6 @@
 
   </div>
 
-  
   <!-- Hover Tooltip -->
   <div id="hoverTooltip" style="
     display: none;
@@ -293,7 +303,6 @@
     const googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { attribution: 'Map data ©2024 Google' });
     const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { attribution: 'Imagery ©2024 Google' });
     const googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: 'Imagery ©2024 Google' });
-
     const baseMaps = {
       "街道地圖 (OSM)": streets,
       "衛星圖 (Esri)": esriSatellite,
@@ -301,20 +310,49 @@
       "Google 衛星圖": googleSatellite,
       "Google 混合圖": googleHybrid
     };
-
     const isSmallDevice = window.matchMedia('(max-width: 1023px)').matches;
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
+    const gotoMarkers = [];  // 儲存 Go To Point 建立的 marker
 
+    const legend = L.control({ position: 'bottomright' });  // All Bat Grid的Legend
+    legend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'info legend');
+      const grades = [1, 6, 11, 16, 21];
+      const labels = [];
+      const colors = ["#fde0dd", "#fbb4b9", "#f768a1", "#c51b8a", "#7a0177"];
+    
+      div.innerHTML = '<strong>No. of Species</strong><br>';
+    
+      for (let i = 0; i < grades.length; i++) {
+        const from = grades[i];
+        const to = grades[i + 1] - 1;
+        const rangeLabel = to ? `${from}–${to}` : `> ${from - 1}`;
+        div.innerHTML += `
+          <i style="background:${colors[i]}; width: 14px; height: 14px; display: inline-block; margin-right: 6px; border-radius: 2px;"></i>
+          ${rangeLabel}<br>
+        `;
+      }
+      return div;
+    };
+
+     map.on('overlayadd', function (e) {
+      if (e.name === "All Bat Distribution (Grid)") {
+        legend.addTo(map);
+      }
+    });
+    
+    map.on('overlayremove', function (e) {
+      if (e.name === "All Bat Distribution (Grid)") {
+        map.removeControl(legend);
+      }
+    });
+    
     let gridLayer = L.geoJSON(null, { style: { color: '#666', weight: 1, fillColor: '#41b6c4', fillOpacity: 0.3 } });
-
-    const layersControl = L.control.layers(baseMaps, { "香港1km格網": gridLayer }, { collapsed: isSmallDevice }).addTo(map);
-
     let lockedLayers = [];
     let tooltipElements = [];
     let manualMoved = [];
     let maxLockedTooltips = 3;
-
-    const gotoMarkers = [];  // 儲存 Go To Point 建立的 marker
 
     function positionTooltipToSameOffset(domElement, latlng) {
       const point = map.latLngToContainerPoint(latlng);
@@ -423,7 +461,31 @@
     }
 
     const hoverTooltip = document.getElementById('hoverTooltip');
-
+    
+    function getGridStyle(count) {
+      let fillColor = "#fff";
+      let fillOpacity = 0;
+    
+      if (count === 0 || count === "0" || count === "" || count === null) {
+        fillOpacity = 0;
+      } else {
+        count = Number(count);
+        fillOpacity = 0.75;
+      if (count >= 1 && count <= 5) fillColor = "#fde0dd";    // very light pink
+      else if (count <= 10)          fillColor = "#fbb4b9";    // light pink
+      else if (count <= 15)          fillColor = "#f768a1";    // medium pink-red
+      else if (count <= 20)          fillColor = "#c51b8a";    // strong magenta-red
+      else                           fillColor = "#7a0177";    // dark purple-red
+      }
+    
+      return {
+        color: "#666",
+        weight: 1,
+        fillColor,
+        fillOpacity
+      };
+    }
+    
     function setupGridLayerFeature(feature, layer) {
       const gridNo = feature.properties.Grid_No;
       if (speciesData[gridNo]) {
@@ -466,7 +528,7 @@
             tooltipElements[idx].remove();
             tooltipElements.splice(idx, 1);
             manualMoved.splice(idx, 1);
-            this.setStyle({ color: '#666', weight: 1, fillColor: '#41b6c4', fillOpacity: 0.3 });
+            this.setStyle(getGridStyle(info.count));
           } else {
             if (lockedLayers.length >= maxLockedTooltips) {
               alert('最多只能鎖定 ' + maxLockedTooltips + ' 個Tooltip');
@@ -498,7 +560,16 @@
           .then(r => r.json())
           .then(gridData => {
             gridLayer.options.onEachFeature = setupGridLayerFeature;
-            gridLayer.addData(gridData);
+            gridLayer = L.geoJSON(gridData, {
+              style: function(feature) {
+                const gridNo = feature.properties.Grid_No;
+                const info = speciesData[gridNo];
+                const count = info ? info.count : 0;
+                return getGridStyle(count);
+              },
+              onEachFeature: setupGridLayerFeature
+            });
+            layersControl.addOverlay(gridLayer, "All Bat Distribution (Grid)");
           });
       });
 
