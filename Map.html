@@ -135,8 +135,32 @@
         <span id="mouseCoords">X: –, Y: –</span>
       </div>
     </div>
+    <div id="gotoToggleBtn" title="Go To Point" style="position: absolute; top: 120px; left: 10px; background: white; border: 1px solid #ccc; width: 32px; height: 32px; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.3); cursor: pointer; z-index: 1001; display: flex; align-items: center; justify-content: center;">
+      📍
+    </div>    
   </div>
 
+  <!-- Go To Point 功能 -->
+  <div id="gotoPanel" style="display: none; position: absolute; top: 128px; left: 62px; background: #fff; padding: 16px 20px; border-radius: 5px; box-shadow: 0 0 6px rgba(0,0,0,0.2); font-family: Arial, sans-serif; font-size: 14px; width: 280px; z-index: 1100;">
+    <h3 style="margin-top: 0;">Go To Point</h3>
+    
+    <label><input type="radio" name="coordMode" value="hk1980" checked> Easting (X):</label><br>
+    <input id="inputX" type="number" placeholder="e.g. 828988.521" style="width: 100%; margin-bottom: 8px;"><br>
+    
+    <label>Northing (Y):</label><br>
+    <input id="inputY" type="number" placeholder="e.g. 824199.546" style="width: 100%; margin-bottom: 12px;"><br>
+  
+    <label><input type="radio" name="coordMode" value="wgs84"> Latitude:</label><br>
+    <input id="inputLat" type="number" placeholder="e.g. 22.356911" style="width: 100%; margin-bottom: 8px;"><br>
+  
+    <label>Longitude:</label><br>
+    <input id="inputLng" type="number" placeholder="e.g. 114.106201" style="width: 100%; margin-bottom: 12px;"><br>
+  
+    <button id="clearBtn" style="background: #f8bfc4; border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button>
+    <button id="goBtn" style="background: #3d7728; color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
+  </div>
+
+  
   <!-- Hover Tooltip -->
   <div id="hoverTooltip" style="
     display: none;
@@ -207,6 +231,8 @@
     let tooltipElements = [];
     let manualMoved = [];
     let maxLockedTooltips = 3;
+
+    const gotoMarkers = [];  // 儲存 Go To Point 建立的 marker
 
     function positionTooltipToSameOffset(domElement, latlng) {
       const point = map.latLngToContainerPoint(latlng);
@@ -409,7 +435,58 @@
         coordDisplay.textContent = `X: ${Math.round(hk1980[0])}  Y: ${Math.round(hk1980[1])}`;
       }
     });
+    // 加 Go To Point
+    document.getElementById('gotoToggleBtn').addEventListener('click', () => {
+      const panel = document.getElementById('gotoPanel');
+      const btn = document.getElementById('gotoToggleBtn');
+      
+      const isOpen = panel.style.display === 'block';
+      
+      if (isOpen) {
+        panel.style.display = 'none';
+        btn.textContent = '📍'; // ← 顯示圖示
+      } else {
+        panel.style.display = 'block';
+        btn.textContent = '<'; // ← 顯示返回箭頭
+      }
+    });
 
+    document.getElementById('goBtn').addEventListener('click', () => {
+      const mode = document.querySelector('input[name="coordMode"]:checked').value;
+    
+      let latlng = null;
+    
+      if (mode === 'hk1980') {
+        const x = parseFloat(document.getElementById('inputX').value);
+        const y = parseFloat(document.getElementById('inputY').value);
+        if (!isNaN(x) && !isNaN(y)) {
+          const result = proj4(
+            '+proj=tmerc +lat_0=22.31213333333333 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +units=m +no_defs',
+            'WGS84',
+            [x, y]
+          );
+          latlng = { lat: result[1], lng: result[0] };
+        }
+      } else {
+        const lat = parseFloat(document.getElementById('inputLat').value);
+        const lng = parseFloat(document.getElementById('inputLng').value);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          latlng = { lat, lng };
+        }
+      }
+    
+    if (latlng) {
+      map.setView(latlng, 16);
+      const marker = L.marker(latlng).addTo(map);
+      gotoMarkers.push(marker); // ✅ 加入 marker 陣列中
+    }
+    });
+    
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      gotoMarkers.forEach(m => map.removeLayer(m)); // ✅ 從地圖移除所有 marker
+      gotoMarkers.length = 0; // ✅ 清空陣列
+    });
+    
     const lastModified = new Date(document.lastModified);
     const formatted = lastModified.toLocaleString('zh-Hant', {
       year: 'numeric', month: '2-digit', day: '2-digit',
