@@ -197,7 +197,7 @@
       </div>
     </div>
     <div id="gotoToggleBtn" title="Go To Point" style="position: absolute; top: 120px; left: 10px; background: white; border: 1px solid #ccc; width: 32px; height: 32px; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.3); cursor: pointer; z-index: 1001; display: flex; align-items: center; justify-content: center;">
-      <i data-lucide="crosshair"></i>
+      <i data-lucide="locate-fixed"></i>
     </div>
   </div>
 
@@ -291,6 +291,9 @@
 
     const scaleControl = L.control.scale({ imperial: false });
     scaleControl.addTo(map);
+
+    // 定義正確的 HK1980 與 WGS84 轉換參數
+    proj4.defs("EPSG:2326", "+proj=tmerc +lat_0=22.31213333333334 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +towgs84=-162.619,-276.959,-161.764,0.067753,-2.24365,-1.15883,-1.09425 +units=m +no_defs");
     
     // 等待 Leaflet 載入後將比例尺 DOM 插入 wrapper
     map.whenReady(() => {
@@ -594,11 +597,8 @@
       if (mode === 'wgs84') {
         coordDisplay.textContent = `Lon: ${e.latlng.lng.toFixed(6)}  Lat: ${e.latlng.lat.toFixed(6)}`;
       } else {
-        const hk1980 = proj4(
-          '+proj=tmerc +lat_0=22.31213333333333 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +units=m +no_defs',
-          [e.latlng.lng, e.latlng.lat]
-        );
-        coordDisplay.textContent = `X: ${Math.round(hk1980[0])}  Y: ${Math.round(hk1980[1])}`;
+        const [x, y] = proj4("EPSG:4326", "EPSG:2326", [e.latlng.lng, e.latlng.lat]);
+        coordDisplay.textContent = `X: ${Math.round(x)}  Y: ${Math.round(y)}`;
       }
     });
     
@@ -611,7 +611,7 @@
       
       if (isOpen) {
         panel.style.display = 'none';
-        btn.innerHTML = '<i data-lucide="crosshair"></i>';
+        btn.innerHTML = '<i data-lucide="locate-fixed"></i>';
         lucide.createIcons(); // ← 顯示圖示
       } else {
         panel.style.display = 'block';
@@ -629,12 +629,8 @@
         const x = parseFloat(document.getElementById('inputX').value);
         const y = parseFloat(document.getElementById('inputY').value);
         if (!isNaN(x) && !isNaN(y)) {
-          const result = proj4(
-            '+proj=tmerc +lat_0=22.31213333333333 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +units=m +no_defs',
-            'WGS84',
-            [x, y]
-          );
-          latlng = { lat: result[1], lng: result[0] };
+        const result = proj4("EPSG:2326", "EPSG:4326", [x, y]);
+        latlng = { lat: result[1], lng: result[0] };
         }
       } else {
         const lat = parseFloat(document.getElementById('inputLat').value);
