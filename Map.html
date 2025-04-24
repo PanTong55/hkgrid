@@ -310,9 +310,8 @@
   <script>
     const map = L.map('map', {
       gestureHandling: true,
-      scrollWheelZoom: false
     });
-
+    
     const hongKongBounds = [
       [22.1500, 113.8250],
       [22.5500, 114.4000]
@@ -332,7 +331,7 @@
       if (scaleEl && wrapper) {
         wrapper.appendChild(scaleEl);
       }
-      lucide.createIcons();  // ✅ 初始化 Lucide Icons
+      lucide.createIcons();  // 初始化 Lucide Icons
     });
 
     const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
