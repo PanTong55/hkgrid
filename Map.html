@@ -10,7 +10,10 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-gesture-handling"></script>
-
+  
+  <!-- 加入 Lucide 的 CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
   <!-- Responsive Map Size -->
   <style>
     #map {
@@ -194,8 +197,8 @@
       </div>
     </div>
     <div id="gotoToggleBtn" title="Go To Point" style="position: absolute; top: 120px; left: 10px; background: white; border: 1px solid #ccc; width: 32px; height: 32px; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.3); cursor: pointer; z-index: 1001; display: flex; align-items: center; justify-content: center;">
-      📍
-    </div>    
+      <i data-lucide="crosshair"></i>
+    </div>
   </div>
 
   <!-- Go To Point 功能 -->
@@ -296,6 +299,7 @@
       if (scaleEl && wrapper) {
         wrapper.appendChild(scaleEl);
       }
+      lucide.createIcons();  // ✅ 初始化 Lucide Icons
     });
 
     const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
@@ -458,9 +462,9 @@
 
       if (idx !== -1) {
         const layer = lockedLayers[idx];
-        const gridNo = layer.feature.properties.Grid_No;
-        const count = speciesData[gridNo] ? speciesData[gridNo].count : 0;
-        layer.setStyle(getGridStyle(count));
+      const gridNo = layer.feature.properties.Grid_No;
+      const count = speciesData[gridNo] ? speciesData[gridNo].count : 0;
+      layer.setStyle(getGridStyle(count));
         lockedLayers.splice(idx, 1);
         tooltipElements[idx].remove();
         tooltipElements.splice(idx, 1);
@@ -520,7 +524,8 @@
 
           layer.on('mousemove', function(e) {
             if (!lockedLayers.includes(this)) {
-              positionTooltipToSameOffset(hoverTooltip, e.latlng);
+              const point = map.latLngToContainerPoint(e.latlng);
+              adjustTooltipPosition(hoverTooltip, point);
             }
           });
 
@@ -606,10 +611,12 @@
       
       if (isOpen) {
         panel.style.display = 'none';
-        btn.textContent = '📍'; // ← 顯示圖示
+        btn.innerHTML = '<i data-lucide="crosshair"></i>';
+        lucide.createIcons(); // ← 顯示圖示
       } else {
         panel.style.display = 'block';
-        btn.textContent = '<'; // ← 顯示返回箭頭
+        btn.innerHTML = '<i data-lucide="chevrons-left"></i>';
+        lucide.createIcons(); // ← 顯示返回箭頭
       }
     });
 
