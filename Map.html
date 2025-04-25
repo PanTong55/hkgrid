@@ -820,12 +820,12 @@
       }
     }
 
-    function handleHeading(e) {
+    const handleHeading = (e) => {
       if (e.alpha != null) {
         const heading = 360 - e.alpha;
         rotateMarker(locateMarker, heading);
       }
-    }
+    };
     
     let locateMarker = null;
     let accuracyCircle = null;
@@ -835,16 +835,22 @@
     const locateBtn = document.getElementById('locateBtn');
     
     locateBtn.addEventListener('click', () => {
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
-        window.removeEventListener('deviceorientationabsolute', handleHeading);
-        watchId = null;
-        if (locateMarker) map.removeLayer(locateMarker);
-        if (accuracyCircle) map.removeLayer(accuracyCircle);
-        locateBtn.classList.remove('active');
-        return;
+     if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+      if (locateMarker) {
+        map.removeLayer(locateMarker);
+        locateMarker = null;
       }
-    
+      if (accuracyCircle) {
+        map.removeLayer(accuracyCircle);
+        accuracyCircle = null;
+      }
+      locateBtn.classList.remove('active');
+      window.removeEventListener('deviceorientationabsolute', handleHeading);
+      return;
+    }
+
       locateBtn.classList.add('active');
       autoFollow = true;
 
@@ -852,10 +858,12 @@
         DeviceOrientationEvent.requestPermission().then(response => {
           if (response === 'granted') {
             window.addEventListener('deviceorientationabsolute', handleHeading, true);
+            headingListenerAdded = true;
           }
         });
       } else {
         window.addEventListener('deviceorientationabsolute', handleHeading, true);
+        headingListenerAdded = true;
       }     
     
       watchId = navigator.geolocation.watchPosition(
