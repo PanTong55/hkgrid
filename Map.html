@@ -946,8 +946,9 @@ function updateAlphaStatus(alphaValue) {
                 iconAnchor: [12, 12]
               })
             }).addTo(map);
-
-
+            if (window.DeviceOrientationEvent && window.latestHeading != null) {
+              rotateMarker(locateMarker, window.latestHeading);
+            }
             // 等待 marker 加入地圖後再旋轉
             locateMarker.on('add', () => {
               if (window.DeviceOrientationEvent && window.latestHeading != null) {
