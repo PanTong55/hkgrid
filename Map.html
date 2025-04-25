@@ -865,6 +865,7 @@
     const handleHeading = (e) => {
       if (e.alpha != null) {
         const heading = 360 - e.alpha;
+        window.latestHeading = heading;
         rotateMarker(locateMarker, heading);
       }
     };
@@ -922,6 +923,13 @@
                 iconAnchor: [12, 12]
               })
             }).addTo(map);
+
+            // 等待 marker 加入地圖後再旋轉
+            locateMarker.on('add', () => {
+              if (window.DeviceOrientationEvent && window.latestHeading != null) {
+                rotateMarker(locateMarker, window.latestHeading);
+              }
+            });
 
             lucide.createIcons();
           } else {
