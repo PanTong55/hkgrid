@@ -898,9 +898,11 @@
     
           if (!locateMarker) {
             locateMarker = L.marker(latlng, {
-              icon: L.divIcon({
+              L.divIcon({
                 className: 'gps-icon',
-                html: '<div class="gps-arrow"></div>'
+                html: '<div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:20px solid #007aff;"></div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 18]
               })
             }).addTo(map);
           } else {
@@ -915,7 +917,7 @@
               fillColor: '#1E90FF',
               fillOpacity: 0.15
             }).addTo(map);
-  			currentRadius = accuracy; // ✅ 初始化 currentRadius
+  			    currentRadius = accuracy; // ✅ 初始化 currentRadius
           } else {
             accuracyCircle.setLatLng(latlng);              // ✅ 保持圓圈與 marker 中心一致
             animateAccuracyCircle(accuracy);               // ✅ 平滑過渡新半徑
