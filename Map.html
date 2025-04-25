@@ -220,6 +220,10 @@
       stroke: #007aff;
       stroke-width: 1.5px;
     }
+    
+    .rotatable-icon {
+      transition: transform 0.2s ease-out;
+    }
   </style>
 </head>
 <body>
@@ -857,10 +861,10 @@
       if (!marker) return;
       const iconEl = marker.getElement();
       if (iconEl) {
-        const svg = iconEl.querySelector('svg');
-        if (svg) {
-          svg.style.transform = `rotate(${angle}deg)`;
-          svg.style.transformOrigin = 'center';
+        const wrapper = iconEl.querySelector('.rotatable-icon');
+        if (wrapper) {
+          wrapper.style.transform = `rotate(${angle}deg)`;
+          wrapper.style.transformOrigin = 'center';
         }
       }
     }
@@ -921,7 +925,7 @@
             locateMarker = L.marker(latlng, {
               icon: L.divIcon({
                 className: 'lucide-locate-icon',
-                html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24"><path d="M12 2l6 20-6-4-6 4 6-20z"/></svg>',
+                html: '<div class="rotatable-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24"><path d="M12 2l6 20-6-4-6 4 6-20z"/></svg></div>',
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
               })
