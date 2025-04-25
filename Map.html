@@ -213,8 +213,18 @@
       background: #eee;
       box-shadow: inset 0 0 0 2px #666;
       border-color: #666;
-    }    
-
+    }  
+    
+    .gps-arrow {
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 18px solid #007aff;
+      transform: rotate(0deg);
+      transform-origin: center center;
+      margin-top: 3px;
+    }
   </style>
 </head>
 <body>
@@ -800,6 +810,23 @@
     });
     
     // 實時定位
+
+    function rotateMarker(marker, angle) {
+      if (!marker) return;
+      const iconEl = marker.getElement();
+      if (iconEl) {
+        iconEl.style.transform = `rotate(${angle}deg)`;
+        iconEl.style.transformOrigin = 'center';
+      }
+    }
+
+    function handleHeading(e) {
+      if (e.alpha != null) {
+        const heading = 360 - e.alpha;
+        rotateMarker(locateMarker, heading);
+      }
+    }
+    
     let locateMarker = null;
     let accuracyCircle = null;
     let watchId = null;
@@ -810,6 +837,7 @@
     locateBtn.addEventListener('click', () => {
       if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
+        window.removeEventListener('deviceorientationabsolute', handleHeading);
         watchId = null;
         if (locateMarker) map.removeLayer(locateMarker);
         if (accuracyCircle) map.removeLayer(accuracyCircle);
@@ -819,6 +847,16 @@
     
       locateBtn.classList.add('active');
       autoFollow = true;
+
+       if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(response => {
+          if (response === 'granted') {
+            window.addEventListener('deviceorientationabsolute', handleHeading, true);
+          }
+        });
+      } else {
+        window.addEventListener('deviceorientationabsolute', handleHeading, true);
+      }     
     
       watchId = navigator.geolocation.watchPosition(
         (pos) => {
@@ -829,7 +867,7 @@
             locateMarker = L.marker(latlng, {
               icon: L.divIcon({
                 className: 'gps-icon',
-                html: '<div style="width:20px;height:20px;background:#007aff;border-radius:50%;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.5);"></div>'
+                html: '<div class="gps-arrow"></div>'
               })
             }).addTo(map);
           } else {
@@ -871,8 +909,6 @@
         }
       );
     });
-
-
 
     
     // 顯示此頁最後修改時間
