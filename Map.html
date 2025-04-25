@@ -867,18 +867,14 @@ function rotateMarker(marker, angle) {
   }
 }
 
-function updateAlphaStatus(alphaValue) {
-  const alphaDisplay = document.getElementById('alpha-status');
-  if (!alphaDisplay) return;
+const handleHeading = (e) => {
+  if (e.alpha != null) {
+    const heading = 360 - e.alpha;
+    window.latestHeading = heading;
+    rotateMarker(locateMarker, heading);
+  }
+};
 
-  const displayText = (alphaValue != null)
-    ? `α: ${alphaValue.toFixed(2)}°`
-    : 'α: null';
-
-  alphaDisplay.textContent = displayText;
-}
-
-    
     let locateMarker = null;
     let accuracyCircle = null;
     let watchId = null;
@@ -899,12 +895,25 @@ function updateAlphaStatus(alphaValue) {
         accuracyCircle = null;
       }
       locateBtn.classList.remove('active');
+      window.removeEventListener('deviceorientation', handleHeading);
       return;
     }
 
       locateBtn.classList.add('active');
       autoFollow = true;
 
+       if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(response => {
+          if (response === 'granted') {
+            window.addEventListener('deviceorientation', handleHeading, true);
+            headingListenerAdded = true;
+          }
+        });
+      } else {
+        window.addEventListener('deviceorientation', handleHeading, true);
+        headingListenerAdded = true;
+      }     
+    
       watchId = navigator.geolocation.watchPosition(
         (pos) => {
           const latlng = [pos.coords.latitude, pos.coords.longitude];
@@ -925,21 +934,20 @@ function updateAlphaStatus(alphaValue) {
                 iconAnchor: [12, 12]
               })
             }).addTo(map);
+
+
+            // 等待 marker 加入地圖後再旋轉
+            locateMarker.on('add', () => {
+              if (window.DeviceOrientationEvent && window.latestHeading != null) {
+                rotateMarker(locateMarker, window.latestHeading);
+              }
+            });
+
             lucide.createIcons();
           } else {
             animateMarkerTo(locateMarker, L.latLng(latlng));
           }
-
-          let heading = pos.coords.heading;
-          if (heading == null || isNaN(heading)) {
-            heading = 225; // ← 靜止時，預設西南方向
-          }
-          rotateMarker(locateMarker, heading);
-          
-           if (pos.coords.heading != null && !isNaN(pos.coords.heading)) {
-            rotateMarker(locateMarker, pos.coords.heading);
-          }
-   
+    
           if (!accuracyCircle) {
             accuracyCircle = L.circle(latlng, {
               radius: accuracy,
