@@ -886,7 +886,7 @@
           const accuracy = pos.coords.accuracy;
     
           if (!locateMarker) {
-            const locateMarker = L.marker(latlng, {
+            locateMarker = L.marker(latlng, {
               icon: L.divIcon({
                 className: 'lucide-locate-icon',
                 html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24"><path d="M12 2l6 20-6-4-6 4 6-20z"/></svg>',
@@ -894,7 +894,6 @@
                 iconAnchor: [12, 12]
               })
             }).addTo(map);
-
             lucide.createIcons();
           } else {
             locateMarker.setLatLng(latlng);
