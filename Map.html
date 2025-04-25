@@ -207,8 +207,14 @@
       background: #eee;
       box-shadow: inset 0 0 0 1px #666;
       border-color: #666;
-    }   
+    } 
     
+    #locateBtn.active {
+      background: #eee;
+      box-shadow: inset 0 0 0 2px #666;
+      border-color: #666;
+    }    
+
   </style>
 </head>
 <body>
@@ -234,10 +240,12 @@
   <a id="drawPointBtn" class="leaflet-control leaflet-bar single-btn" href="#" title="Draw Point"
      style="top: 165px; left: 10px;">
     <i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i>
-  </a>    
+  </a>
+  <a id="locateBtn" class="leaflet-control leaflet-bar single-btn" href="#" title="定位追蹤"
+     style="top: 200px; left: 10px;">
+    <i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i>
+  </a>
   </div>
-
-
 
   <!-- Go To Point 功能 -->
     <div id="gotoPanel" style="
@@ -790,6 +798,82 @@
         }
       });
     });
+    
+    // 實時定位
+    let locateMarker = null;
+    let accuracyCircle = null;
+    let watchId = null;
+    let autoFollow = true;
+    
+    const locateBtn = document.getElementById('locateBtn');
+    
+    locateBtn.addEventListener('click', () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+        if (locateMarker) map.removeLayer(locateMarker);
+        if (accuracyCircle) map.removeLayer(accuracyCircle);
+        locateBtn.classList.remove('active');
+        return;
+      }
+    
+      locateBtn.classList.add('active');
+      autoFollow = true;
+    
+      watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          const latlng = [pos.coords.latitude, pos.coords.longitude];
+          const accuracy = pos.coords.accuracy;
+    
+          if (!locateMarker) {
+            locateMarker = L.marker(latlng, {
+              icon: L.divIcon({
+                className: 'gps-icon',
+                html: '<div style="width:20px;height:20px;background:#007aff;border-radius:50%;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.5);"></div>'
+              })
+            }).addTo(map);
+          } else {
+            locateMarker.setLatLng(latlng);
+          }
+    
+          if (!accuracyCircle) {
+            accuracyCircle = L.circle(latlng, {
+              radius: accuracy,
+              color: '#1E90FF',
+              weight: 2,
+              fillColor: '#1E90FF',
+              fillOpacity: 0.15
+            }).addTo(map);
+          } else {
+            accuracyCircle.setLatLng(latlng);
+            accuracyCircle.setRadius(accuracy);
+          }
+    
+          const bounds = map.getBounds();
+    
+          if (autoFollow) {
+            map.setView(latlng, 17);
+          } else {
+            const margin = bounds.pad(-0.15); // 邊界 15% 內才算安全
+            if (!margin.contains(latlng)) {
+              autoFollow = true;
+              map.setView(latlng);
+            }
+          }
+        },
+        (err) => {
+          alert('定位失敗：' + err.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    });
+
+
+
     
     // 顯示此頁最後修改時間
     const lastModified = new Date(document.lastModified);
