@@ -849,6 +849,7 @@
 	     }
 	     locateBtn.classList.remove('active');
 	     window.removeEventListener('deviceorientationabsolute', handleHeading);
+	     window.removeEventListener('deviceorientation', handleHeading);
 	     return;
 	   }
 
