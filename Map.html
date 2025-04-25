@@ -18,12 +18,12 @@
   <style>
     #map {
       width: 1140px;
-      height: 700px;
+      height: 800px;
     }
 
     @media (max-width: 1023px) {
       #map {
-        height: 75vh;
+        height: 80vh;
         width: 100%;
       }
     }
@@ -34,7 +34,7 @@
       color: #000;
       border: 1px solid #ccc;
       border-radius: 8px;
-      padding: 6px 10px; /* 上方多留空間 */
+      padding: 6px 10px;
       font-size: 13px;
       font-family: Arial, sans-serif; 
       line-height: 1.4;
@@ -42,7 +42,7 @@
       z-index: 1000;
       max-width: 320px;
       word-break: break-word;
-      overflow: visible; /* 允許子元素(X按鈕)凸出 */
+      overflow: visible;
     }
 
     .tooltip-close-button:hover {
@@ -50,10 +50,9 @@
     }
 
     .tooltip-content {
-      padding-top: 0px; /* 不需要特別留空間，因為 X已經是凸出外面 */
+      padding-top: 0px;
     }
 
-    /* 統一 Tooltip 容器讓它可以裝「浮出的 X」 */
     .tooltip-container {
       position: relative;
     }
@@ -345,12 +344,14 @@
 
     const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
     const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri' });
+    const cartoLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {attribution: 'CARTO'});
     const googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { attribution: 'Map data ©2024 Google' });
     const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { attribution: 'Imagery ©2024 Google' });
     const googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: 'Imagery ©2024 Google' });
     const baseMaps = {
-      "街道地圖 (OSM)": streets,
+      "街道圖 (OSM)": streets,
       "衛星圖 (Esri)": esriSatellite,
+      "街道圖 (Carto)": cartoLight,
       "Google 街道圖": googleStreets,
       "Google 衛星圖": googleSatellite,
       "Google 混合圖": googleHybrid
