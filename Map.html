@@ -864,15 +864,33 @@ function rotateMarker(marker, angle) {
   }
 }
 
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(permissionState => {
+          if (permissionState === 'granted') {
+            window.addEventListener('deviceorientationabsolute', handleHeading, true);
+            // 🔥 加一個 fallback，如果 3秒內都沒有收到 alpha，就改綁 deviceorientation
+            setTimeout(() => {
+              if (!window.headingEventTriggered) {
+                console.warn("deviceorientationabsolute 無反應，嘗試 fallback...");
+                window.addEventListener('deviceorientation', handleHeading, true);
+              }
+            }, 3000);
+          }
+        }).catch(console.error);
+      } else {
+        window.addEventListener('deviceorientationabsolute', handleHeading, true);
+      } 
+    
+    
 function handleHeading(event) {
+  window.headingEventTriggered = true; // ✅ 只要有收到任何一次 event，就標記！
+
   let heading = null;
 
   if (typeof event.webkitCompassHeading !== 'undefined') {
-    // ✅ 如果有 webkitCompassHeading，直接用！
-    heading = event.webkitCompassHeading;
+    heading = event.webkitCompassHeading;  // iOS專用
   } else if (event.alpha != null) {
-    // ✅ 如果沒有 webkitCompassHeading，用 alpha
-    heading = 360 - event.alpha;
+    heading = 360 - event.alpha;  // Android通用
   }
 
   if (heading != null) {
@@ -912,18 +930,7 @@ function handleHeading(event) {
       locateBtn.classList.add('active');
       autoFollow = true;
 
-       if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission().then(response => {
-          if (response === 'granted') {
-            window.addEventListener('deviceorientationabsolute', handleHeading, true);
-            headingListenerAdded = true;
-          }
-        });
-      } else {
-        window.addEventListener('deviceorientationabsolute', handleHeading, true);
-        headingListenerAdded = true;
-      }     
-    
+
       watchId = navigator.geolocation.watchPosition(
         (pos) => {
           const latlng = [pos.coords.latitude, pos.coords.longitude];
