@@ -214,12 +214,6 @@
       box-shadow: inset 0 0 0 2px #666;
       border-color: #666;
     }  
-    
-    .lucide-locate-icon i svg {
-      fill: #007aff;
-      stroke: #007aff;
-      stroke-width: 1.5px;
-    }
   </style>
 </head>
 <body>
@@ -895,7 +889,7 @@
             const locateMarker = L.marker(latlng, {
               icon: L.divIcon({
                 className: 'lucide-locate-icon',
-                html: '<i data-lucide="navigation-2" class="solid-nav"></i>',
+                html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24"><path d="M12 2l6 20-6-4-6 4 6-20z"/></svg>',
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
               })
