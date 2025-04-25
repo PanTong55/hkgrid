@@ -870,14 +870,20 @@ function rotateMarker(marker, angle) {
 let baseAlpha = null;
 
 function handleHeading(e) {
-  if (e.alpha != null && locateMarker) { // ✅ 加 locateMarker 檢查
-    if (baseAlpha == null) {
-      baseAlpha = e.alpha; // 第一次讀到的當作基準
+  if (e.alpha != null) {
+    // 顯示目前 alpha
+    document.getElementById('alpha-status').textContent = `α: ${e.alpha.toFixed(2)}°`;
+
+    if (locateMarker) {
+      if (baseAlpha == null) {
+        baseAlpha = e.alpha; // 第一次記錄作為基準角
+      }
+      const correctedHeading = (360 + (e.alpha - baseAlpha)) % 360;
+      rotateMarker(locateMarker, correctedHeading);
     }
-    const correctedHeading = (360 + (e.alpha - baseAlpha)) % 360;
-    rotateMarker(locateMarker, correctedHeading);
   }
 }
+
 
     let locateMarker = null;
     let accuracyCircle = null;
@@ -899,7 +905,7 @@ function handleHeading(e) {
         accuracyCircle = null;
       }
       locateBtn.classList.remove('active');
-      window.removeEventListener('deviceorientation', handleHeading);
+      window.removeEventListener('deviceorientationabsolute', handleHeading);
       return;
     }
 
@@ -909,12 +915,12 @@ function handleHeading(e) {
        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission().then(response => {
           if (response === 'granted') {
-            window.addEventListener('deviceorientation', handleHeading, true);
+            window.addEventListener('deviceorientationabsolute', handleHeading, true);
             headingListenerAdded = true;
           }
         });
       } else {
-        window.addEventListener('deviceorientation', handleHeading, true);
+        window.addEventListener('deviceorientationabsolute', handleHeading, true);
         headingListenerAdded = true;
       }     
     
@@ -989,6 +995,23 @@ function handleHeading(e) {
     });
     document.getElementById("last-modified").textContent = "此頁最後修改時間：" + formatted;
   </script>
+  
+<div id="alpha-status" style="
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 10px;
+  font-size: 13px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+">
+  α: --
+</div>  
+  
   
 </body>
 </html>
