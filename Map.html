@@ -7,9 +7,7 @@
 
   <!-- Leaflet核心 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-gesture-handling"></script>
   
   <!-- 加入 Lucide 的 CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -333,9 +331,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script>
 
   <script>
-    const map = L.map('map', {
-      gestureHandling: true,
-    });
+    const map = L.map('map',
+    );
     
     const hongKongBounds = [
       [22.1500, 113.8250],
