@@ -857,21 +857,21 @@
     }
 
 
-    function rotateMarker(marker, angle) {
-      if (!marker) return;
-      const iconEl = marker.getElement();
-      if (iconEl) {
-        const wrapper = iconEl.querySelector('.rotatable-icon');
-        if (wrapper) {
-          wrapper.style.transform = `rotate(${angle}deg)`;
-          wrapper.style.transformOrigin = 'center';
-        }
-      }
+function rotateMarker(marker, angle) {
+  if (!marker) return;
+  const el = marker.getElement();
+  if (el) {
+    const rotateContainer = el.querySelector('.rotate-container');
+    if (rotateContainer) {
+      rotateContainer.style.transform = `rotate(${angle}deg)`;
+      rotateContainer.style.transformOrigin = 'center';
     }
+  }
+}
 
 const handleHeading = (e) => {
-  updateAlphaStatus(e.alpha); // ✅ 即時更新顯示
   if (e.alpha != null) {
+    document.getElementById('alpha-val').textContent = e.alpha.toFixed(1); // ← 這行是關鍵
     const heading = 360 - e.alpha;
     window.latestHeading = heading;
     rotateMarker(locateMarker, heading);
@@ -938,11 +938,18 @@ function updateAlphaStatus(alphaValue) {
             locateMarker = L.marker(latlng, {
               icon: L.divIcon({
                 className: 'lucide-locate-icon',
-                html: '<div class="rotatable-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24"><path d="M12 2l6 20-6-4-6 4 6-20z"/></svg></div>',
+                html: `
+                  <div class="rotate-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24">
+                      <path d="M12 2l6 20-6-4-6 4 6-20z"/>
+                    </svg>
+                  </div>
+                `,
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
               })
             }).addTo(map);
+
 
             // 等待 marker 加入地圖後再旋轉
             locateMarker.on('add', () => {
@@ -1002,20 +1009,9 @@ function updateAlphaStatus(alphaValue) {
     document.getElementById("last-modified").textContent = "此頁最後修改時間：" + formatted;
   </script>
   
-    <div id="alpha-status" style="
-      position: fixed;
-      bottom: 5px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 6px 12px;
-      font-size: 13px;
-      border-radius: 6px;
-      z-index: 9999;
-      font-family: Arial, sans-serif;
-    ">
-      α: –
-    </div>
+<div style="position:fixed; bottom:10px; right:10px; font-size:13px; background:#fff; padding:5px 10px; border:1px solid #ccc; z-index:999;">
+  α: <span id="alpha-val">–</span>
+</div>
 
 </body>
 </html>
