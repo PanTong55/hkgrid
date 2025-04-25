@@ -867,13 +867,17 @@ function rotateMarker(marker, angle) {
   }
 }
 
-const handleHeading = (e) => {
+let baseAlpha = null;
+
+function handleHeading(e) {
   if (e.alpha != null) {
-    const heading = 360 - e.alpha;
-    window.latestHeading = heading;
-    rotateMarker(locateMarker, heading);
+    if (baseAlpha == null) {
+      baseAlpha = e.alpha; // 第一次讀到的當作基準
+    }
+    const correctedHeading = (360 + (e.alpha - baseAlpha)) % 360;
+    rotateMarker(locateMarker, correctedHeading);
   }
-};
+}
 
     let locateMarker = null;
     let accuracyCircle = null;
