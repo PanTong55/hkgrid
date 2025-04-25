@@ -925,11 +925,17 @@ function updateAlphaStatus(alphaValue) {
                 iconAnchor: [12, 12]
               })
             }).addTo(map);
-
             lucide.createIcons();
           } else {
             animateMarkerTo(locateMarker, L.latLng(latlng));
           }
+
+          let heading = pos.coords.heading;
+          if (heading == null || isNaN(heading)) {
+            heading = 225; // ← 靜止時，預設西南方向
+          }
+          rotateMarker(locateMarker, heading);
+          
            if (pos.coords.heading != null && !isNaN(pos.coords.heading)) {
             rotateMarker(locateMarker, pos.coords.heading);
           }
