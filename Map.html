@@ -234,30 +234,54 @@
 					</option>
 				</select> <span id="mouseCoords">X: –, Y: –</span>
 			</div>
-		</div><a class="leaflet-control leaflet-bar single-btn" href="#" id="homeBtn" style="top: 95px; left: 10px;" title="Go Home"><i data-lucide="home" style="width: 14px; height: 14px; color: black;"></i></a> <a class="leaflet-control leaflet-bar single-btn" href="#" id="gotoToggleBtn" style="top: 130px; left: 10px;" title="Go To Point"><i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i></a> <a class="leaflet-control leaflet-bar single-btn" href="#" id="drawPointBtn" style="top: 165px; left: 10px;" title="Draw Point"><i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i></a> <a class="leaflet-control leaflet-bar single-btn" href="#" id="locateBtn" style="top: 200px; left: 10px;" title="定位追蹤"><i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i></a>
-	</div><!-- Go To Point 功能 -->
+		</div>
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="fullscreenBtn" style="top: 95px; left: 10px;" title="全螢幕">
+        <i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>
+      </a> 
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="homeBtn" style="top: 130px; left: 10px;" title="Go Home">
+        <i data-lucide="home" style="width: 14px; height: 14px; color: black;"></i>
+      </a> 
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="gotoToggleBtn" style="top: 165px; left: 10px;" title="Go To Point">
+        <i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i>
+      </a> 
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="drawPointBtn" style="top: 200px; left: 10px;" title="Draw Point">
+        <i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i>
+      </a> 
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="locateBtn" style="top: 235px; left: 10px;" title="定位追蹤">
+        <i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i>
+      </a>
+ 
+	</div>
+  
+    <!-- Go To Point 功能 -->
 	<div id="gotoPanel" style=" display: none; position: absolute; top: 124px; left: 56px; background: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); padding: 15px 15px; font-family: 'Arial', sans-serif; font-size: 14px; width: 250px; z-index: 1100;">
 		<h4 style="margin-top: 0;">Go To Point</h4>
 		<div class="goto-row">
-			<input id="modeHK" name="coordMode" type="radio" value="hk1980"> <label for="modeHK">Easting (X):</label> <input id="inputX" placeholder="828988" type="number">
+			<input id="modeHK" name="coordMode" type="radio" value="hk1980"> 
+            <label for="modeHK">Easting (X):</label> <input id="inputX" placeholder="828988" type="number">
 		</div>
 		<div class="goto-row">
-			<span></span> <label>Northing (Y):</label> <input id="inputY" placeholder="824199" type="number">
+			<span></span> 
+            <label>Northing (Y):</label> <input id="inputY" placeholder="824199" type="number">
 		</div>
 		<div class="goto-row">
-			<input id="modeWGS" name="coordMode" type="radio" value="wgs84"> <label for="modeWGS">Latitude:</label> <input id="inputLat" placeholder="22.356" type="number">
+			<input id="modeWGS" name="coordMode" type="radio" value="wgs84">
+            <label for="modeWGS">Latitude:</label> <input id="inputLat" placeholder="22.356" type="number">
 		</div>
 		<div class="goto-row">
 			<span></span> <label>Longitude:</label> <input id="inputLng" placeholder="114.101" type="number">
-		</div><button id="clearBtn" style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button> <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
+		</div>
+      <button id="clearBtn" style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button>
+      <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
 	</div><!-- Hover Tooltip -->
 	<div id="hoverTooltip" style=" display: none; position: absolute; background: rgba(255,255,255,0.95); color: #000; border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; font-size: 13px; font-family: Arial, sans-serif; line-height: 1.4; pointer-events: none; z-index: 999;"></div>
-	<p id="last-modified" style="text-align:center; font-size:12px; color:gray; margin-top:30px;"></p><!-- Proj4 轉換工具 -->
+	<p id="last-modified" style="text-align:center; font-size:12px; color:gray; margin-top:30px;"></p>
+    
+  <!-- Proj4 轉換工具 -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js">
 	</script> 
 	<script>
-	   const map = L.map('map',
-	   );
+	   const map = L.map('map',);
 	   
 	   const hongKongBounds = [
 	     [22.1500, 113.8250],
@@ -299,6 +323,54 @@
 	   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 	   const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
 	   const gotoMarkers = [];  // 儲存 Go To Point 建立的 marker
+
+      // Fullscreen 控制功能
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      let isFullscreen = false;
+      
+      fullscreenBtn.addEventListener('click', () => {
+        if (!isFullscreen) {
+          openFullscreen();
+        } else {
+          closeFullscreen();
+        }
+      });
+      
+      function openFullscreen() {
+        const elem = document.getElementById('map'); // ✅ 讓 map 進全螢幕，不是整個 document
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+          elem.msRequestFullscreen();
+        }
+      }
+      
+      function closeFullscreen() {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+          document.msExitFullscreen();
+        }
+      }
+      
+      // 監聽全屏模式切換，更新按鈕圖示
+      document.addEventListener('fullscreenchange', handleFullscreenChange);
+      document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari
+      document.addEventListener('msfullscreenchange', handleFullscreenChange); // IE11
+      
+      function handleFullscreenChange() {
+        isFullscreen = !!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement;
+        
+        fullscreenBtn.innerHTML = isFullscreen
+          ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
+          : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
+        
+        lucide.createIcons(); // 重新渲染 Lucide Icons
+      }
 	   
 	   // Home Button //
 	   document.getElementById('homeBtn').addEventListener('click', () => {
@@ -760,10 +832,8 @@
             const elapsed = timestamp - startTime;
             const t = Math.min(elapsed / duration, 1);
             const eased = easeOutCubic(t);
-        
             const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
             const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
-        
             circle.setLatLng([lat, lng]);
         
             if (t < 1) {
@@ -949,8 +1019,5 @@
 	   });
 	   document.getElementById("last-modified").textContent = "最後修改時間：" + formatted;
 	</script>
-	<div id="alpha-status" style=" position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.95); padding: 6px 10px; font-size: 13px; color: #333; border: 1px solid #ccc; border-radius: 6px; font-family: Arial, sans-serif; z-index: 9999;">
-		α: --
-	</div>
 </body>
 </html>
