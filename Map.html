@@ -219,6 +219,16 @@
 	   .rotatable-icon {
 	     transition: transform 0.2s ease-out;
 	   }
+
+        .fake-fullscreen {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          z-index: 9999 !important;
+          background: white;
+        }
 	</style>
 </head>
 <body>
@@ -335,25 +345,42 @@
           closeFullscreen();
         }
       });
+
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       
       function openFullscreen() {
-        const elem = document.getElementById('map'); // ✅ 讓 map 進全螢幕，不是整個 document
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) { /* Safari */
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) { /* IE11 */
-          elem.msRequestFullscreen();
+        const elem = document.getElementById('map');
+      
+        if (isIOS) {
+          // iOS fake fullscreen：加上特別的 CSS class
+          elem.classList.add('fake-fullscreen');
+          handleFullscreenChange(); // 直接更新按鈕狀態
+        } else {
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+          } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+          } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+          }
         }
       }
       
       function closeFullscreen() {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
-          document.msExitFullscreen();
+        const elem = document.getElementById('map');
+      
+        if (isIOS) {
+          // iOS fake fullscreen：移除 CSS class
+          elem.classList.remove('fake-fullscreen');
+          handleFullscreenChange(); // 直接更新按鈕狀態
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+          }
         }
       }
       
@@ -363,13 +390,13 @@
       document.addEventListener('msfullscreenchange', handleFullscreenChange); // IE11
       
       function handleFullscreenChange() {
-        isFullscreen = !!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement;
+        isFullscreen = !!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement || document.getElementById('map').classList.contains('fake-fullscreen');
         
         fullscreenBtn.innerHTML = isFullscreen
           ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
           : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
         
-        lucide.createIcons(); // 重新渲染 Lucide Icons
+        lucide.createIcons();
       }
 	   
 	   // Home Button //
