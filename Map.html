@@ -871,27 +871,6 @@ const handleHeading = (e) => {
   if (e.alpha != null) {
     const heading = 360 - e.alpha;
     window.latestHeading = heading;
-
-    if (!locateMarker && pendingLatLng && !hasInitialHeading) {
-      locateMarker = L.marker(pendingLatLng, {
-        icon: L.divIcon({
-          className: 'lucide-locate-icon',
-          html: `
-            <div class="rotate-container">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24">
-                <path d="M12 2l6 20-6-4-6 4 6-20z"/>
-              </svg>
-            </div>
-          `,
-          iconSize: [24, 24],
-          iconAnchor: [12, 12]
-        })
-      }).addTo(map);
-
-      rotateMarker(locateMarker, heading);
-      hasInitialHeading = true;
-      pendingLatLng = null;
-    }
     rotateMarker(locateMarker, heading);
   }
 };
@@ -946,17 +925,37 @@ function updateAlphaStatus(alphaValue) {
         window.addEventListener('deviceorientation', handleHeading, true);
         headingListenerAdded = true;
       }     
-
-      let pendingLatLng = null;
-      let hasInitialHeading = false;
-      
+    
       watchId = navigator.geolocation.watchPosition(
         (pos) => {
           const latlng = [pos.coords.latitude, pos.coords.longitude];
           const accuracy = pos.coords.accuracy;
     
           if (!locateMarker) {
-            pendingLatLng = latlng;
+            locateMarker = L.marker(latlng, {
+              icon: L.divIcon({
+                className: 'lucide-locate-icon',
+                html: `
+                  <div class="rotate-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24">
+                      <path d="M12 2l6 20-6-4-6 4 6-20z"/>
+                    </svg>
+                  </div>
+                `,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+              })
+            }).addTo(map);
+
+
+            // 等待 marker 加入地圖後再旋轉
+            locateMarker.on('add', () => {
+              if (window.DeviceOrientationEvent && window.latestHeading != null) {
+                rotateMarker(locateMarker, window.latestHeading);
+              }
+            });
+
+            lucide.createIcons();
           } else {
             animateMarkerTo(locateMarker, L.latLng(latlng));
           }
