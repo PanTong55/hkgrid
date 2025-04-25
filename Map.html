@@ -810,6 +810,31 @@
     });
     
     // 實時定位
+    let currentRadius = 0;
+
+    function animateAccuracyCircle(targetRadius) {
+      const duration = 400; // 動畫長度，毫秒
+      const start = performance.now();
+      const initial = currentRadius;
+
+      function step(ts) {
+        const progress = Math.min((ts - start) / duration, 1);
+        const eased = initial + (targetRadius - initial) * easeOutCubic(progress);
+        accuracyCircle.setRadius(eased);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          currentRadius = targetRadius;
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    function easeOutCubic(t) {
+      return (--t) * t * t + 1;
+    }
 
     function rotateMarker(marker, angle) {
       if (!marker) return;
@@ -890,9 +915,10 @@
               fillColor: '#1E90FF',
               fillOpacity: 0.15
             }).addTo(map);
+  			currentRadius = accuracy; // ✅ 初始化 currentRadius
           } else {
-            accuracyCircle.setLatLng(latlng);
-            accuracyCircle.setRadius(accuracy);
+            accuracyCircle.setLatLng(latlng);              // ✅ 保持圓圈與 marker 中心一致
+            animateAccuracyCircle(accuracy);               // ✅ 平滑過渡新半徑
           }
     
           const bounds = map.getBounds();
