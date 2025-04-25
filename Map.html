@@ -870,7 +870,7 @@ function rotateMarker(marker, angle) {
 let baseAlpha = null;
 
 function handleHeading(e) {
-  if (e.alpha != null) {
+  if (e.alpha != null && locateMarker) { // ✅ 加 locateMarker 檢查
     if (baseAlpha == null) {
       baseAlpha = e.alpha; // 第一次讀到的當作基準
     }
