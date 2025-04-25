@@ -215,15 +215,10 @@
       border-color: #666;
     }  
     
-    .gps-arrow {
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 18px solid #007aff;
-      transform: rotate(0deg);
-      transform-origin: center center;
-      margin-top: 3px;
+    .lucide-locate-icon i svg {
+      fill: #007aff;
+      stroke: #007aff;
+      stroke-width: 1.5px;
     }
   </style>
 </head>
@@ -897,14 +892,16 @@
           const accuracy = pos.coords.accuracy;
     
           if (!locateMarker) {
-            locateMarker = L.marker(latlng, {
+            const locateMarker = L.marker(latlng, {
               icon: L.divIcon({
-                className: 'gps-icon',
-                html: '<div class="gps-arrow"></div>',
-                iconSize: [30, 30],
-                iconAnchor: [15, 15]
+                className: 'lucide-locate-icon',
+                html: '<i data-lucide="navigation-2" class="solid-nav"></i>',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
               })
             }).addTo(map);
+
+            lucide.createIcons();
           } else {
             locateMarker.setLatLng(latlng);
           }
