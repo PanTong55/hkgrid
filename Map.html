@@ -752,6 +752,27 @@
 	     requestAnimationFrame(step);
 	   }
 
+        function animateCircleTo(circle, newLatLng, duration = 400) {
+          const startLatLng = circle.getLatLng();
+          const startTime = performance.now();
+        
+          function step(timestamp) {
+            const elapsed = timestamp - startTime;
+            const t = Math.min(elapsed / duration, 1);
+            const eased = easeOutCubic(t);
+        
+            const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
+            const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
+        
+            circle.setLatLng([lat, lng]);
+        
+            if (t < 1) {
+              requestAnimationFrame(step);
+            }
+          }
+          requestAnimationFrame(step);
+        }      
+
 	   function easeOutCubic(t) {
 	     return (--t) * t * t + 1;
 	   }
@@ -849,7 +870,7 @@
 	     }
 	     locateBtn.classList.remove('active');
 	     window.removeEventListener('deviceorientationabsolute', handleHeading);
-	     window.removeEventListener('deviceorientation', handleHeading);
+         window.removeEventListener('deviceorientation', handleHeading);
 	     return;
 	   }
 
@@ -886,15 +907,15 @@
 	         if (!accuracyCircle) {
 	           accuracyCircle = L.circle(latlng, {
 	             radius: accuracy,
-	             color: '#1E90FF',
-	             weight: 2,
+	             color: 'transparent',
+	             weight: 0,
 	             fillColor: '#1E90FF',
 	             fillOpacity: 0.15
 	           }).addTo(map);
 	           currentRadius = accuracy;
 	         } else {
-	           accuracyCircle.setLatLng(latlng);
-	           animateAccuracyCircle(accuracy);
+	           animateCircleTo(accuracyCircle, L.latLng(latlng)); // 平滑位移
+               animateAccuracyCircle(accuracy); // 半徑繼續動畫
 	         }
 	   
 	         const bounds = map.getBounds();
