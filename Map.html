@@ -867,23 +867,26 @@ function rotateMarker(marker, angle) {
   }
 }
 
-let baseAlpha = null;
+function handleHeading(event) {
+  let heading = null;
 
-function handleHeading(e) {
-  if (e.alpha != null) {
-    // 顯示目前 alpha
-    document.getElementById('alpha-status').textContent = `α: ${e.alpha.toFixed(2)}°`;
+  if (typeof event.webkitCompassHeading !== 'undefined') {
+    // ✅ 如果有 webkitCompassHeading，直接用！
+    heading = event.webkitCompassHeading;
+  } else if (event.alpha != null) {
+    // ✅ 如果沒有 webkitCompassHeading，用 alpha
+    heading = 360 - event.alpha;
+  }
 
+  if (heading != null) {
+    document.getElementById('alpha-status').textContent = `Heading: ${heading.toFixed(2)}°`;
     if (locateMarker) {
-      if (baseAlpha == null) {
-        baseAlpha = e.alpha; // 第一次記錄作為基準角
-      }
-      const correctedHeading = (360 + (e.alpha - baseAlpha)) % 360;
-      rotateMarker(locateMarker, correctedHeading);
+      rotateMarker(locateMarker, heading);
     }
+  } else {
+    document.getElementById('alpha-status').textContent = `⚠️ 無法取得方向感應數據`;
   }
 }
-
 
     let locateMarker = null;
     let accuracyCircle = null;
