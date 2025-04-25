@@ -869,13 +869,26 @@
       }
     }
 
-    const handleHeading = (e) => {
-      if (e.alpha != null) {
-        const heading = 360 - e.alpha;
-        window.latestHeading = heading;
-        rotateMarker(locateMarker, heading);
-      }
-    };
+const handleHeading = (e) => {
+  updateAlphaStatus(e.alpha); // ✅ 即時更新顯示
+  if (e.alpha != null) {
+    const heading = 360 - e.alpha;
+    window.latestHeading = heading;
+    rotateMarker(locateMarker, heading);
+  }
+};
+
+function updateAlphaStatus(alphaValue) {
+  const alphaDisplay = document.getElementById('alpha-status');
+  if (!alphaDisplay) return;
+
+  const displayText = (alphaValue != null)
+    ? `α: ${alphaValue.toFixed(2)}°`
+    : 'α: null';
+
+  alphaDisplay.textContent = displayText;
+}
+
     
     let locateMarker = null;
     let accuracyCircle = null;
@@ -988,6 +1001,21 @@
     });
     document.getElementById("last-modified").textContent = "此頁最後修改時間：" + formatted;
   </script>
+  
+    <div id="alpha-status" style="
+      position: fixed;
+      bottom: 5px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+    ">
+      α: –
+    </div>
 
 </body>
 </html>
