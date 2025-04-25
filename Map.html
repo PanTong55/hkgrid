@@ -910,7 +910,7 @@ function updateAlphaStatus(alphaValue) {
         accuracyCircle = null;
       }
       locateBtn.classList.remove('active');
-      window.removeEventListener('deviceorientationabsolute', handleHeading);
+      window.removeEventListener('deviceorientation', handleHeading);
       return;
     }
 
@@ -920,12 +920,12 @@ function updateAlphaStatus(alphaValue) {
        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission().then(response => {
           if (response === 'granted') {
-            window.addEventListener('deviceorientationabsolute', handleHeading, true);
+            window.addEventListener('deviceorientation', handleHeading, true);
             headingListenerAdded = true;
           }
         });
       } else {
-        window.addEventListener('deviceorientationabsolute', handleHeading, true);
+        window.addEventListener('deviceorientation', handleHeading, true);
         headingListenerAdded = true;
       }     
     
