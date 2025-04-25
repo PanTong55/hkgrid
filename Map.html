@@ -827,7 +827,6 @@
           currentRadius = targetRadius;
         }
       }
-
       requestAnimationFrame(step);
     }
 
@@ -843,7 +842,6 @@
         const elapsed = timestamp - startTime;
         const t = Math.min(elapsed / duration, 1); // 0 ~ 1
         const eased = easeOutCubic(t);
-
         const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
         const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
 
@@ -871,7 +869,6 @@ function rotateMarker(marker, angle) {
 
 const handleHeading = (e) => {
   if (e.alpha != null) {
-    document.getElementById('alpha-val').textContent = e.alpha.toFixed(1); // ← 這行是關鍵
     const heading = 360 - e.alpha;
     window.latestHeading = heading;
     rotateMarker(locateMarker, heading);
@@ -1009,9 +1006,5 @@ function updateAlphaStatus(alphaValue) {
     document.getElementById("last-modified").textContent = "此頁最後修改時間：" + formatted;
   </script>
   
-<div style="position:fixed; bottom:10px; right:10px; font-size:13px; background:#fff; padding:5px 10px; border:1px solid #ccc; z-index:999;">
-  α: <span id="alpha-val">–</span>
-</div>
-
 </body>
 </html>
