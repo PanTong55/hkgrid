@@ -857,8 +857,11 @@
       if (!marker) return;
       const iconEl = marker.getElement();
       if (iconEl) {
-        iconEl.style.transform = `rotate(${angle}deg)`;
-        iconEl.style.transformOrigin = 'center';
+        const svg = iconEl.querySelector('svg');
+        if (svg) {
+          svg.style.transform = `rotate(${angle}deg)`;
+          svg.style.transformOrigin = 'center';
+        }
       }
     }
 
