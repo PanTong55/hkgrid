@@ -1,344 +1,349 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-	<meta charset="UTF-8">
-	<meta content="width=device-width, initial-scale=1.0" name="viewport">
-	<title>Hong Kong Bat Acoustic Project</title><!-- Leaflet核心 -->
-	<link href="https://unpkg.com/leaflet/dist/leaflet.css" rel="stylesheet">
-	<script src="https://unpkg.com/leaflet/dist/leaflet.js">
-	</script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Hong Kong Bat Acoustic Project</title>
+    <!-- Leaflet核心 -->
+    <link href="https://unpkg.com/leaflet/dist/leaflet.css" rel="stylesheet" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <!-- 加入 Lucide 的 CDN -->
-	<script src="https://unpkg.com/lucide@latest">
-	</script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Responsive Map Size -->
-	<style>
-	   #map {
-	     width: 1140px;
-	     height: 800px;
-	   }
+    <style>
+      #map {
+        width: 1140px;
+        height: 800px;
+      }
 
-	   @media (max-width: 1023px) {
-	     #map {
-	       height: 80vh;
-	       width: 100%;
-	     }
-	   }
-	   
-	   .floatingTooltip {
-	     position: absolute;
-	     background: rgba(255,255,255,0.95);
-	     color: #000;
-	     border: 1px solid #ccc;
-	     border-radius: 8px;
-	     padding: 6px 10px;
-	     font-size: 13px;
-	     font-family: Arial, sans-serif; 
-	     line-height: 1.4;
-	     pointer-events: auto;
-	     z-index: 1000;
-	     max-width: 320px;
-	     word-break: break-word;
-	     overflow: visible;
-	   }
-
-	   .tooltip-close-button:hover {
-	     background: #333;
-	   }
-
-	   .tooltip-content {
-	     padding-top: 0px;
-	   }
-
-	   .tooltip-container {
-	     position: relative;
-	   }
-
-	   /* 改為絕對定位 + 圓形風格 */
-	   a.tooltip-close {
-	     position: absolute;
-	     top: -18px;
-	     right: -23px;
-	     display: inline-block;
-	     width: 26px;
-	     height: 26px;
-	     line-height: 26px;
-	     text-align: center;
-	     border-radius: 50%;
-	     font-size: 16px;
-	     font-weight: bold;
-	     color: #333 !important;
-	     background: #eee;
-	     text-decoration: none !important;
-	     -webkit-appearance: none !important;
-	     appearance: none !important;
-	     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-	     cursor: pointer;
-	     z-index: 10;
-	   }
-
-	   a.tooltip-close:hover {
-	     background: #ccc !important;
-	   }
-
-
-	   /* CRS + Scale 共用容器樣式 */
-	   #coord-scale-wrapper {
-	     position: absolute;
-	     bottom: 5px;
-	     left: 5px;
-	     display: flex;
-	     align-items: center;
-	     gap: 12px;
-	     background: rgba(240, 248, 255, 0.95);
-	     border: 1px solid #bbb;
-	     padding: 4px 10px;
-	     border-radius: 4px;
-	     font-family: Arial, sans-serif;
-	     font-size: 13px;
-	     color: #111;
-	     z-index: 1001;
-	   }
-	   
-	   .crs-selector select {
-	     margin-right: 4px;
-	     font-weight: bold;
-	     color: #0000cc;
-	     border: none;
-	     background: transparent;
-	     text-decoration: underline;
-	     cursor: pointer;
-	   }
-	   
-	   .crs-selector span {
-	     font-weight: bold;
-	     color: #222;
-	   }
-	   
-	   .leaflet-control-scale {
-	     position: static !important;
-	     margin-left: 8px;
-	   }
-	   
-	   /*  統一 input 輸入框樣式 */
-	    #gotoPanel input[type="number"] {
-	     width: 100%;
-	     padding: 6px 8px;
-	     margin-bottom: 10px;
-	     border: 1px solid #ccc;
-	     border-radius: 6px;
-	     box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-	   }
-
-        #gotoPanel label {
-	     display: flex;
-	     align-items: center;
-	     gap: 6px;
-	     margin-bottom: 4px;
-	     font-weight: normal;
-	   } 
-	   .goto-row {
-	     display: grid;
-	     grid-template-columns: 20px 80px 120px;
-	     align-items: center;
-	     gap: 8px;
-	   }
-	   
-	   #clearBtn {
-	     background: #f8bfc4;
-	   }
-	   
-	   #clearBtn:hover {
-	     background-color: #d9534f;
-	     color: white;
-	     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
-	     cursor: pointer;
-	   }
-	   
-	   #goBtn {
-	     background: #3d7728;
-	     color: white;
-	   }
-	   
-	   #goBtn:hover {
-	     background-color: #1e4f1b;
-	     color: white;
-	     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-	     cursor: pointer;
-	   }
-	   
-	   .info.legend {
-	     background: rgba(255,255,255,0.95);
-	     padding: 8px 12px;
-	     font: 13px Arial, sans-serif;
-	     color: #333;
-	     line-height: 1.4;
-	     border-radius: 6px;
-	     box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-	     border: 1px solid #ccc;
-	   }
-
-	   /* Tool Bar Button Style*/
-	    .single-btn {
-	     position: absolute;
-	     width: 30px;
-	     height: 30px;
-	     line-height: 26px;
-	     background: white;
-	     border: 1px solid #ccc;
-	     border-radius: 4px;
-	     box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-	     display: flex;
-	     align-items: center;
-	     justify-content: center;
-	     text-decoration: none;
-	     cursor: pointer;
-	   }
-	   
-	   .single-btn:hover {
-	     background: #f4f4f4;
-	   }
-
-	   #drawPointBtn.active {
-	     background: #eee;
-	     box-shadow: inset 0 0 0 1px #666;
-	     border-color: #666;
-	   } 
-	   
-	   #locateBtn.active {
-	     background: #eee;
-	     box-shadow: inset 0 0 0 2px #666;
-	     border-color: #666;
-	   }  
-	   
-	   .lucide-locate-icon i svg {
-	     fill: #007aff;
-	     stroke: #007aff;
-	     stroke-width: 1.5px;
-	   }
-	   
-	   .rotatable-icon {
-	     transition: transform 0.2s ease-out;
-	   }
-
-        .fake-fullscreen {
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          z-index: 9999 !important;
-          background: white;
+      @media (max-width: 1023px) {
+        #map {
+          height: 80vh;
+          width: 100%;
         }
-	</style>
-</head>
-<body>
-	<div id="map" style="position: relative;">
-		<div id="coord-scale-wrapper">
-			<div class="crs-selector">
-				<select id="crsMode">
-					<option value="hk1980">
-						HK1980
-					</option>
-					<option value="wgs84">
-						WGS84
-					</option>
-				</select> <span id="mouseCoords">X: –, Y: –</span>
-			</div>
-		</div>
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="fullscreenBtn" style="top: 95px; left: 10px;" title="全螢幕">
-        <i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>
-      </a> 
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="homeBtn" style="top: 130px; left: 10px;" title="Go Home">
-        <i data-lucide="home" style="width: 14px; height: 14px; color: black;"></i>
-      </a> 
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="gotoToggleBtn" style="top: 165px; left: 10px;" title="Go To Point">
-        <i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i>
-      </a> 
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="drawPointBtn" style="top: 200px; left: 10px;" title="Draw Point">
-        <i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i>
-      </a> 
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="locateBtn" style="top: 235px; left: 10px;" title="定位追蹤">
-        <i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i>
-      </a>
- 
-	</div>
-  
+      }
+
+      .floatingTooltip {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.95);
+        color: #000;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        line-height: 1.4;
+        pointer-events: auto;
+        z-index: 1000;
+        max-width: 320px;
+        word-break: break-word;
+        overflow: visible;
+      }
+
+      .tooltip-close-button:hover {
+        background: #333;
+      }
+
+      .tooltip-content {
+        padding-top: 0px;
+      }
+
+      .tooltip-container {
+        position: relative;
+      }
+
+      /* 改為絕對定位 + 圓形風格 */
+      a.tooltip-close {
+        position: absolute;
+        top: -18px;
+        right: -23px;
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+        border-radius: 50%;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333 !important;
+        background: #eee;
+        text-decoration: none !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 10;
+      }
+
+      a.tooltip-close:hover {
+        background: #ccc !important;
+      }
+
+      /* CRS + Scale 共用容器樣式 */
+      #coord-scale-wrapper {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(240, 248, 255, 0.95);
+        border: 1px solid #bbb;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        color: #111;
+        z-index: 1001;
+      }
+
+      .crs-selector select {
+        margin-right: 4px;
+        font-weight: bold;
+        color: #0000cc;
+        border: none;
+        background: transparent;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      .crs-selector span {
+        font-weight: bold;
+        color: #222;
+      }
+
+      .leaflet-control-scale {
+        position: static !important;
+        margin-left: 8px;
+      }
+
+      /*  統一 input 輸入框樣式 */
+      #gotoPanel input[type="number"] {
+        width: 100%;
+        padding: 6px 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+
+      #gotoPanel label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 4px;
+        font-weight: normal;
+      }
+
+      .goto-row {
+        display: grid;
+        grid-template-columns: 20px 80px 120px;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #clearBtn {
+        background: #f8bfc4;
+      }
+
+      #clearBtn:hover {
+        background-color: #d9534f;
+        color: white;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+      }
+
+      #goBtn {
+        background: #3d7728;
+        color: white;
+      }
+
+      #goBtn:hover {
+        background-color: #1e4f1b;
+        color: white;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+      }
+
+      .info.legend {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px 12px;
+        font: 13px Arial, sans-serif;
+        color: #333;
+        line-height: 1.4;
+        border-radius: 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        border: 1px solid #ccc;
+      }
+
+      /* Tool Bar Button Style*/
+      .single-btn {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        line-height: 26px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .single-btn:hover {
+        background: #f4f4f4;
+      }
+
+      #drawPointBtn.active {
+        background: #eee;
+        box-shadow: inset 0 0 0 1px #666;
+        border-color: #666;
+      }
+
+      #locateBtn.active {
+        background: #eee;
+        box-shadow: inset 0 0 0 2px #666;
+        border-color: #666;
+      }
+
+      .lucide-locate-icon i svg {
+        fill: #007aff;
+        stroke: #007aff;
+        stroke-width: 1.5px;
+      }
+
+      .rotatable-icon {
+        transition: transform 0.2s ease-out;
+      }
+
+      .fake-fullscreen {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 9999 !important;
+        background: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map" style="position: relative;">
+      <div id="coord-scale-wrapper">
+        <div class="crs-selector">
+          <select id="crsMode">
+            <option value="hk1980"> HK1980 </option>
+            <option value="wgs84"> WGS84 </option>
+          </select>
+          <span id="mouseCoords">X: –, Y: –</span>
+        </div>
+      </div>
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="fullscreenBtn" style="top: 95px; left: 10px;" title="全螢幕"> <i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i> </a>
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="homeBtn" style="top: 130px; left: 10px;" title="Go Home"> <i data-lucide="home" style="width: 14px; height: 14px; color: black;"></i> </a>
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="gotoToggleBtn" style="top: 165px; left: 10px;" title="Go To Point"> <i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i> </a>
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="drawPointBtn" style="top: 200px; left: 10px;" title="Draw Point"> <i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i> </a>
+      <a class="leaflet-control leaflet-bar single-btn" href="#" id="locateBtn" style="top: 235px; left: 10px;" title="定位追蹤"> <i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i> </a>
+    </div>
     <!-- Go To Point 功能 -->
-	<div id="gotoPanel" style=" display: none; position: absolute; top: 124px; left: 56px; background: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); padding: 15px 15px; font-family: 'Arial', sans-serif; font-size: 14px; width: 250px; z-index: 1100;">
-		<h4 style="margin-top: 0;">Go To Point</h4>
-		<div class="goto-row">
-			<input id="modeHK" name="coordMode" type="radio" value="hk1980"> 
-            <label for="modeHK">Easting (X):</label> <input id="inputX" placeholder="828988" type="number">
-		</div>
-		<div class="goto-row">
-			<span></span> 
-            <label>Northing (Y):</label> <input id="inputY" placeholder="824199" type="number">
-		</div>
-		<div class="goto-row">
-			<input id="modeWGS" name="coordMode" type="radio" value="wgs84">
-            <label for="modeWGS">Latitude:</label> <input id="inputLat" placeholder="22.356" type="number">
-		</div>
-		<div class="goto-row">
-			<span></span> <label>Longitude:</label> <input id="inputLng" placeholder="114.101" type="number">
-		</div>
-      <button id="clearBtn" style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button>
-      <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
-	</div><!-- Hover Tooltip -->
-	<div id="hoverTooltip" style=" display: none; position: absolute; background: rgba(255,255,255,0.95); color: #000; border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; font-size: 13px; font-family: Arial, sans-serif; line-height: 1.4; pointer-events: none; z-index: 999;"></div>
-	<p id="last-modified" style="text-align:center; font-size:12px; color:gray; margin-top:30px;"></p>
-    
-  <!-- Proj4 轉換工具 -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js">
-	</script> 
-	<script>
-	   const map = L.map('map',);
-	   
-	   const hongKongBounds = [
-	     [22.1500, 113.8250],
-	     [22.5500, 114.4000]
-	   ];
-	   map.fitBounds(hongKongBounds);
+    <div
+      id="gotoPanel"
+      style="
+        display: none;
+        position: absolute;
+        top: 124px;
+        left: 56px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        padding: 15px 15px;
+        font-family: 'Arial', sans-serif;
+        font-size: 14px;
+        width: 250px;
+        z-index: 1100;
+      "
+    >
+      <h4 style="margin-top: 0;">Go To Point</h4>
+      <div class="goto-row"><input id="modeHK" name="coordMode" type="radio" value="hk1980" /> <label for="modeHK">Easting (X):</label> <input id="inputX" placeholder="828988" type="number" /></div>
+      <div class="goto-row"><span></span> <label>Northing (Y):</label> <input id="inputY" placeholder="824199" type="number" /></div>
+      <div class="goto-row"><input id="modeWGS" name="coordMode" type="radio" value="wgs84" /> <label for="modeWGS">Latitude:</label> <input id="inputLat" placeholder="22.356" type="number" /></div>
+      <div class="goto-row"><span></span> <label>Longitude:</label> <input id="inputLng" placeholder="114.101" type="number" /></div>
+      <button id="clearBtn" style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button> <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
+    </div>
+    <!-- Hover Tooltip -->
+    <div
+      id="hoverTooltip"
+      style="
+        display: none;
+        position: absolute;
+        background: rgba(255, 255, 255, 0.95);
+        color: #000;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        line-height: 1.4;
+        pointer-events: none;
+        z-index: 999;
+      "
+    ></div>
+    <p id="last-modified" style="text-align: center; font-size: 12px; color: gray; margin-top: 30px;"></p>
+    <!-- Proj4 轉換工具 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script>
+    <script>
+      const map = L.map("map");
 
-	   const scaleControl = L.control.scale({ imperial: false });
-	   scaleControl.addTo(map);
+      const hongKongBounds = [
+        [22.15, 113.825],
+        [22.55, 114.4],
+      ];
+      map.fitBounds(hongKongBounds);
 
-	   // 定義正確的 HK1980 與 WGS84 轉換參數
-	   proj4.defs("EPSG:2326", "+proj=tmerc +lat_0=22.31213333333334 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +towgs84=-162.619,-276.959,-161.764,0.067753,-2.24365,-1.15883,-1.09425 +units=m +no_defs");
-	   
-	   // 等待 Leaflet 載入後將比例尺 DOM 插入 wrapper
-	   map.whenReady(() => {
-	     const scaleEl = document.querySelector('.leaflet-control-scale');
-	     const wrapper = document.getElementById('coord-scale-wrapper');
-	     if (scaleEl && wrapper) {
-	       wrapper.appendChild(scaleEl);
-	     }
-	     lucide.createIcons();  // 初始化 Lucide Icons
-	   });
+      const scaleControl = L.control.scale({ imperial: false });
+      scaleControl.addTo(map);
 
-	   const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
-	   const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri' });
-	   const cartoLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {attribution: 'CARTO'});
-	   const googleStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { attribution: 'Map data ©2024 Google' });
-	   const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { attribution: 'Imagery ©2024 Google' });
-	   const googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: 'Imagery ©2024 Google' });
-	   const baseMaps = {
-	     "街道圖 (OSM)": streets,
-	     "衛星圖 (Esri)": esriSatellite,
-	     "街道圖 (Carto)": cartoLight,
-	     "Google 街道圖": googleStreets,
-	     "Google 衛星圖": googleSatellite,
-	     "Google 混合圖": googleHybrid
-	   };
-	   const isSmallDevice = window.matchMedia('(max-width: 1023px)').matches;
-	   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-	   const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
-	   const gotoMarkers = [];  // 儲存 Go To Point 建立的 marker
+      // 定義正確的 HK1980 與 WGS84 轉換參數
+      proj4.defs("EPSG:2326", "+proj=tmerc +lat_0=22.31213333333334 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +towgs84=-162.619,-276.959,-161.764,0.067753,-2.24365,-1.15883,-1.09425 +units=m +no_defs");
+
+      // 等待 Leaflet 載入後將比例尺 DOM 插入 wrapper
+      map.whenReady(() => {
+        const scaleEl = document.querySelector(".leaflet-control-scale");
+        const wrapper = document.getElementById("coord-scale-wrapper");
+        if (scaleEl && wrapper) {
+          wrapper.appendChild(scaleEl);
+        }
+        lucide.createIcons(); // 初始化 Lucide Icons
+      });
+
+      const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap contributors" }).addTo(map);
+      const esriSatellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { attribution: "Tiles © Esri" });
+      const cartoLight = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", { attribution: "CARTO" });
+      const googleStreets = L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", { attribution: "Map data ©2024 Google" });
+      const googleSatellite = L.tileLayer("https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", { attribution: "Imagery ©2024 Google" });
+      const googleHybrid = L.tileLayer("https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", { attribution: "Imagery ©2024 Google" });
+      const baseMaps = {
+        "街道圖 (OSM)": streets,
+        "衛星圖 (Esri)": esriSatellite,
+        "街道圖 (Carto)": cartoLight,
+        "Google 街道圖": googleStreets,
+        "Google 衛星圖": googleSatellite,
+        "Google 混合圖": googleHybrid,
+      };
+      const isSmallDevice = window.matchMedia("(max-width: 1023px)").matches;
+      const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
+      const gotoMarkers = []; // 儲存 Go To Point 建立的 marker
 
       // Fullscreen 控制功能
-      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const fullscreenBtn = document.getElementById("fullscreenBtn");
       let isFullscreen = false;
-      
-      fullscreenBtn.addEventListener('click', () => {
+
+      fullscreenBtn.addEventListener("click", () => {
         if (!isFullscreen) {
           openFullscreen();
         } else {
@@ -347,13 +352,13 @@
       });
 
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      
+
       function openFullscreen() {
-        const elem = document.getElementById('map');
-      
+        const elem = document.getElementById("map");
+
         if (isIOS) {
           // iOS fake fullscreen：加上特別的 CSS class
-          elem.classList.add('fake-fullscreen');
+          elem.classList.add("fake-fullscreen");
           handleFullscreenChange(); // 直接更新按鈕狀態
         } else {
           if (elem.requestFullscreen) {
@@ -365,13 +370,13 @@
           }
         }
       }
-      
+
       function closeFullscreen() {
-        const elem = document.getElementById('map');
-      
+        const elem = document.getElementById("map");
+
         if (isIOS) {
           // iOS fake fullscreen：移除 CSS class
-          elem.classList.remove('fake-fullscreen');
+          elem.classList.remove("fake-fullscreen");
           handleFullscreenChange(); // 直接更新按鈕狀態
         } else {
           if (document.exitFullscreen) {
@@ -383,704 +388,682 @@
           }
         }
       }
-      
+
       // 監聽全屏模式切換，更新按鈕圖示
-      document.addEventListener('fullscreenchange', handleFullscreenChange);
-      document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari
-      document.addEventListener('msfullscreenchange', handleFullscreenChange); // IE11
-      
+      document.addEventListener("fullscreenchange", handleFullscreenChange);
+      document.addEventListener("webkitfullscreenchange", handleFullscreenChange); // Safari
+      document.addEventListener("msfullscreenchange", handleFullscreenChange); // IE11
+
       function handleFullscreenChange() {
-        isFullscreen = !!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement || document.getElementById('map').classList.contains('fake-fullscreen');
-        
-        fullscreenBtn.innerHTML = isFullscreen
-          ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
-          : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
-        
+        isFullscreen = !!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement || document.getElementById("map").classList.contains("fake-fullscreen");
+
+        fullscreenBtn.innerHTML = isFullscreen ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>' : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
+
         lucide.createIcons();
       }
-	   
-	   // Home Button //
-	   document.getElementById('homeBtn').addEventListener('click', () => {
-	     map.fitBounds(hongKongBounds);
-	   });
-	   
-	   const legend = L.control({ position: 'bottomright' });  // All Bat Grid的Legend
-	   legend.onAdd = function () {
-	     const div = L.DomUtil.create('div', 'info legend');
-	     const grades = [1, 6, 11, 16, 21];
-	     const labels = [];
-	     const colors = ["#fde0dd", "#fbb4b9", "#f768a1", "#c51b8a", "#7a0177"];
-	   
-	     div.innerHTML = '<strong>No. of Species<\/strong><br>';
-	   
-	     for (let i = 0; i < grades.length; i++) {
-	       const from = grades[i];
-	       const to = grades[i + 1] - 1;
-	       const rangeLabel = to ? `${from}–${to}` : `> ${from - 1}`;
-	       div.innerHTML += `
-	         <i style="background:${colors[i]}; width: 14px; height: 14px; display: inline-block; margin-right: 6px; border-radius: 2px;"><\/i>
-	         ${rangeLabel}<br>
-	       `;
-	     }
-	     return div;
-	   };
 
-	    map.on('overlayadd', function (e) {
-	     if (e.name === "All Bat Distribution (Grid)") {
-	       legend.addTo(map);
-	     }
-	   });
-	   
-	   map.on('overlayremove', function (e) {
-	     if (e.name === "All Bat Distribution (Grid)") {
-	       map.removeControl(legend);
-	     }
-	   });
-	   
-	   let gridLayer = L.geoJSON(null, { style: { color: '#666', weight: 1, fillColor: '#41b6c4', fillOpacity: 0.3 } });
-	   let lockedLayers = [];
-	   let tooltipElements = [];
-	   let manualMoved = [];
-	   let maxLockedTooltips = 3;
+      // Home Button //
+      document.getElementById("homeBtn").addEventListener("click", () => {
+        map.fitBounds(hongKongBounds);
+      });
 
-	   function positionTooltipToSameOffset(domElement, latlng) {
-	     const point = map.latLngToContainerPoint(latlng);
-	     const mapRect = map.getContainer().getBoundingClientRect();
-	     const left = mapRect.left + point.x + 15;
-	     const top = mapRect.top + point.y + 15;
+      const legend = L.control({ position: "bottomright" }); // All Bat Grid的Legend
+      legend.onAdd = function () {
+        const div = L.DomUtil.create("div", "info legend");
+        const grades = [1, 6, 11, 16, 21];
+        const labels = [];
+        const colors = ["#fde0dd", "#fbb4b9", "#f768a1", "#c51b8a", "#7a0177"];
 
-	     domElement.style.position = 'absolute';
-	     domElement.style.left = `${left}px`;
-	     domElement.style.top = `${top}px`;
-	   }
+        div.innerHTML = "<strong>No. of Species<\/strong><br>";
 
-	     function adjustTooltipPosition(tooltip, point) {
-	       if (getComputedStyle(tooltip).position !== 'absolute') {
-	         tooltip.style.position = 'absolute';
-	       }
-	     
-	       const mapSize = map.getSize();
-	       let left = point.x + 15;
-	       let top = point.y + 15;
-	     
-	       if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
-	       if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
-	       if (left < 0) left = 10;
-	       if (top < 0) top = 10;
-	     
-	       tooltip.style.left = left + 'px';
-	       tooltip.style.top = top + 'px';
-	     }
+        for (let i = 0; i < grades.length; i++) {
+          const from = grades[i];
+          const to = grades[i + 1] - 1;
+          const rangeLabel = to ? `${from}–${to}` : `> ${from - 1}`;
+          div.innerHTML += `
+              <i style="background:${colors[i]}; width: 14px; height: 14px; display: inline-block; margin-right: 6px; border-radius: 2px;"><\/i>
+              ${rangeLabel}<br>
+            `;
+        }
+        return div;
+      };
 
-	   function updateAllLockedTooltips() {
-	     lockedLayers.forEach((layer, index) => {
-	       if (manualMoved[index]) return;
-	       const tooltip = tooltipElements[index];
-	       const center = map.latLngToContainerPoint(layer.getBounds().getCenter());
-	       adjustTooltipPosition(tooltip, center);
-	     });
-	   }
+      map.on("overlayadd", function (e) {
+        if (e.name === "All Bat Distribution (Grid)") {
+          legend.addTo(map);
+        }
+      });
 
-	   function makeTooltipDraggable(tooltip, index) {
-	     let isDragging = false;
-	     let offsetX, offsetY;
+      map.on("overlayremove", function (e) {
+        if (e.name === "All Bat Distribution (Grid)") {
+          map.removeControl(legend);
+        }
+      });
 
-	     tooltip.addEventListener('mousedown', function(e) {
-	       isDragging = true;
-	       offsetX = e.clientX - tooltip.offsetLeft;
-	       offsetY = e.clientY - tooltip.offsetTop;
-	       tooltip.style.cursor = 'move';
-	       tooltip.style.opacity = '0.7';
-	       e.stopPropagation();
-	     });
+      let gridLayer = L.geoJSON(null, { style: { color: "#666", weight: 1, fillColor: "#41b6c4", fillOpacity: 0.3 } });
+      let lockedLayers = [];
+      let tooltipElements = [];
+      let manualMoved = [];
+      let maxLockedTooltips = 3;
 
-	     document.addEventListener('mousemove', function(e) {
-	       if (isDragging) {
-	         tooltip.style.left = (e.clientX - offsetX) + 'px';
-	         tooltip.style.top = (e.clientY - offsetY) + 'px';
-	       }
-	     });
+      function positionTooltipToSameOffset(domElement, latlng) {
+        const point = map.latLngToContainerPoint(latlng);
+        const mapRect = map.getContainer().getBoundingClientRect();
+        const left = mapRect.left + point.x + 15;
+        const top = mapRect.top + point.y + 15;
 
-	     document.addEventListener('mouseup', function() {
-	       if (isDragging) {
-	         isDragging = false;
-	         tooltip.style.cursor = 'default';
-	         tooltip.style.transition = 'opacity 0.2s ease';
-	         tooltip.style.opacity = '1';
-	         manualMoved[index] = true;
-	         setTimeout(() => { tooltip.style.transition = ''; }, 200);
-	       }
-	     });
-	   }
+        domElement.style.position = "absolute";
+        domElement.style.left = `${left}px`;
+        domElement.style.top = `${top}px`;
+      }
 
-	   function openLockTooltip(layer) {
-	     const tooltip = document.createElement('div');
-	     tooltip.className = 'floatingTooltip';
-	     tooltip.setAttribute('data-layer-id', L.stamp(layer));
-	     tooltip.innerHTML = `
-	       <div class="tooltip-container">
-	         <a href="#" class="tooltip-close" onclick="closeLockTooltip(event, this);">✖<\/a>
-	         <div class="tooltip-content">
-	           ${layer.options.tooltipContent}
-	         <\/div>
-	       <\/div>
-	     `;
-	     document.getElementById('map').appendChild(tooltip);
+      function adjustTooltipPosition(tooltip, point) {
+        if (getComputedStyle(tooltip).position !== "absolute") {
+          tooltip.style.position = "absolute";
+        }
 
-	     lockedLayers.push(layer);
-	     tooltipElements.push(tooltip);
-	     manualMoved.push(false);
+        const mapSize = map.getSize();
+        let left = point.x + 15;
+        let top = point.y + 15;
 
-	     const centerPoint = map.latLngToContainerPoint(layer.getBounds().getCenter());
-	     setTimeout(() => {
-	       adjustTooltipPosition(tooltip, centerPoint);}, 30); 
-	    
-	     makeTooltipDraggable(tooltip, lockedLayers.length - 1);
-	   }
+        if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
+        if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
+        if (left < 0) left = 10;
+        if (top < 0) top = 10;
 
-	   function closeLockTooltip(event, closeButton) {
-	     event.preventDefault();
-	     const tooltip = closeButton.closest('.floatingTooltip');
-	     const layerId = parseInt(tooltip.dataset.layerId);
-	     const idx = lockedLayers.findIndex(l => L.stamp(l) === layerId);
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+      }
 
-	     if (idx !== -1) {
-	       const layer = lockedLayers[idx];
-	     const gridNo = layer.feature.properties.Grid_No;
-	     const count = speciesData[gridNo] ? speciesData[gridNo].count : 0;
-	     layer.setStyle(getGridStyle(count));
-	       lockedLayers.splice(idx, 1);
-	       tooltipElements[idx].remove();
-	       tooltipElements.splice(idx, 1);
-	       manualMoved.splice(idx, 1);
-	     }
-	   }
+      function updateAllLockedTooltips() {
+        lockedLayers.forEach((layer, index) => {
+          if (manualMoved[index]) return;
+          const tooltip = tooltipElements[index];
+          const center = map.latLngToContainerPoint(layer.getBounds().getCenter());
+          adjustTooltipPosition(tooltip, center);
+        });
+      }
 
-	   const hoverTooltip = document.getElementById('hoverTooltip');
-	   
-	   function getGridStyle(count) {
-	     let fillColor = "#fff";
-	     let fillOpacity = 0;
-	   
-	     if (count === 0 || count === "0" || count === "" || count === null) {
-	       fillOpacity = 0;
-	     } else {
-	       count = Number(count);
-	       fillOpacity = 0.75;
-	     if (count >= 1 && count <= 5) fillColor = "#fde0dd";    // very light pink
-  	     else if (count <= 10)         fillColor = "#fbb4b9";    // light pink
-	     else if (count <= 15)         fillColor = "#f768a1";    // medium pink-red
-	     else if (count <= 20)         fillColor = "#c51b8a";    // strong magenta-red
-	     else                          fillColor = "#7a0177";    // dark purple-red
-	     }
-	   
-	     return {
-	       color: "#666",
-	       weight: 1,
-	       fillColor,
-	       fillOpacity
-	     };
-	   }
-	   
-	   function setupGridLayerFeature(feature, layer) {
-	     const gridNo = feature.properties.Grid_No;
-	     if (speciesData[gridNo]) {
-	       const info = speciesData[gridNo];
-	       let content = "";
+      function makeTooltipDraggable(tooltip, index) {
+        let isDragging = false;
+        let offsetX, offsetY;
 
-	       if (!info.list || info.list.trim() === "" || info.list === "N/A") {
-	         content = `<strong>編號:<\/strong> ${gridNo}<br>暫無物種記錄`;
-	       } else {
-	         const speciesArray = info.list.split(', ').sort();
-	         const speciesListHtml = speciesArray.map((s, i) => `${i + 1}. <i>${s}<\/i>`).join('<br>');
-	         content = `<strong>編號:<\/strong> ${gridNo}<br><strong>數量:<\/strong> ${info.count} 種<br><strong>清單:<\/strong><br>${speciesListHtml}`;
-	       }
+        tooltip.addEventListener("mousedown", function (e) {
+          isDragging = true;
+          offsetX = e.clientX - tooltip.offsetLeft;
+          offsetY = e.clientY - tooltip.offsetTop;
+          tooltip.style.cursor = "move";
+          tooltip.style.opacity = "0.7";
+          e.stopPropagation();
+        });
 
-	       layer.options.tooltipContent = content;
-
-	       if (!isTouchDevice) {
-	         layer.on('mouseover', function() {
-	           if (!lockedLayers.includes(this)) {
-	             hoverTooltip.innerHTML = this.options.tooltipContent;
-	             hoverTooltip.style.display = 'block';
-	           }
-	         });
-
-	         layer.on('mousemove', function(e) {
-	           if (!lockedLayers.includes(this)) {
-	             const point = map.latLngToContainerPoint(e.latlng);
-	             adjustTooltipPosition(hoverTooltip, point);
-	           }
-	         });
-
-	         layer.on('mouseout', function() {
-	           hoverTooltip.style.display = 'none';
-	         });
-	       }
-
-	       layer.on('click', function() {
-	         if (lockedLayers.includes(this)) {
-	           const idx = lockedLayers.indexOf(this);
-	           lockedLayers.splice(idx, 1);
-	           tooltipElements[idx].remove();
-	           tooltipElements.splice(idx, 1);
-	           manualMoved.splice(idx, 1);
-	           this.setStyle(getGridStyle(info.count));
-	         } else {
-	           if (lockedLayers.length >= maxLockedTooltips) {
-	             alert('最多只能顯示 ' + maxLockedTooltips + ' 個格網的資料');
-	             return;
-	           }
-	           this.setStyle({ color: '#333', weight: 2, fillColor: '#ffcc00', fillOpacity: 0.7 });
-	           openLockTooltip(this);
-	         }
-	       });
-	     }
-	   }
-
-	   map.on('move zoom', () => {
-	     updateAllLockedTooltips();
-	   });
-
-	   let speciesData = {};
-
-	   fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet1')
-	     .then(r => r.json())
-	     .then(data => {
-	       data.forEach(item => {
-	         speciesData[item["Grid No."]] = {
-	           list: item["Species List"],
-	           count: item["No. of Species"]
-	         };
-	       });
-	       fetch('https://raw.githubusercontent.com/PanTong55/hkgrid/main/hkgrid.geojson')
-	         .then(r => r.json())
-	         .then(gridData => {
-	           gridLayer.options.onEachFeature = setupGridLayerFeature;
-	           gridLayer = L.geoJSON(gridData, {
-	             style: function(feature) {
-	               const gridNo = feature.properties.Grid_No;
-	               const info = speciesData[gridNo];
-	               const count = info ? info.count : 0;
-	               return getGridStyle(count);
-	             },
-	             onEachFeature: setupGridLayerFeature
-	           });
-	           layersControl.addOverlay(gridLayer, "All Bat Distribution (Grid)");
-	         });
-	     });
-
-	   const crsModeSelect = document.getElementById('crsMode');
-	   const coordDisplay = document.getElementById('mouseCoords');
-
-	   map.on('mousemove', function (e) {
-	     const mode = crsModeSelect.value;
-	     if (mode === 'wgs84') {
-	       coordDisplay.textContent = `Lon: ${e.latlng.lng.toFixed(6)}  Lat: ${e.latlng.lat.toFixed(6)}`;
-	     } else {
-	       const [x, y] = proj4("EPSG:4326", "EPSG:2326", [e.latlng.lng, e.latlng.lat]);
-	       coordDisplay.textContent = `X: ${Math.round(x)}  Y: ${Math.round(y)}`;
-	     }
-	   });
-	   
-	   // 加 Go To Point
-	   document.getElementById('gotoToggleBtn').addEventListener('click', () => {
-	     const panel = document.getElementById('gotoPanel');
-	     const btn = document.getElementById('gotoToggleBtn');
-	     
-	     const isOpen = panel.style.display === 'block';
-	     
-	     if (isOpen) {
-	       panel.style.display = 'none';
-	       btn.innerHTML = '<i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"><\/i>';
-	       lucide.createIcons(); // ← 顯示圖示
-	     } else {
-	       panel.style.display = 'block';
-	       btn.innerHTML = '<i data-lucide="chevrons-left" style="width: 14px; height: 14px; color: black;"><\/i>';
-	       lucide.createIcons(); // ← 顯示返回箭頭
-	     }
-	   });
-
-	   document.getElementById('goBtn').addEventListener('click', () => {
-	     const mode = document.querySelector('input[name="coordMode"]:checked').value;
-	   
-	     let latlng = null;
-	   
-	     if (mode === 'hk1980') {
-	       const x = parseFloat(document.getElementById('inputX').value);
-	       const y = parseFloat(document.getElementById('inputY').value);
-	       if (!isNaN(x) && !isNaN(y)) {
-	       const result = proj4("EPSG:2326", "EPSG:4326", [x, y]);
-	       latlng = { lat: result[1], lng: result[0] };
-	       }
-	     } else {
-	       const lat = parseFloat(document.getElementById('inputLat').value);
-	       const lng = parseFloat(document.getElementById('inputLng').value);
-	       if (!isNaN(lat) && !isNaN(lng)) {
-	         latlng = { lat, lng };
-	       }
-	     }
-	   
-	   if (latlng) {
-	     map.setView(latlng, 16);
-	     const marker = L.marker(latlng).addTo(map);
-	     gotoMarkers.push(marker); // ✅ 加入 marker 陣列中
-	   }
-	   });
-	   
-	   document.getElementById('clearBtn').addEventListener('click', () => {
-	     gotoMarkers.forEach(m => map.removeLayer(m)); // ✅ 從地圖移除所有 marker
-	     gotoMarkers.length = 0;
-	   });
-
-	   // 加畫點功能變數與初始化
-	   let drawMode = false;
-	   let drawnPoints = [];
-	   
-	   const drawPointBtn = document.getElementById('drawPointBtn');
-	   
-	   // 畫點按鈕切換
-	   drawPointBtn.addEventListener('click', () => {
-	     drawMode = !drawMode;
-	   
-	     drawPointBtn.classList.toggle('active', drawMode);
-	   });
-	   
-	   let drawnTooltips = {};
-	   
-	   function createPointTooltip(marker, content) {
-	     const tooltip = document.createElement('div');
-	     tooltip.className = 'floatingTooltip';
-	     tooltip.innerHTML = `
-	       <div class="tooltip-container">
-	         <a href="#" class="tooltip-close" onclick="deleteDrawnMarker(event, ${L.stamp(marker)});">✖<\/a>
-	         <div class="tooltip-content">${content}<\/div>
-	       <\/div>
-	     `;
-	     document.getElementById('map').appendChild(tooltip);
-	     return tooltip;
-	   }
-	   
-	   function updateAllDrawnTooltips() {
-	     drawnPoints.forEach((marker) => {
-	       const tooltip = drawnTooltips[L.stamp(marker)];
-	       if (!tooltip) return;
-	       const point = map.latLngToContainerPoint(marker.getLatLng());
-	       let left = point.x + 5;
-	       let top = point.y + 5;
-	       const mapSize = map.getSize();
-	       if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
-	       if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
-	       if (left < 0) left = 10;
-	       if (top < 0) top = 10;
-	       tooltip.style.left = `${left}px`;
-	       tooltip.style.top = `${top}px`;
-	     });
-	   }
-	   
-	   window.deleteDrawnMarker = function (event, markerId) {
-	     event.preventDefault();
-	     const idx = drawnPoints.findIndex(m => L.stamp(m) === markerId);
-	     if (idx !== -1) {
-	       map.removeLayer(drawnPoints[idx]);
-	       if (drawnTooltips[markerId]) drawnTooltips[markerId].remove();
-	       drawnPoints.splice(idx, 1);
-	       delete drawnTooltips[markerId];
-	     }
-	   };
-	   
-	   map.on('move zoom', updateAllDrawnTooltips);
-	   
-	   // 點地圖建立 Marker（畫點模式啟動時）
-	   map.on('click', function (e) {
-	     // 避免誤點 UI 控件或按鈕
-	     const el = e.originalEvent.target;
-	     if (
-	       ['a', 'button', 'input', 'label', 'select', 'i', 'svg', 'path'].includes(el.tagName.toLowerCase()) ||
-	       el.closest('.leaflet-control')
-	     ) return;
-	   
-	     if (!drawMode) return;
-	   
-	     const latlng = e.latlng;
-	     const mode = crsModeSelect.value;
-	     let popupContent = '';
-	   
-	     if (mode === 'wgs84') {
-	       popupContent = `Lon: ${latlng.lng.toFixed(6)}<br>Lat: ${latlng.lat.toFixed(6)}`;
-	     } else {
-	       const [x, y] = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
-	       popupContent = `X: ${Math.round(x)}<br>Y: ${Math.round(y)}`;
-	     }
-	   
-	     const marker = L.marker(latlng).addTo(map);
-	     drawnPoints.push(marker);
-	   
-	     marker.on('click', function () {
-	       const markerId = L.stamp(marker);
-	       if (drawnTooltips[markerId]) {
-	         drawnTooltips[markerId].remove();
-	         delete drawnTooltips[markerId];
-	       } else {
-	         const tooltip = createPointTooltip(marker, popupContent);
-	         drawnTooltips[markerId] = tooltip;
-	         updateAllDrawnTooltips();
-	       }
-	     });
-	   });
-	   
-	   // 實時定位功能
-	   let currentRadius = 0;
-
-	   function animateAccuracyCircle(targetRadius) {
-	     const duration = 400; // 動畫長度，毫秒
-	     const start = performance.now();
-	     const initial = currentRadius;
-
-	     function step(ts) {
-	       const progress = Math.min((ts - start) / duration, 1);
-	       const eased = initial + (targetRadius - initial) * easeOutCubic(progress);
-	       accuracyCircle.setRadius(eased);
-
-	       if (progress < 1) {
-	         requestAnimationFrame(step);
-	       } else {
-	         currentRadius = targetRadius;
-	       }
-	     }
-	     requestAnimationFrame(step);
-	   }
-
-        function animateCircleTo(circle, newLatLng, duration = 400) {
-          const startLatLng = circle.getLatLng();
-          const startTime = performance.now();
-        
-          function step(timestamp) {
-            const elapsed = timestamp - startTime;
-            const t = Math.min(elapsed / duration, 1);
-            const eased = easeOutCubic(t);
-            const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
-            const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
-            circle.setLatLng([lat, lng]);
-        
-            if (t < 1) {
-              requestAnimationFrame(step);
-            }
+        document.addEventListener("mousemove", function (e) {
+          if (isDragging) {
+            tooltip.style.left = e.clientX - offsetX + "px";
+            tooltip.style.top = e.clientY - offsetY + "px";
           }
-          requestAnimationFrame(step);
-        }      
+        });
 
-	   function easeOutCubic(t) {
-	     return (--t) * t * t + 1;
-	   }
-
-	   function animateMarkerTo(marker, newLatLng, duration = 400) {
-	     const startLatLng = marker.getLatLng();
-	     const startTime = performance.now();
-
-	     function step(timestamp) {
-	       const elapsed = timestamp - startTime;
-	       const t = Math.min(elapsed / duration, 1); // 0 ~ 1
-	       const eased = easeOutCubic(t);
-	       const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
-	       const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
-
-	       marker.setLatLng([lat, lng]);
-
-	       if (t < 1) {
-	         requestAnimationFrame(step);
-	       }
-	     }
-	     requestAnimationFrame(step);
-	   }
-
-
-	function rotateMarker(marker, angle) {
-	 if (!marker) return;
-	 const el = marker.getElement();
-	 if (el) {
-	   const rotateContainer = el.querySelector('.rotate-container');
-	   if (rotateContainer) {
-	     rotateContainer.style.transform = `rotate(${angle}deg)`;
-	     rotateContainer.style.transformOrigin = 'center';
-	   }
-	 }
-	}
- 
-    // DeviceOrientationManager.js
-    class DeviceOrientationManager {
-      constructor(handleHeadingCallback) {
-        this.handleHeadingCallback = handleHeadingCallback;
-        this.headingEventTriggered = false;
-        this.isListening = false;
-        this.fallbackTimeout = null;
+        document.addEventListener("mouseup", function () {
+          if (isDragging) {
+            isDragging = false;
+            tooltip.style.cursor = "default";
+            tooltip.style.transition = "opacity 0.2s ease";
+            tooltip.style.opacity = "1";
+            manualMoved[index] = true;
+            setTimeout(() => {
+              tooltip.style.transition = "";
+            }, 200);
+          }
+        });
       }
-    
-      start() {
-        if (this.isListening) return;
-    
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission().then(permissionState => {
-            if (permissionState === 'granted') {
-              this.listenAbsolute();
-            } else {
-              console.warn('方向感應權限未獲得');
-            }
-          }).catch(console.error);
+
+      function openLockTooltip(layer) {
+        const tooltip = document.createElement("div");
+        tooltip.className = "floatingTooltip";
+        tooltip.setAttribute("data-layer-id", L.stamp(layer));
+        tooltip.innerHTML = `
+            <div class="tooltip-container">
+              <a href="#" class="tooltip-close" onclick="closeLockTooltip(event, this);">✖<\/a>
+              <div class="tooltip-content">
+                ${layer.options.tooltipContent}
+              <\/div>
+            <\/div>
+          `;
+        document.getElementById("map").appendChild(tooltip);
+
+        lockedLayers.push(layer);
+        tooltipElements.push(tooltip);
+        manualMoved.push(false);
+
+        const centerPoint = map.latLngToContainerPoint(layer.getBounds().getCenter());
+        setTimeout(() => {
+          adjustTooltipPosition(tooltip, centerPoint);
+        }, 30);
+
+        makeTooltipDraggable(tooltip, lockedLayers.length - 1);
+      }
+
+      function closeLockTooltip(event, closeButton) {
+        event.preventDefault();
+        const tooltip = closeButton.closest(".floatingTooltip");
+        const layerId = parseInt(tooltip.dataset.layerId);
+        const idx = lockedLayers.findIndex((l) => L.stamp(l) === layerId);
+
+        if (idx !== -1) {
+          const layer = lockedLayers[idx];
+          const gridNo = layer.feature.properties.Grid_No;
+          const count = speciesData[gridNo] ? speciesData[gridNo].count : 0;
+          layer.setStyle(getGridStyle(count));
+          lockedLayers.splice(idx, 1);
+          tooltipElements[idx].remove();
+          tooltipElements.splice(idx, 1);
+          manualMoved.splice(idx, 1);
+        }
+      }
+
+      const hoverTooltip = document.getElementById("hoverTooltip");
+
+      function getGridStyle(count) {
+        let fillColor = "#fff";
+        let fillOpacity = 0;
+
+        if (count === 0 || count === "0" || count === "" || count === null) {
+          fillOpacity = 0;
         } else {
-          this.listenAbsolute();
+          count = Number(count);
+          fillOpacity = 0.75;
+          if (count >= 1 && count <= 5) fillColor = "#fde0dd";
+          // very light pink
+          else if (count <= 10) fillColor = "#fbb4b9";
+          // light pink
+          else if (count <= 15) fillColor = "#f768a1";
+          // medium pink-red
+          else if (count <= 20) fillColor = "#c51b8a";
+          // strong magenta-red
+          else fillColor = "#7a0177"; // dark purple-red
         }
+
+        return {
+          color: "#666",
+          weight: 1,
+          fillColor,
+          fillOpacity,
+        };
       }
-    
-        listenAbsolute() {
-          this.headingEventTriggered = false;
-          window.addEventListener('deviceorientationabsolute', this.handleHeadingWrapper, true);
-          this.isListening = true;
-      
-          this.fallbackTimeout = setTimeout(() => {
-            if (!this.headingEventTriggered) {
-              console.warn('deviceorientationabsolute 無反應，fallback 到 deviceorientation');
-              window.addEventListener('deviceorientation', this.handleHeadingWrapper, true);
+
+      function setupGridLayerFeature(feature, layer) {
+        const gridNo = feature.properties.Grid_No;
+        if (speciesData[gridNo]) {
+          const info = speciesData[gridNo];
+          let content = "";
+
+          if (!info.list || info.list.trim() === "" || info.list === "N/A") {
+            content = `<strong>編號:<\/strong> ${gridNo}<br>暫無物種記錄`;
+          } else {
+            const speciesArray = info.list.split(", ").sort();
+            const speciesListHtml = speciesArray.map((s, i) => `${i + 1}. <i>${s}<\/i>`).join("<br>");
+            content = `<strong>編號:<\/strong> ${gridNo}<br><strong>數量:<\/strong> ${info.count} 種<br><strong>清單:<\/strong><br>${speciesListHtml}`;
+          }
+
+          layer.options.tooltipContent = content;
+
+          if (!isTouchDevice) {
+            layer.on("mouseover", function () {
+              if (!lockedLayers.includes(this)) {
+                hoverTooltip.innerHTML = this.options.tooltipContent;
+                hoverTooltip.style.display = "block";
+              }
+            });
+
+            layer.on("mousemove", function (e) {
+              if (!lockedLayers.includes(this)) {
+                const point = map.latLngToContainerPoint(e.latlng);
+                adjustTooltipPosition(hoverTooltip, point);
+              }
+            });
+
+            layer.on("mouseout", function () {
+              hoverTooltip.style.display = "none";
+            });
+          }
+
+          layer.on("click", function () {
+            if (lockedLayers.includes(this)) {
+              const idx = lockedLayers.indexOf(this);
+              lockedLayers.splice(idx, 1);
+              tooltipElements[idx].remove();
+              tooltipElements.splice(idx, 1);
+              manualMoved.splice(idx, 1);
+              this.setStyle(getGridStyle(info.count));
+            } else {
+              if (lockedLayers.length >= maxLockedTooltips) {
+                alert("最多只能顯示 " + maxLockedTooltips + " 個格網的資料");
+                return;
+              }
+              this.setStyle({ color: "#333", weight: 2, fillColor: "#ffcc00", fillOpacity: 0.7 });
+              openLockTooltip(this);
             }
-          }, 3000);
-        }
-      
-        stop() {
-          if (!this.isListening) return;
-      
-          window.removeEventListener('deviceorientationabsolute', this.handleHeadingWrapper, true);
-          window.removeEventListener('deviceorientation', this.handleHeadingWrapper, true);
-          clearTimeout(this.fallbackTimeout);
-          this.isListening = false;
-        }
-      
-        handleHeadingWrapper = (event) => {
-          this.headingEventTriggered = true;
-          this.handleHeadingCallback(event);
+          });
         }
       }
-          
-	function handleHeading(event) {
-	 window.headingEventTriggered = true; // ✅ 只要有收到任何一次 event，就標記！
 
-	 let heading = null;
+      map.on("move zoom", () => {
+        updateAllLockedTooltips();
+      });
 
-	 if (typeof event.webkitCompassHeading !== 'undefined') {
-	   heading = event.webkitCompassHeading;  // iOS專用
-	 } else if (event.alpha != null) {
-	   heading = 360 - event.alpha;  // Android通用
-	 }
+      let speciesData = {};
 
-	 if (heading != null) {
-	   document.getElementById('alpha-status').textContent = `Heading: ${heading.toFixed(2)}°`;
-	   if (locateMarker) {
-	     rotateMarker(locateMarker, heading);
-	   }
-	 } else {
-	   document.getElementById('alpha-status').textContent = `⚠️無法取得方向感應數據`;
-	 }
-	}
+      fetch("https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet1")
+        .then((r) => r.json())
+        .then((data) => {
+          data.forEach((item) => {
+            speciesData[item["Grid No."]] = {
+              list: item["Species List"],
+              count: item["No. of Species"],
+            };
+          });
+          fetch("https://raw.githubusercontent.com/PanTong55/hkgrid/main/hkgrid.geojson")
+            .then((r) => r.json())
+            .then((gridData) => {
+              gridLayer.options.onEachFeature = setupGridLayerFeature;
+              gridLayer = L.geoJSON(gridData, {
+                style: function (feature) {
+                  const gridNo = feature.properties.Grid_No;
+                  const info = speciesData[gridNo];
+                  const count = info ? info.count : 0;
+                  return getGridStyle(count);
+                },
+                onEachFeature: setupGridLayerFeature,
+              });
+              layersControl.addOverlay(gridLayer, "All Bat Distribution (Grid)");
+            });
+        });
 
-       const deviceOrientationManager = new DeviceOrientationManager(handleHeading);
-      
-	   let locateMarker = null;
-	   let accuracyCircle = null;
-	   let watchId = null;
-	   let autoFollow = true;
-	   
-	   const locateBtn = document.getElementById('locateBtn');
-	   
-	   locateBtn.addEventListener('click', () => {
-	    if (watchId !== null) {
-	     navigator.geolocation.clearWatch(watchId);
-	     watchId = null;
-	     if (locateMarker) {
-	       map.removeLayer(locateMarker);
-	       locateMarker = null;
-	     }
-	     if (accuracyCircle) {
-	       map.removeLayer(accuracyCircle);
-	       accuracyCircle = null;
-	     }
-	     locateBtn.classList.remove('active');
-          deviceOrientationManager.stop();
-	     return;
-	   }
-         deviceOrientationManager.start();
-         
-	     locateBtn.classList.add('active');
-	     autoFollow = true;
+      const crsModeSelect = document.getElementById("crsMode");
+      const coordDisplay = document.getElementById("mouseCoords");
 
-	     watchId = navigator.geolocation.watchPosition(
-	       (pos) => {
-	         const latlng = [pos.coords.latitude, pos.coords.longitude];
-	         const accuracy = pos.coords.accuracy;
-	   
-	         if (!locateMarker) {
-	           locateMarker = L.marker(latlng, {
-	             icon: L.divIcon({
-	               className: 'lucide-locate-icon',
-	               html: `
-	                 <div class="rotate-container">
-	                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24">
-	                     <path d="M12 2l6 20-6-4-6 4 6-20z"/>
-	                   <\/svg>
-	                 <\/div>
-	               `,
-	               iconSize: [24, 24],
-	               iconAnchor: [12, 12]
-	             })
-	           }).addTo(map);
+      map.on("mousemove", function (e) {
+        const mode = crsModeSelect.value;
+        if (mode === "wgs84") {
+          coordDisplay.textContent = `Lon: ${e.latlng.lng.toFixed(6)}  Lat: ${e.latlng.lat.toFixed(6)}`;
+        } else {
+          const [x, y] = proj4("EPSG:4326", "EPSG:2326", [e.latlng.lng, e.latlng.lat]);
+          coordDisplay.textContent = `X: ${Math.round(x)}  Y: ${Math.round(y)}`;
+        }
+      });
 
-	           lucide.createIcons();
-	         } else {
-	           animateMarkerTo(locateMarker, L.latLng(latlng));
-	         }
-	   
-	         if (!accuracyCircle) {
-	           accuracyCircle = L.circle(latlng, {
-	             radius: accuracy,
-	             color: 'transparent',
-	             weight: 0,
-	             fillColor: '#1E90FF',
-	             fillOpacity: 0.15
-	           }).addTo(map);
-	           currentRadius = accuracy;
-	         } else {
-	           animateCircleTo(accuracyCircle, L.latLng(latlng)); // 平滑位移
-               animateAccuracyCircle(accuracy); // 半徑繼續動畫
-	         }
-	   
-	         const bounds = map.getBounds();
-	   
-	         if (autoFollow) {
-	           map.setView(latlng, 17);
-	         } else {
-	           const margin = bounds.pad(-0.15); // 邊界 15% 內才算安全
-	           if (!margin.contains(latlng)) {
-	             autoFollow = true;
-	             map.setView(latlng);
-	           }
-	         }
-	       },
-	       (err) => {
-	         alert('定位失敗：' + err.message);
-	       },
-	       {
-	         enableHighAccuracy: true,
-	         timeout: 10000,
-	         maximumAge: 0
-	       }
-	     );
-	   });
+      // 加 Go To Point
+      document.getElementById("gotoToggleBtn").addEventListener("click", () => {
+        const panel = document.getElementById("gotoPanel");
+        const btn = document.getElementById("gotoToggleBtn");
 
-	   // 顯示最後修改時間
-	   const lastModified = new Date(document.lastModified);
-	   const formatted = lastModified.toLocaleString('zh-Hant', {
-	     year: 'numeric', month: '2-digit', day: '2-digit',
-	     hour: '2-digit', minute: '2-digit'
-	   });
-	   document.getElementById("last-modified").textContent = "最後修改時間：" + formatted;
-	</script>
-</body>
+        const isOpen = panel.style.display === "block";
+
+        if (isOpen) {
+          panel.style.display = "none";
+          btn.innerHTML = '<i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"><\/i>';
+          lucide.createIcons(); // ← 顯示圖示
+        } else {
+          panel.style.display = "block";
+          btn.innerHTML = '<i data-lucide="chevrons-left" style="width: 14px; height: 14px; color: black;"><\/i>';
+          lucide.createIcons(); // ← 顯示返回箭頭
+        }
+      });
+
+      document.getElementById("goBtn").addEventListener("click", () => {
+        const mode = document.querySelector('input[name="coordMode"]:checked').value;
+
+        let latlng = null;
+
+        if (mode === "hk1980") {
+          const x = parseFloat(document.getElementById("inputX").value);
+          const y = parseFloat(document.getElementById("inputY").value);
+          if (!isNaN(x) && !isNaN(y)) {
+            const result = proj4("EPSG:2326", "EPSG:4326", [x, y]);
+            latlng = { lat: result[1], lng: result[0] };
+          }
+        } else {
+          const lat = parseFloat(document.getElementById("inputLat").value);
+          const lng = parseFloat(document.getElementById("inputLng").value);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            latlng = { lat, lng };
+          }
+        }
+
+        if (latlng) {
+          map.setView(latlng, 16);
+          const marker = L.marker(latlng).addTo(map);
+          gotoMarkers.push(marker); // ✅ 加入 marker 陣列中
+        }
+      });
+
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        gotoMarkers.forEach((m) => map.removeLayer(m)); // ✅ 從地圖移除所有 marker
+        gotoMarkers.length = 0;
+      });
+
+      // 加畫點功能變數與初始化
+      let drawMode = false;
+      let drawnPoints = [];
+
+      const drawPointBtn = document.getElementById("drawPointBtn");
+
+      // 畫點按鈕切換
+      drawPointBtn.addEventListener("click", () => {
+        drawMode = !drawMode;
+
+        drawPointBtn.classList.toggle("active", drawMode);
+      });
+
+      let drawnTooltips = {};
+
+      function createPointTooltip(marker, content) {
+        const tooltip = document.createElement("div");
+        tooltip.className = "floatingTooltip";
+        tooltip.innerHTML = `
+            <div class="tooltip-container">
+              <a href="#" class="tooltip-close" onclick="deleteDrawnMarker(event, ${L.stamp(marker)});">✖<\/a>
+              <div class="tooltip-content">${content}<\/div>
+            <\/div>
+          `;
+        document.getElementById("map").appendChild(tooltip);
+        return tooltip;
+      }
+
+      function updateAllDrawnTooltips() {
+        drawnPoints.forEach((marker) => {
+          const tooltip = drawnTooltips[L.stamp(marker)];
+          if (!tooltip) return;
+          const point = map.latLngToContainerPoint(marker.getLatLng());
+          let left = point.x + 5;
+          let top = point.y + 5;
+          const mapSize = map.getSize();
+          if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
+          if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
+          if (left < 0) left = 10;
+          if (top < 0) top = 10;
+          tooltip.style.left = `${left}px`;
+          tooltip.style.top = `${top}px`;
+        });
+      }
+
+      window.deleteDrawnMarker = function (event, markerId) {
+        event.preventDefault();
+        const idx = drawnPoints.findIndex((m) => L.stamp(m) === markerId);
+        if (idx !== -1) {
+          map.removeLayer(drawnPoints[idx]);
+          if (drawnTooltips[markerId]) drawnTooltips[markerId].remove();
+          drawnPoints.splice(idx, 1);
+          delete drawnTooltips[markerId];
+        }
+      };
+
+      map.on("move zoom", updateAllDrawnTooltips);
+
+      // 點地圖建立 Marker（畫點模式啟動時）
+      map.on("click", function (e) {
+        // 避免誤點 UI 控件或按鈕
+        const el = e.originalEvent.target;
+        if (["a", "button", "input", "label", "select", "i", "svg", "path"].includes(el.tagName.toLowerCase()) || el.closest(".leaflet-control")) return;
+
+        if (!drawMode) return;
+
+        const latlng = e.latlng;
+        const mode = crsModeSelect.value;
+        let popupContent = "";
+
+        if (mode === "wgs84") {
+          popupContent = `Lon: ${latlng.lng.toFixed(6)}<br>Lat: ${latlng.lat.toFixed(6)}`;
+        } else {
+          const [x, y] = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
+          popupContent = `X: ${Math.round(x)}<br>Y: ${Math.round(y)}`;
+        }
+
+        const marker = L.marker(latlng).addTo(map);
+        drawnPoints.push(marker);
+
+        marker.on("click", function () {
+          const markerId = L.stamp(marker);
+          if (drawnTooltips[markerId]) {
+            drawnTooltips[markerId].remove();
+            delete drawnTooltips[markerId];
+          } else {
+            const tooltip = createPointTooltip(marker, popupContent);
+            drawnTooltips[markerId] = tooltip;
+            updateAllDrawnTooltips();
+          }
+        });
+      });
+
+      // 實時定位功能
+      let currentRadius = 0;
+
+      function animateAccuracyCircle(targetRadius) {
+        const duration = 400; // 動畫長度，毫秒
+        const start = performance.now();
+        const initial = currentRadius;
+
+        function step(ts) {
+          const progress = Math.min((ts - start) / duration, 1);
+          const eased = initial + (targetRadius - initial) * easeOutCubic(progress);
+          accuracyCircle.setRadius(eased);
+
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            currentRadius = targetRadius;
+          }
+        }
+        requestAnimationFrame(step);
+      }
+
+      function animateCircleTo(circle, newLatLng, duration = 400) {
+        const startLatLng = circle.getLatLng();
+        const startTime = performance.now();
+
+        function step(timestamp) {
+          const elapsed = timestamp - startTime;
+          const t = Math.min(elapsed / duration, 1);
+          const eased = easeOutCubic(t);
+
+          const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
+          const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
+
+          circle.setLatLng([lat, lng]);
+
+          if (t < 1) {
+            requestAnimationFrame(step);
+          }
+        }
+        requestAnimationFrame(step);
+      }
+
+      function easeOutCubic(t) {
+        return --t * t * t + 1;
+      }
+
+      function animateMarkerTo(marker, newLatLng, duration = 400) {
+        const startLatLng = marker.getLatLng();
+        const startTime = performance.now();
+
+        function step(timestamp) {
+          const elapsed = timestamp - startTime;
+          const t = Math.min(elapsed / duration, 1); // 0 ~ 1
+          const eased = easeOutCubic(t);
+          const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
+          const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
+
+          marker.setLatLng([lat, lng]);
+
+          if (t < 1) {
+            requestAnimationFrame(step);
+          }
+        }
+        requestAnimationFrame(step);
+      }
+
+      function rotateMarker(marker, angle) {
+        if (!marker) return;
+        const el = marker.getElement();
+        if (el) {
+          const rotateContainer = el.querySelector(".rotate-container");
+          if (rotateContainer) {
+            rotateContainer.style.transform = `rotate(${angle}deg)`;
+            rotateContainer.style.transformOrigin = "center";
+          }
+        }
+      }
+
+      if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+        DeviceOrientationEvent.requestPermission()
+          .then((permissionState) => {
+            if (permissionState === "granted") {
+              window.addEventListener("deviceorientationabsolute", handleHeading, true);
+              // 🔥 加一個 fallback，如果 3秒內都沒有收到 alpha，就改綁 deviceorientation
+              setTimeout(() => {
+                if (!window.headingEventTriggered) {
+                  console.warn("deviceorientationabsolute 無反應，嘗試 fallback...");
+                  window.addEventListener("deviceorientation", handleHeading, true);
+                }
+              }, 3000);
+            }
+          })
+          .catch(console.error);
+      } else {
+        window.addEventListener("deviceorientationabsolute", handleHeading, true);
+      }
+
+      function handleHeading(event) {
+        window.headingEventTriggered = true; // ✅ 只要有收到任何一次 event，就標記！
+
+        let heading = null;
+
+        if (typeof event.webkitCompassHeading !== "undefined") {
+          heading = event.webkitCompassHeading; // iOS專用
+        } else if (event.alpha != null) {
+          heading = 360 - event.alpha; // Android通用
+        }
+
+        if (heading != null) {
+          document.getElementById("alpha-status").textContent = `Heading: ${heading.toFixed(2)}°`;
+          if (locateMarker) {
+            rotateMarker(locateMarker, heading);
+          }
+        } else {
+          document.getElementById("alpha-status").textContent = `⚠️無法取得方向感應數據`;
+        }
+      }
+
+      let locateMarker = null;
+      let accuracyCircle = null;
+      let watchId = null;
+      let autoFollow = true;
+
+      const locateBtn = document.getElementById("locateBtn");
+
+      locateBtn.addEventListener("click", () => {
+        if (watchId !== null) {
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+          if (locateMarker) {
+            map.removeLayer(locateMarker);
+            locateMarker = null;
+          }
+          if (accuracyCircle) {
+            map.removeLayer(accuracyCircle);
+            accuracyCircle = null;
+          }
+          locateBtn.classList.remove("active");
+          window.removeEventListener("deviceorientationabsolute", handleHeading);
+          window.removeEventListener("deviceorientation", handleHeading);
+          return;
+        }
+
+        locateBtn.classList.add("active");
+        autoFollow = true;
+
+        watchId = navigator.geolocation.watchPosition(
+          (pos) => {
+            const latlng = [pos.coords.latitude, pos.coords.longitude];
+            const accuracy = pos.coords.accuracy;
+
+            if (!locateMarker) {
+              locateMarker = L.marker(latlng, {
+                icon: L.divIcon({
+                  className: "lucide-locate-icon",
+                  html: `
+                      <div class="rotate-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24">
+                          <path d="M12 2l6 20-6-4-6 4 6-20z"/>
+                        <\/svg>
+                      <\/div>
+                    `,
+                  iconSize: [24, 24],
+                  iconAnchor: [12, 12],
+                }),
+              }).addTo(map);
+
+              lucide.createIcons();
+            } else {
+              animateMarkerTo(locateMarker, L.latLng(latlng));
+            }
+
+            if (!accuracyCircle) {
+              accuracyCircle = L.circle(latlng, {
+                radius: accuracy,
+                color: "transparent",
+                weight: 0,
+                fillColor: "#1E90FF",
+                fillOpacity: 0.15,
+              }).addTo(map);
+              currentRadius = accuracy;
+            } else {
+              animateCircleTo(accuracyCircle, L.latLng(latlng)); // 平滑位移
+              animateAccuracyCircle(accuracy); // 半徑繼續動畫
+            }
+
+            const bounds = map.getBounds();
+
+            if (autoFollow) {
+              map.setView(latlng, 17);
+            } else {
+              const margin = bounds.pad(-0.15); // 邊界 15% 內才算安全
+              if (!margin.contains(latlng)) {
+                autoFollow = true;
+                map.setView(latlng);
+              }
+            }
+          },
+          (err) => {
+            alert("定位失敗：" + err.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          }
+        );
+      });
+
+      // 顯示最後修改時間
+      const lastModified = new Date(document.lastModified);
+      const formatted = lastModified.toLocaleString("zh-Hant", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      document.getElementById("last-modified").textContent = "最後修改時間：" + formatted;
+    </script>
+    <div
+      id="alpha-status"
+      style="position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.95); 
+	    padding: 6px 10px; font-size: 13px; color: #333; border: 1px solid #ccc; border-radius: 6px; 
+	    font-family: Arial, sans-serif; z-index: 9999;"
+    >
+      α: --
+    </div>
+  </body>
 </html>
