@@ -484,39 +484,62 @@
         });
       }
 
-      function makeTooltipDraggable(tooltip, index) {
-        let isDragging = false;
-        let offsetX, offsetY;
-
-        tooltip.addEventListener("mousedown", function (e) {
-          isDragging = true;
-          offsetX = e.clientX - tooltip.offsetLeft;
-          offsetY = e.clientY - tooltip.offsetTop;
-          tooltip.style.cursor = "move";
-          tooltip.style.opacity = "0.7";
-          e.stopPropagation();
-        });
-
-        document.addEventListener("mousemove", function (e) {
-          if (isDragging) {
-            tooltip.style.left = e.clientX - offsetX + "px";
-            tooltip.style.top = e.clientY - offsetY + "px";
-          }
-        });
-
-        document.addEventListener("mouseup", function () {
-          if (isDragging) {
-            isDragging = false;
-            tooltip.style.cursor = "default";
-            tooltip.style.transition = "opacity 0.2s ease";
-            tooltip.style.opacity = "1";
-            manualMoved[index] = true;
-            setTimeout(() => {
-              tooltip.style.transition = "";
-            }, 200);
-          }
-        });
-      }
+	function makeTooltipDraggable(tooltip, index) {
+	  let isDragging = false;
+	  let offsetX, offsetY;
+	
+	  function startDrag(e) {
+	    isDragging = true;
+	    if (e.type.startsWith('touch')) {
+	      const touch = e.touches[0];
+	      offsetX = touch.clientX - tooltip.offsetLeft;
+	      offsetY = touch.clientY - tooltip.offsetTop;
+	    } else {
+	      offsetX = e.clientX - tooltip.offsetLeft;
+	      offsetY = e.clientY - tooltip.offsetTop;
+	    }
+	    tooltip.style.cursor = 'move';
+	    tooltip.style.opacity = '0.7';
+	    e.preventDefault();
+	    e.stopPropagation();
+	  }
+	
+	  function duringDrag(e) {
+	    if (!isDragging) return;
+	    let clientX, clientY;
+	    if (e.type.startsWith('touch')) {
+	      const touch = e.touches[0];
+	      clientX = touch.clientX;
+	      clientY = touch.clientY;
+	    } else {
+	      clientX = e.clientX;
+	      clientY = e.clientY;
+	    }
+	    tooltip.style.left = (clientX - offsetX) + 'px';
+	    tooltip.style.top = (clientY - offsetY) + 'px';
+	  }
+	
+	  function endDrag() {
+	    if (isDragging) {
+	      isDragging = false;
+	      tooltip.style.cursor = 'default';
+	      tooltip.style.transition = 'opacity 0.2s ease';
+	      tooltip.style.opacity = '1';
+	      manualMoved[index] = true;
+	      setTimeout(() => { tooltip.style.transition = ''; }, 200);
+	    }
+	  }
+	
+	  // Desktop事件
+	  tooltip.addEventListener('mousedown', startDrag);
+	  document.addEventListener('mousemove', duringDrag);
+	  document.addEventListener('mouseup', endDrag);
+	
+	  // Mobile事件
+	  tooltip.addEventListener('touchstart', startDrag, { passive: false });
+	  document.addEventListener('touchmove', duringDrag, { passive: false });
+	  document.addEventListener('touchend', endDrag);
+	}
 
       function openLockTooltip(layer) {
         const tooltip = document.createElement("div");
@@ -771,6 +794,48 @@
         return tooltip;
       }
 
+	function updateDrawnMarkerPopup(marker) {
+	  const latlng = marker.getLatLng();
+	  const mode = crsModeSelect.value;
+	  let newContent = '';
+	
+	  if (mode === 'wgs84') {
+	    newContent = `Lon: ${latlng.lng.toFixed(6)}<br>Lat: ${latlng.lat.toFixed(6)}`;
+	  } else {
+	    const [x, y] = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
+	    newContent = `X: ${Math.round(x)}<br>Y: ${Math.round(y)}`;
+	  }
+	
+	  const markerId = L.stamp(marker);
+	  const tooltip = drawnTooltips[markerId];
+	
+	  if (tooltip) {
+	    const contentDiv = tooltip.querySelector('.tooltip-content');
+	    if (contentDiv) {
+	      contentDiv.innerHTML = newContent;
+	    }
+	  }
+	}
+
+	function moveDrawnTooltip(marker) {
+	  const markerId = L.stamp(marker);
+	  const tooltip = drawnTooltips[markerId];
+	
+	  if (tooltip) {
+	    const latlng = marker.getLatLng();
+	    const point = map.latLngToContainerPoint(latlng);
+	    let left = point.x + 5;
+	    let top = point.y + 5;
+	    const mapSize = map.getSize();
+	    if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
+	    if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
+	    if (left < 0) left = 10;
+	    if (top < 0) top = 10;
+	    tooltip.style.left = `${left}px`;
+	    tooltip.style.top = `${top}px`;
+	  }
+	}	    
+	    
       function updateAllDrawnTooltips() {
         drawnPoints.forEach((marker) => {
           const tooltip = drawnTooltips[L.stamp(marker)];
@@ -820,8 +885,23 @@
           popupContent = `X: ${Math.round(x)}<br>Y: ${Math.round(y)}`;
         }
 
-        const marker = L.marker(latlng).addTo(map);
+        const marker = L.marker(latlng, { draggable: true }).addTo(map);
         drawnPoints.push(marker);
+	
+	marker.on('dragstart', function() {
+	  this.setOpacity(0.7);
+	});
+	
+	marker.on('drag', function() {
+	  updateDrawnMarkerPopup(this);  // ✅ 拖拉中即時更新座標文字
+	  moveDrawnTooltip(this);         // ✅ 拖拉中即時更新Tooltip位置
+	});
+	
+	marker.on('dragend', function() {
+	  this.setOpacity(1);
+	  updateDrawnMarkerPopup(this);   // 保險，最後再確保一次座標最新
+	  moveDrawnTooltip(this);         // 保險，最後再確保一次位置最新
+	});	      
 
         marker.on("click", function () {
           const markerId = L.stamp(marker);
