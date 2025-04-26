@@ -702,6 +702,20 @@
               layersControl.addOverlay(gridLayer, "All Bat Distribution (Grid)");
             });
         });
+	    
+	fetch('https://raw.githubusercontent.com/PanTong55/hkgrid/main/OSM_CP.geojson')
+	  .then(r => r.json())
+	  .then(hkcpData => {
+	    const hkcpLayer = L.geoJSON(hkcpData, {
+	      style: {
+	        color: '#228B22',  // 森林綠
+	        weight: 2,
+	        fillColor: '#ADFF2F',  // 淺綠
+	        fillOpacity: 0.1
+	      }
+	    });
+	    layersControl.addOverlay(hkcpLayer, "郊野公圖邊界 (OSM)");
+	  });
 
       const crsModeSelect = document.getElementById("crsMode");
       const coordDisplay = document.getElementById("mouseCoords");
