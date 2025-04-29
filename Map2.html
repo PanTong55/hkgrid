@@ -73,7 +73,17 @@
         box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
         cursor: pointer;
         z-index: 10;
+	touch-action: manipulation;      
       }
+
+	@media (max-width: 768px) {
+	  a.tooltip-close {
+	    width: 44px;
+	    height: 44px;
+	    line-height: 44px;
+	    font-size: 24px;
+	  }
+	}	    
 
       a.tooltip-close:hover {
         background: #ccc !important;
