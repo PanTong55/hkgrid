@@ -1,10 +1,10 @@
-import { initMap, mapInstance, layersControl, hongKongBounds } from '"https://pantong55.github.io/hkgrid/modules/map-init.js';
-import { initCoordScale } from '"https://pantong55.github.io/hkgrid/modules/coord-scale.js';
-import { initFullscreen } from '"https://pantong55.github.io/hkgrid/modules/fullscreen-control.js';
-import { initGotoPoint } from '"https://pantong55.github.io/hkgrid/modules/goto-point.js';
-import { initDrawPoint } from '"https://pantong55.github.io/hkgrid/modules/draw-point.js';
-import { initLocateTracking } from '"https://pantong55.github.io/hkgrid/modules/locate-tracking.js';
-import { initTooltipLegend } from '"https://pantong55.github.io/hkgrid/modules/tooltip-legend.js';
+import { initMap, mapInstance, layersControl, hongKongBounds } from 'https://pantong55.github.io/hkgrid/modules/map-init.js';
+import { initCoordScale } from 'https://pantong55.github.io/hkgrid/modules/coord-scale.js';
+import { initFullscreen } from 'https://pantong55.github.io/hkgrid/modules/fullscreen-control.js';
+import { initGotoPoint } from 'https://pantong55.github.io/hkgrid/modules/goto-point.js';
+import { initDrawPoint } from 'https://pantong55.github.io/hkgrid/modules/draw-point.js';
+import { initLocateTracking } from 'https://pantong55.github.io/hkgrid/modules/locate-tracking.js';
+import { initTooltipLegend } from 'https://pantong55.github.io/hkgrid/modules/tooltip-legend.js';
 
 // 初始化地圖
 initMap();  // ⬅️ 會建立 window.map / window.mapInstance 全域存取
