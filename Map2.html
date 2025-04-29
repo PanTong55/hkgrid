@@ -137,21 +137,6 @@
       }
 
       /*  統一 input 輸入框樣式 */
-	#gotoPanel {
-	  display: none;
-	  position: absolute;
-	  top: 124px;
-	  left: 56px;
-	  z-index: 1100;
-	  background: white;
-	  border: 1px solid #ccc;
-	  border-radius: 10px;
-	  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-	  padding: 15px 15px;
-	  font-family: Arial, sans-serif;
-	  font-size: 14px;
-	} 
-	    
       #gotoPanel input[type="number"] {
         width: 100%;
         padding: 6px 8px;
@@ -281,8 +266,7 @@
       <a class="leaflet-control leaflet-bar single-btn" href="#" id="gotoToggleBtn" style="top: 165px; left: 10px;" title="Go To Point"> <i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i> </a>
       <a class="leaflet-control leaflet-bar single-btn" href="#" id="drawPointBtn" style="top: 200px; left: 10px;" title="Draw Point"> <i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i> </a>
       <a class="leaflet-control leaflet-bar single-btn" href="#" id="locateBtn" style="top: 235px; left: 10px;" title="定位追蹤"> <i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i> </a>
-    </div>
-    <!-- Go To Point 功能 -->
+     <!-- Go To Point 功能 -->
     <div
       id="gotoPanel"
       style="
@@ -308,6 +292,8 @@
       <div class="goto-row"><span></span> <label>Longitude:</label> <input id="inputLng" placeholder="114.101" type="number" /></div>
       <button id="clearBtn" style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button> <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
     </div>
+    </div>
+
     <!-- Hover Tooltip -->
     <div
       id="hoverTooltip"
