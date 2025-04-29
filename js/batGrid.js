@@ -173,6 +173,5 @@ export function initBatGrid(map, layersControl) {
     domElement.style.top = `${top}px`;
     domElement.style.position = "absolute";
   }
+  window.closeLockTooltip = closeLockTooltip;
 }
-
-window.closeLockTooltip = closeLockTooltip;
