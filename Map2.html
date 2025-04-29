@@ -680,56 +680,6 @@
         }
       });
 
-      // 加 Go To Point
-      document.getElementById("gotoToggleBtn").addEventListener("click", () => {
-        const panel = document.getElementById("gotoPanel");
-        const btn = document.getElementById("gotoToggleBtn");
-
-        const isOpen = panel.style.display === "block";
-
-        if (isOpen) {
-          panel.style.display = "none";
-          btn.innerHTML = '<i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"><\/i>';
-          lucide.createIcons(); // ← 顯示圖示
-        } else {
-          panel.style.display = "block";
-          btn.innerHTML = '<i data-lucide="chevrons-left" style="width: 14px; height: 14px; color: black;"><\/i>';
-          lucide.createIcons(); // ← 顯示返回箭頭
-        }
-      });
-
-      document.getElementById("goBtn").addEventListener("click", () => {
-        const mode = document.querySelector('input[name="coordMode"]:checked').value;
-
-        let latlng = null;
-
-        if (mode === "hk1980") {
-          const x = parseFloat(document.getElementById("inputX").value);
-          const y = parseFloat(document.getElementById("inputY").value);
-          if (!isNaN(x) && !isNaN(y)) {
-            const result = proj4("EPSG:2326", "EPSG:4326", [x, y]);
-            latlng = { lat: result[1], lng: result[0] };
-          }
-        } else {
-          const lat = parseFloat(document.getElementById("inputLat").value);
-          const lng = parseFloat(document.getElementById("inputLng").value);
-          if (!isNaN(lat) && !isNaN(lng)) {
-            latlng = { lat, lng };
-          }
-        }
-
-        if (latlng) {
-          map.setView(latlng, 16);
-          const marker = L.marker(latlng).addTo(map);
-          gotoMarkers.push(marker); // ✅ 加入 marker 陣列中
-        }
-      });
-
-      document.getElementById("clearBtn").addEventListener("click", () => {
-        gotoMarkers.forEach((m) => map.removeLayer(m)); // ✅ 從地圖移除所有 marker
-        gotoMarkers.length = 0;
-      });
-
       // 加畫點功能變數與初始化
       let drawMode = false;
       let drawnPoints = [];
@@ -924,6 +874,12 @@
 	  // 初始化定位按鈕功能
 	  initLocateButton(map, locateBtnId);
 	</script>
+	  
+	<!-- Go to Point 功能 --> 
+	<script type="module">
+	  import { initGotoPanel } from './js/goto.js';
+	  initGotoPanel(map);
+	</script>	  
 
     <div
       id="alpha-status"
