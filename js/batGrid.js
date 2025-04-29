@@ -128,7 +128,7 @@ export function initBatGrid(map, layersControl) {
     tooltip.setAttribute("data-layer-id", L.stamp(layer));
     tooltip.innerHTML = `
       <div class="tooltip-container">
-        <a href="#" class="tooltip-close" onclick="this.closest('.floatingTooltip').remove();">✖</a>
+        <a href="#" class="tooltip-close" onclick="closeLockTooltip(event, this);">✖</a>
         <div class="tooltip-content">${htmlContent}</div>
       </div>`;
     document.getElementById("map").appendChild(tooltip);
@@ -143,6 +143,24 @@ export function initBatGrid(map, layersControl) {
     makeTooltipDraggable(tooltip);
   }
 
+  function closeLockTooltip(event, closeButton) {
+    event.preventDefault();
+    const tooltip = closeButton.closest(".floatingTooltip");
+    const layerId = parseInt(tooltip.dataset.layerId);
+    const idx = lockedLayers.findIndex((l) => L.stamp(l) === layerId);
+  
+    if (idx !== -1) {
+      const layer = lockedLayers[idx];
+      const gridNo = layer.feature.properties.Grid_No;
+      const count = speciesData[gridNo] ? speciesData[gridNo].count : 0;
+      layer.setStyle(getGridStyle(count));  // ✅ 還原樣式
+      lockedLayers.splice(idx, 1);
+      tooltipElements[idx].remove();
+      tooltipElements.splice(idx, 1);
+      manualMoved.splice(idx, 1);
+    }
+  }  
+
   function positionTooltip(domElement, point) {
     const mapSize = map.getSize();
     let left = point.x + 15;
@@ -156,3 +174,5 @@ export function initBatGrid(map, layersControl) {
     domElement.style.position = "absolute";
   }
 }
+
+window.closeLockTooltip = closeLockTooltip;
