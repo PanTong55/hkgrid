@@ -1089,35 +1089,7 @@
           }
         );
       });
-
-    <script type="module">
-      import {
-        openFullscreen,
-        closeFullscreen,
-        setupFullscreenEvents,
-        handleFullscreenChange,
-        isFullscreen
-      } from 'https://raw.githubusercontent.com/PanTong55/hkgrid/main/js/fullscreen.js';
-    
-      const fullscreenBtn = document.getElementById("fullscreenBtn");
-      const mapContainer = document.getElementById("map");
-    
-      fullscreenBtn.addEventListener("click", () => {
-        if (!isFullscreen) {
-          openFullscreen(mapContainer);
-        } else {
-          closeFullscreen(mapContainer);
-        }
-      });
-    
-      setupFullscreenEvents(() => {
-        fullscreenBtn.innerHTML = isFullscreen
-          ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
-          : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
-        lucide.createIcons();
-      });
-    </script>
-      
+ 
       // 顯示最後修改時間
       const lastModified = new Date(document.lastModified);
       const formatted = lastModified.toLocaleString("zh-Hant", {
@@ -1129,6 +1101,34 @@
       });
       document.getElementById("last-modified").textContent = "最後修改時間：" + formatted;
     </script>
+   <script type="module">
+        import {
+          openFullscreen,
+          closeFullscreen,
+          setupFullscreenEvents,
+          handleFullscreenChange,
+          isFullscreen
+        } from 'https://raw.githubusercontent.com/PanTong55/hkgrid/main/js/fullscreen.js';
+      
+        const fullscreenBtn = document.getElementById("fullscreenBtn");
+        const mapContainer = document.getElementById("map");
+      
+        fullscreenBtn.addEventListener("click", () => {
+          if (!isFullscreen) {
+            openFullscreen(mapContainer);
+          } else {
+            closeFullscreen(mapContainer);
+          }
+        });
+      
+        setupFullscreenEvents(() => {
+          fullscreenBtn.innerHTML = isFullscreen
+            ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
+            : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
+          lucide.createIcons();
+        });
+      </script>
+    
     <div
       id="alpha-status"
       style="position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.95); 
