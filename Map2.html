@@ -352,11 +352,6 @@
         lucide.createIcons();
       }
 
-      // Home Button //
-      document.getElementById("homeBtn").addEventListener("click", () => {
-        map.fitBounds(hongKongBounds);
-      });
-
       const legend = L.control({ position: "bottomright" }); // All Bat Grid的Legend
       legend.onAdd = function () {
         const div = L.DomUtil.create("div", "info legend");
@@ -691,6 +686,7 @@
       });
       document.getElementById("last-modified").textContent = "最後修改時間：" + formatted;
     </script>
+	<!-- Full Screen 功能 -->    
 	<script type="module">
 	  import { openFullscreen, closeFullscreen, setupFullscreenEvents, handleFullscreenChange, isFullscreen } from "./js/fullscreen.js";
 	
@@ -709,6 +705,18 @@
 	    fullscreenBtn.innerHTML = isFullscreen ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>' : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
 	    lucide.createIcons();
 	  });
+	</script>
+	  
+	<!-- Home Button 功能 -->   
+	<script type="module">
+	  import { initHomeButton } from './js/homeButton.js';
+	
+	  const hongKongBounds = [
+	    [22.15, 113.825],
+	    [22.55, 114.4],
+	  ];
+	
+	  initHomeButton(map, "homeBtn", hongKongBounds);
 	</script>
 	  
 	<!-- 實時定位功能 -->  
