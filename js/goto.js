@@ -1,5 +1,3 @@
-import proj4 from "https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js";
-
 export function initGotoPanel(map) {
   const panel = document.getElementById("gotoPanel");
   const toggleBtn = document.getElementById("gotoToggleBtn");
