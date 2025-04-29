@@ -3,6 +3,10 @@ export function makeTooltipDraggable(tooltip, onDragEnd = null) {
   let offsetX, offsetY;
 
   function startDrag(e) {
+    if (e.target.closest('.tooltip-close')) {
+      return;
+    }
+
     isDragging = true;
     if (e.type.startsWith('touch')) {
       const touch = e.touches[0];
@@ -39,16 +43,17 @@ export function makeTooltipDraggable(tooltip, onDragEnd = null) {
       tooltip.style.cursor = 'default';
       tooltip.style.transition = 'opacity 0.2s ease';
       tooltip.style.opacity = '1';
-      setTimeout(() => { tooltip.style.transition = ''; }, 200);
       if (typeof onDragEnd === 'function') onDragEnd();
+      setTimeout(() => { tooltip.style.transition = ''; }, 200);
     }
   }
 
-  // 綁定事件
+  // Desktop 事件
   tooltip.addEventListener('mousedown', startDrag);
   document.addEventListener('mousemove', duringDrag);
   document.addEventListener('mouseup', endDrag);
 
+  // Mobile 事件
   tooltip.addEventListener('touchstart', startDrag, { passive: false });
   document.addEventListener('touchmove', duringDrag, { passive: false });
   document.addEventListener('touchend', endDrag);
