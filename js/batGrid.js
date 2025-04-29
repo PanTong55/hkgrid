@@ -1,3 +1,5 @@
+import { makeTooltipDraggable } from './draggableTooltip.js';
+
 export function initBatGrid(map, layersControl) {
   const gridLayer = L.geoJSON(null);
   let speciesData = {};
@@ -138,7 +140,7 @@ export function initBatGrid(map, layersControl) {
     const center = map.latLngToContainerPoint(layer.getBounds().getCenter());
     positionTooltip(tooltip, center);
 
-    // 可加 draggable 行為（如你已整合）
+    makeTooltipDraggable(tooltip);
   }
 
   function positionTooltip(domElement, point) {
