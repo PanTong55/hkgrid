@@ -880,216 +880,6 @@
         });
       });
 
-      // 實時定位功能
-      let currentRadius = 0;
-
-      function animateAccuracyCircle(targetRadius) {
-        const duration = 400; // 動畫長度，毫秒
-        const start = performance.now();
-        const initial = currentRadius;
-
-        function step(ts) {
-          const progress = Math.min((ts - start) / duration, 1);
-          const eased = initial + (targetRadius - initial) * easeOutCubic(progress);
-          accuracyCircle.setRadius(eased);
-
-          if (progress < 1) {
-            requestAnimationFrame(step);
-          } else {
-            currentRadius = targetRadius;
-          }
-        }
-        requestAnimationFrame(step);
-      }
-
-      function animateCircleTo(circle, newLatLng, duration = 400) {
-        const startLatLng = circle.getLatLng();
-        const startTime = performance.now();
-
-        function step(timestamp) {
-          const elapsed = timestamp - startTime;
-          const t = Math.min(elapsed / duration, 1);
-          const eased = easeOutCubic(t);
-
-          const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
-          const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
-
-          circle.setLatLng([lat, lng]);
-
-          if (t < 1) {
-            requestAnimationFrame(step);
-          }
-        }
-        requestAnimationFrame(step);
-      }
-
-      function easeOutCubic(t) {
-        return --t * t * t + 1;
-      }
-
-      function animateMarkerTo(marker, newLatLng, duration = 400) {
-        const startLatLng = marker.getLatLng();
-        const startTime = performance.now();
-
-        function step(timestamp) {
-          const elapsed = timestamp - startTime;
-          const t = Math.min(elapsed / duration, 1); // 0 ~ 1
-          const eased = easeOutCubic(t);
-          const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
-          const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
-
-          marker.setLatLng([lat, lng]);
-
-          if (t < 1) {
-            requestAnimationFrame(step);
-          }
-        }
-        requestAnimationFrame(step);
-      }
-
-      function rotateMarker(marker, angle) {
-        if (!marker) return;
-        const el = marker.getElement();
-        if (el) {
-          const rotateContainer = el.querySelector(".rotate-container");
-          if (rotateContainer) {
-            rotateContainer.style.transform = `rotate(${angle}deg)`;
-            rotateContainer.style.transformOrigin = "center";
-          }
-        }
-      }
-
-      if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-        DeviceOrientationEvent.requestPermission()
-          .then((permissionState) => {
-            if (permissionState === "granted") {
-              window.addEventListener("deviceorientationabsolute", handleHeading, true);
-              // 🔥 加一個 fallback，如果 3秒內都沒有收到 alpha，就改綁 deviceorientation
-              setTimeout(() => {
-                if (!window.headingEventTriggered) {
-                  console.warn("deviceorientationabsolute 無反應，嘗試 fallback...");
-                  window.addEventListener("deviceorientation", handleHeading, true);
-                }
-              }, 3000);
-            }
-          })
-          .catch(console.error);
-      } else {
-        window.addEventListener("deviceorientationabsolute", handleHeading, true);
-      }
-
-      function handleHeading(event) {
-        window.headingEventTriggered = true; // ✅ 只要有收到任何一次 event，就標記！
-
-        let heading = null;
-
-        if (typeof event.webkitCompassHeading !== "undefined") {
-          heading = event.webkitCompassHeading; // iOS專用
-        } else if (event.alpha != null) {
-          heading = 360 - event.alpha; // Android通用
-        }
-
-        if (heading != null) {
-          document.getElementById("alpha-status").textContent = `Heading: ${heading.toFixed(2)}°`;
-          if (locateMarker) {
-            rotateMarker(locateMarker, heading);
-          }
-        } else {
-          document.getElementById("alpha-status").textContent = `⚠️無法取得方向感應數據`;
-        }
-      }
-
-      let locateMarker = null;
-      let accuracyCircle = null;
-      let watchId = null;
-      let autoFollow = true;
-
-      const locateBtn = document.getElementById("locateBtn");
-
-      locateBtn.addEventListener("click", () => {
-        if (watchId !== null) {
-          navigator.geolocation.clearWatch(watchId);
-          watchId = null;
-          if (locateMarker) {
-            map.removeLayer(locateMarker);
-            locateMarker = null;
-          }
-          if (accuracyCircle) {
-            map.removeLayer(accuracyCircle);
-            accuracyCircle = null;
-          }
-          locateBtn.classList.remove("active");
-          window.removeEventListener("deviceorientationabsolute", handleHeading);
-          window.removeEventListener("deviceorientation", handleHeading);
-          return;
-        }
-
-        locateBtn.classList.add("active");
-        autoFollow = true;
-
-        watchId = navigator.geolocation.watchPosition(
-          (pos) => {
-            const latlng = [pos.coords.latitude, pos.coords.longitude];
-            const accuracy = pos.coords.accuracy;
-
-            if (!locateMarker) {
-              locateMarker = L.marker(latlng, {
-                icon: L.divIcon({
-                  className: "lucide-locate-icon",
-                  html: `
-                      <div class="rotate-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24">
-                          <path d="M12 2l6 20-6-4-6 4 6-20z"/>
-                        <\/svg>
-                      <\/div>
-                    `,
-                  iconSize: [24, 24],
-                  iconAnchor: [12, 12],
-                }),
-              }).addTo(map);
-
-              lucide.createIcons();
-            } else {
-              animateMarkerTo(locateMarker, L.latLng(latlng));
-            }
-
-            if (!accuracyCircle) {
-              accuracyCircle = L.circle(latlng, {
-                radius: accuracy,
-                color: "transparent",
-                weight: 0,
-                fillColor: "#1E90FF",
-                fillOpacity: 0.15,
-              }).addTo(map);
-              currentRadius = accuracy;
-            } else {
-              animateCircleTo(accuracyCircle, L.latLng(latlng)); // 平滑位移
-              animateAccuracyCircle(accuracy); // 半徑繼續動畫
-            }
-
-            const bounds = map.getBounds();
-
-            if (autoFollow) {
-              map.setView(latlng, 17);
-            } else {
-              const margin = bounds.pad(-0.15); // 邊界 15% 內才算安全
-              if (!margin.contains(latlng)) {
-                autoFollow = true;
-                map.setView(latlng);
-              }
-            }
-          },
-          (err) => {
-            alert("定位失敗：" + err.message);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0,
-          }
-        );
-      });
- 
       // 顯示最後修改時間
       const lastModified = new Date(document.lastModified);
       const formatted = lastModified.toLocaleString("zh-Hant", {
@@ -1101,34 +891,40 @@
       });
       document.getElementById("last-modified").textContent = "最後修改時間：" + formatted;
     </script>
-   <script type="module">
-        import {
-          openFullscreen,
-          closeFullscreen,
-          setupFullscreenEvents,
-          handleFullscreenChange,
-          isFullscreen
-        } from './js/fullscreen.js';
-      
-        const fullscreenBtn = document.getElementById("fullscreenBtn");
-        const mapContainer = document.getElementById("map");
-      
-        fullscreenBtn.addEventListener("click", () => {
-          if (!isFullscreen) {
-            openFullscreen(mapContainer);
-          } else {
-            closeFullscreen(mapContainer);
-          }
-        });
-      
-        setupFullscreenEvents(() => {
-          fullscreenBtn.innerHTML = isFullscreen
-            ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
-            : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
-          lucide.createIcons();
-        });
-      </script>
-    
+	<script type="module">
+	  import { openFullscreen, closeFullscreen, setupFullscreenEvents, handleFullscreenChange, isFullscreen } from "./js/fullscreen.js";
+	
+	  const fullscreenBtn = document.getElementById("fullscreenBtn");
+	  const mapContainer = document.getElementById("map");
+	
+	  fullscreenBtn.addEventListener("click", () => {
+	    if (!isFullscreen) {
+	      openFullscreen(mapContainer);
+	    } else {
+	      closeFullscreen(mapContainer);
+	    }
+	  });
+	
+	  setupFullscreenEvents(() => {
+	    fullscreenBtn.innerHTML = isFullscreen ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>' : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
+	    lucide.createIcons();
+	  });
+	</script>
+	  
+	// 實時定位功能  
+	<script type="module">
+	  import { initLocateButton, initOrientationListener } from "./js/geolocation.js";
+	
+	  const mapElement = document.getElementById("map");
+	  const locateBtnId = "locateBtn";
+	
+	  // 啟動方向感應監聽（一次）
+	  initOrientationListener();
+	
+	  // 初始化定位按鈕功能
+	  initLocateButton(map, locateBtnId);
+	</script>
+
     <div
       id="alpha-status"
       style="position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.95); 
