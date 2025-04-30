@@ -173,6 +173,39 @@ a.tooltip-close:hover {
   cursor: pointer;
 }
 
+/* Go To Panel 樣式 */
+.goto-panel {
+  display: none;
+  position: absolute;
+  top: 124px;
+  left: 56px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 15px 15px;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  width: 250px;
+  z-index: 1100;
+}
+
+/* Hover Tooltip 樣式 */
+.hover-tooltip {
+  display: none;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 999;
+}
+
 /* Legend 樣式 */
 .info.legend {
   background: rgba(255, 255, 255, 0.95);
