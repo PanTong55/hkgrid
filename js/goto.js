@@ -6,7 +6,7 @@ export function initGotoPanel(map) {
   const gotoMarkers = [];
 
   toggleBtn.addEventListener("click", () => {
-    const isOpen = panel.style.display === "block";
+    const isOpen = getComputedStyle(panel).display === "block";
 
     panel.style.display = isOpen ? "none" : "block";
     toggleBtn.innerHTML = isOpen
