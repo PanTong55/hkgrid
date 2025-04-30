@@ -71,10 +71,10 @@ a.tooltip-close:hover {
 
 @media (max-width: 768px) {
   a.tooltip-close {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    font-size: 20px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 18px;
   }
 
   a.tooltip-close::before {
