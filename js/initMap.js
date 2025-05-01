@@ -30,9 +30,9 @@ export async function initMap() {
     "街道圖 (OSM)": streets,
     "街道圖 (Carto)": cartoLight,
     "街道圖 (Google)": googleStreets,
-    "街道圖 (Esri)": esriSatellite,
-    "街道圖 (Google Mix)": googleHybrid,
-    "街道圖 (Google Satellite)": googleSatellite,
+    "衛星圖 (Esri)": esriSatellite,
+    "混合圖 (Google)": googleHybrid,
+    "衛星圖 (Google Satellite)": googleSatellite,
   };
 
   const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
