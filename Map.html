@@ -47,7 +47,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script>
     <script type="module">
       import { initMap } from "./js/initMap.js";
-      const { map, layersControl } = initMap();
+      const { map, layersControl } = await initMap();
 
       const crsModeSelect = document.getElementById("crsMode");
       const coordDisplay = document.getElementById("mouseCoords");
