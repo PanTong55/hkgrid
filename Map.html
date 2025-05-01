@@ -79,7 +79,7 @@
         const mapContainer = document.getElementById("map");
 
         fullscreenBtn.addEventListener("click", () => {
-          if (!isFullscreen()) {
+          if (!isFullscreen) {
             openFullscreen(mapContainer);
           } else {
             closeFullscreen(mapContainer);
@@ -87,7 +87,7 @@
         });
 
         setupFullscreenEvents(() => {
-          fullscreenBtn.innerHTML = isFullscreen()
+          fullscreenBtn.innerHTML = isFullscreen
             ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
             : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
           lucide.createIcons();
