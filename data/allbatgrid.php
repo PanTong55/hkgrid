@@ -1,6 +1,6 @@
 <?php
-$sheet_id = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms';
-$sheet_name = 'GeoData'; // 假設你有這個工作表，裡面有 lat/lng 欄位
+$sheet_id = '1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8';
+$sheet_name = 'sheet1';
 
 $url = "https://docs.google.com/spreadsheets/d/$sheet_id/gviz/tq?tqx=out:json&sheet=" . urlencode($sheet_name);
 $response = @file_get_contents($url);
@@ -13,6 +13,7 @@ if (!$response) {
 $json = substr($response, 47, -2);
 $data = json_decode($json, true);
 
+// 取得欄位名稱
 $cols = array_map(fn($col) => $col['label'], $data['table']['cols']);
 
 $features = [];
@@ -26,15 +27,18 @@ foreach ($data['table']['rows'] as $row) {
         $key = $cols[$i];
         $val = $cell['v'] ?? null;
 
-        if (is_null($val)) continue;
+        if ($val === null) continue;
 
-        // 嘗試抓經緯度欄位
-        if (in_array(strtolower($key), ['lat', 'latitude'])) $lat = floatval($val);
-        elseif (in_array(strtolower($key), ['lng', 'lon', 'longitude'])) $lng = floatval($val);
-        else $properties[$key] = $val;
+        $lower_key = strtolower($key);
+        if ($lower_key === 'lat' || $lower_key === 'latitude') {
+            $lat = floatval($val);
+        } elseif ($lower_key === 'lng' || $lower_key === 'lon' || $lower_key === 'longitude') {
+            $lng = floatval($val);
+        } else {
+            $properties[$key] = $val;
+        }
     }
 
-    // 只有在有經緯度的情況下才加入
     if (!is_null($lat) && !is_null($lng)) {
         $features[] = [
             "type" => "Feature",
@@ -47,11 +51,10 @@ foreach ($data['table']['rows'] as $row) {
     }
 }
 
-// 組合 GeoJSON 結構
 $geojson = [
     "type" => "FeatureCollection",
     "features" => $features
 ];
 
 header('Content-Type: application/json');
-echo json_encode($geojson, JSON_UNESCAPED_UNICODE); // 無縮排即為 minimized JSON
+echo json_encode($geojson, JSON_UNESCAPED_UNICODE);
