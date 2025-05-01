@@ -1,6 +1,8 @@
 // fullscreen.js
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+let updateFn = null; // 儲存傳入的更新函數（給 iOS 用）
+
 export function isFullscreen() {
   const elem = document.getElementById("map");
   return !!document.fullscreenElement ||
@@ -12,7 +14,7 @@ export function isFullscreen() {
 export function openFullscreen(elem) {
   if (isIOS) {
     elem.classList.add("fake-fullscreen");
-    handleFullscreenChange();
+    handleFullscreenChange(updateFn); // ✅ 手動觸發圖示更新
   } else {
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
@@ -27,7 +29,7 @@ export function openFullscreen(elem) {
 export function closeFullscreen(elem) {
   if (isIOS) {
     elem.classList.remove("fake-fullscreen");
-    handleFullscreenChange();
+    handleFullscreenChange(updateFn); // ✅ 手動觸發圖示更新
   } else {
     if (document.exitFullscreen) {
       document.exitFullscreen();
@@ -41,10 +43,13 @@ export function closeFullscreen(elem) {
 
 export function handleFullscreenChange(updateBtn) {
   const current = isFullscreen();
-  if (typeof updateBtn === 'function') updateBtn(current);
+  if (typeof updateBtn === 'function') {
+    updateBtn(current);
+  }
 }
 
 export function setupFullscreenEvents(updateBtn) {
+  updateFn = updateBtn; // ✅ 儲存下來給 iOS 模式使用
   document.addEventListener("fullscreenchange", () => handleFullscreenChange(updateBtn));
   document.addEventListener("webkitfullscreenchange", () => handleFullscreenChange(updateBtn));
   document.addEventListener("msfullscreenchange", () => handleFullscreenChange(updateBtn));
