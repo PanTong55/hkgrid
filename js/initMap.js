@@ -1,7 +1,4 @@
 // js/initMap.js
-import L from "leaflet";
-import proj4 from "proj4";
-
 export function initMap() {
   const map = L.map("map");
   const hongKongBounds = [
