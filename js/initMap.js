@@ -1,5 +1,5 @@
 // js/initMap.js
-export function initMap() {
+export async function initMap() {
   const map = L.map("map");
   const hongKongBounds = [
     [22.15, 113.825],
