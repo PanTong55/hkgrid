@@ -79,7 +79,7 @@
         const mapContainer = document.getElementById("map");
 
         fullscreenBtn.addEventListener("click", () => {
-          if (!isFullscreen) {
+          if (!isFullscreen()) {
             openFullscreen(mapContainer);
           } else {
             closeFullscreen(mapContainer);
