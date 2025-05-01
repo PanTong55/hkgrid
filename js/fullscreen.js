@@ -1,7 +1,13 @@
-// fullscreen.js (ES6 Module)
-export let isFullscreen = false;
-
+// fullscreen.js
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+export function isFullscreen() {
+  const elem = document.getElementById("map");
+  return !!document.fullscreenElement ||
+         !!document.webkitFullscreenElement ||
+         !!document.msFullscreenElement ||
+         elem.classList.contains("fake-fullscreen");
+}
 
 export function openFullscreen(elem) {
   if (isIOS) {
@@ -34,13 +40,8 @@ export function closeFullscreen(elem) {
 }
 
 export function handleFullscreenChange(updateBtn) {
-  const elem = document.getElementById("map");
-  isFullscreen = !!document.fullscreenElement ||
-                 !!document.webkitFullscreenElement ||
-                 !!document.msFullscreenElement ||
-                 elem.classList.contains("fake-fullscreen");
-
-  if (typeof updateBtn === 'function') updateBtn(isFullscreen);
+  const current = isFullscreen();
+  if (typeof updateBtn === 'function') updateBtn(current);
 }
 
 export function setupFullscreenEvents(updateBtn) {
