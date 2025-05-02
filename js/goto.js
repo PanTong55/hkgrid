@@ -207,7 +207,6 @@ function moveGotoTooltip(marker) {
   if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
   if (left < 0) left = 10;
   if (top < 0) top = 10;
-  tooltip.style.transition = "left 0.2s ease, top 0.2s ease";
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
 }
