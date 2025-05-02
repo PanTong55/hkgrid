@@ -268,46 +268,58 @@ select {
   font-size: 16px !important;
 }
 
+#map-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
 #bat-filter-panel.bat-filter {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 9999;
+  width: 300px;
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 12px;
-  width: 260px;
+  border-right: 1px solid #ccc;
+  padding: 16px;
+  overflow-y: auto;
   font-family: Arial, sans-serif;
   font-size: 14px;
-  overflow-y: auto;
-  max-height: 90vh;
+}
+
+#bat-filter-panel h3 {
+  margin-top: 0;
 }
 
 #bat-filter-panel label {
   display: block;
-  margin-top: 10px;
+  margin-top: 12px;
   font-weight: bold;
 }
 
 #bat-filter-panel select,
 #bat-filter-panel input[type="date"] {
   width: 100%;
-  padding: 4px;
+  padding: 6px;
   margin-top: 4px;
   font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 #bat-filter-panel button {
-  margin-top: 15px;
+  margin-top: 20px;
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   background: #3d7728;
   color: white;
   border: none;
   border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
 }
+
 #bat-filter-panel button:hover {
   background: #2d5f1f;
+}
+
+#map {
+  flex-grow: 1;
 }
