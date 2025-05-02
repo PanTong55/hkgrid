@@ -267,3 +267,47 @@ textarea,
 select {
   font-size: 16px !important;
 }
+
+#bat-filter-panel.bat-filter {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  width: 260px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+#bat-filter-panel label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#bat-filter-panel select,
+#bat-filter-panel input[type="date"] {
+  width: 100%;
+  padding: 4px;
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+#bat-filter-panel button {
+  margin-top: 15px;
+  width: 100%;
+  padding: 8px;
+  background: #3d7728;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#bat-filter-panel button:hover {
+  background: #2d5f1f;
+}
