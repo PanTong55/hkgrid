@@ -20,78 +20,64 @@
     <div id="bat-filter-panel" class="bat-filter">
       <button id="toggleFilterPanel">☰ Filter</button>
       <h3>All Bat Data Filter</h3>
-    
-      <div class="form-group">
+      <div class="form-row">
         <label for="dateStart">Date Range:</label>
         <input type="date" id="dateStart" class="form-control" />
+      </div>
+      <div class="form-row">
+        <label for="dateEnd">&nbsp;</label>
         <input type="date" id="dateEnd" class="form-control" />
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterLocation">Location:</label>
-        <select id="filterLocation" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterLocation" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterHabitat">Habitat:</label>
-        <select id="filterHabitat" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterHabitat" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterDataSource">Data Source:</label>
-        <select id="filterDataSource" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterDataSource" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterRecorders">Recorders:</label>
-        <select id="filterRecorders" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterRecorders" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterFamily">Family:</label>
-        <select id="filterFamily" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterFamily" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterGenus">Genus:</label>
-        <select id="filterGenus" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterGenus" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterSpecies">Species:</label>
-        <select id="filterSpecies" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterSpecies" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterCommonEng">Common Name (Eng):</label>
-        <select id="filterCommonEng" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterCommonEng" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <div class="form-group">
+      
+      <div class="form-row">
         <label for="filterCommonChi">Common Name (Chi):</label>
-        <select id="filterCommonChi" class="form-control">
-          <option value="">All</option>
-        </select>
+        <select id="filterCommonChi" class="form-control"><option value="">All</option></select>
       </div>
-    
-      <button id="batFilterSearch">Search</button>
-    </div>
+      
+      <div class="form-row">
+        <label>&nbsp;</label>
+        <button id="batFilterSearch" class="form-control">Search</button>
+      </div>
     <div id="map" style="position: relative;">
       <div id="coord-scale-wrapper">
         <div class="crs-selector">
