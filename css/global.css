@@ -260,3 +260,10 @@ a.tooltip-close:hover {
   z-index: 1000 !important;
   background: white;
 }
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  font-size: 16px !important;
+}
