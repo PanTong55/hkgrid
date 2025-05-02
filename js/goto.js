@@ -3,6 +3,7 @@ export function initGotoPanel(map) {
   const toggleBtn = document.getElementById("gotoToggleBtn");
   const goBtn = document.getElementById("goBtn");
   const clearBtn = document.getElementById("clearBtn");
+  const gotoTooltips = {};
   const gotoMarkers = [];
 
   // ✅ 防止干擾地圖操作
@@ -40,8 +41,52 @@ export function initGotoPanel(map) {
 
     if (latlng) {
       map.setView(latlng, 16);
-      const marker = L.marker(latlng).addTo(map);
+      const marker = L.marker(latlng, { draggable: true }).addTo(map);
       gotoMarkers.push(marker);
+    
+      // 生成 popup 內容
+      const mode = document.querySelector('input[name="coordMode"]:checked').value;
+      let popupContent = "";
+      if (mode === "wgs84") {
+        popupContent = `Lon: ${latlng.lng.toFixed(6)}<br>Lat: ${latlng.lat.toFixed(6)}`;
+      } else {
+        const [x, y] = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
+        popupContent = `X: ${Math.round(x)}<br>Y: ${Math.round(y)}`;
+      }
+    
+      const tooltip = createPointTooltip(marker, popupContent);
+      gotoTooltips[L.stamp(marker)] = tooltip;
+      moveGotoTooltip(marker);
+    
+      marker.on("click", () => {
+        const markerId = L.stamp(marker);
+        const current = gotoTooltips[markerId];
+        if (current) {
+          current.remove();
+          delete gotoTooltips[markerId];
+        } else {
+          updateGotoMarkerPopup(marker);
+          const content = currentTooltipContent(marker);
+          const newTooltip = createPointTooltip(marker, popupContent);
+          gotoTooltips[markerId] = newTooltip;
+          moveGotoTooltip(marker);
+        }
+      });
+    
+      marker.on("dragstart", function () {
+        this.setOpacity(0.7);
+      });
+    
+      marker.on("drag", function () {
+        updateGotoMarkerPopup(this);
+        moveGotoTooltip(this);
+      });
+    
+      marker.on("dragend", function () {
+        this.setOpacity(1);
+        updateGotoMarkerPopup(this);
+        moveGotoTooltip(this);
+      });
     }
   });
 
@@ -109,6 +154,76 @@ function setupAutoCoordModeSwitch() {
   latInput.addEventListener("focus", () => modeWGS.checked = true);
   lngInput.addEventListener("focus", () => modeWGS.checked = true);
 }
+
+function createPointTooltip(marker, content) {
+  const tooltip = document.createElement("div");
+  tooltip.className = "floatingTooltip";
+  tooltip.innerHTML = `
+    <div class="tooltip-container">
+      <a href="#" class="tooltip-close" onclick="deleteGotoMarker(event, ${L.stamp(marker)});">✖</a>
+      <div class="tooltip-content">${content}</div>
+    </div>`;
+  document.getElementById("map").appendChild(tooltip);
+  return tooltip;
+}
+
+function updateGotoMarkerPopup(marker) {
+  const latlng = marker.getLatLng();
+  const mode = document.querySelector('input[name="coordMode"]:checked').value;
+  let newContent = "";
+
+  if (mode === "wgs84") {
+    newContent = `Lon: ${latlng.lng.toFixed(6)}<br>Lat: ${latlng.lat.toFixed(6)}`;
+  } else {
+    const [x, y] = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
+    newContent = `X: ${Math.round(x)}<br>Y: ${Math.round(y)}`;
+  }
+
+  const tooltip = gotoTooltips[L.stamp(marker)];
+  if (tooltip) {
+    const contentDiv = tooltip.querySelector(".tooltip-content");
+    if (contentDiv) contentDiv.innerHTML = newContent;
+  }
+}
+
+function moveGotoTooltip(marker) {
+  const tooltip = gotoTooltips[L.stamp(marker)];
+  if (!tooltip) return;
+
+  const latlng = marker.getLatLng();
+  const point = map.latLngToContainerPoint(latlng);
+  let left = point.x + 5;
+  let top = point.y + 5;
+  const mapSize = map.getSize();
+  if (left + tooltip.offsetWidth > mapSize.x) left = point.x - tooltip.offsetWidth - 15;
+  if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
+  if (left < 0) left = 10;
+  if (top < 0) top = 10;
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+}
+
+window.deleteGotoMarker = function (event, markerId) {
+  event.preventDefault();
+  const idx = gotoMarkers.findIndex((m) => L.stamp(m) === markerId);
+  if (idx !== -1) {
+    map.removeLayer(gotoMarkers[idx]);
+    if (gotoTooltips[markerId]) gotoTooltips[markerId].remove();
+    gotoMarkers.splice(idx, 1);
+    delete gotoTooltips[markerId];
+  }
+};  
+
+function currentTooltipContent(marker) {
+  const latlng = marker.getLatLng();
+  const mode = document.querySelector('input[name="coordMode"]:checked').value;
+  if (mode === "wgs84") {
+    return `Lon: ${latlng.lng.toFixed(6)}<br>Lat: ${latlng.lat.toFixed(6)}`;
+  } else {
+    const [x, y] = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
+    return `X: ${Math.round(x)}<br>Y: ${Math.round(y)}`;
+  }
+}  
  
 setupAutoParseFromPaste();  
 setupAutoCoordModeSwitch();  
