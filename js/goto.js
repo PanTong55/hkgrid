@@ -49,7 +49,8 @@ export function initGotoPanel(map) {
     gotoMarkers.forEach((m) => map.removeLayer(m));
     gotoMarkers.length = 0;
   });
-
+  
+// 自動貼上Google的Lat Long
 function parseLatLngFromText(text) {
   const regex = /([-+]?\d{1,3}(?:\.\d+)?)[°\s]*([NS])?[, ]+\s*([-+]?\d{1,3}(?:\.\d+)?)[°\s]*([EW])?/i;
   const altRegex = /([-+]?\d{1,3}(?:\.\d+)?)[ ,]+([-+]?\d{1,3}(?:\.\d+)?)/;
@@ -92,6 +93,23 @@ function setupAutoParseFromPaste() {
   latInput.addEventListener("paste", handlePaste);
   lngInput.addEventListener("paste", handlePaste);
 }
+
+// 自動切換座標模式
+function setupAutoCoordModeSwitch() {
+  const modeHK = document.getElementById("modeHK");
+  const modeWGS = document.getElementById("modeWGS");
+
+  const xInput = document.getElementById("inputX");
+  const yInput = document.getElementById("inputY");
+  const latInput = document.getElementById("inputLat");
+  const lngInput = document.getElementById("inputLng");
+
+  xInput.addEventListener("focus", () => modeHK.checked = true);
+  yInput.addEventListener("focus", () => modeHK.checked = true);
+  latInput.addEventListener("focus", () => modeWGS.checked = true);
+  lngInput.addEventListener("focus", () => modeWGS.checked = true);
+}
+ 
 setupAutoParseFromPaste();  
-  
+setupAutoCoordModeSwitch();  
 }
