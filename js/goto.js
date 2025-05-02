@@ -60,14 +60,14 @@ export function initGotoPanel(map) {
     
       marker.on("click", () => {
         const markerId = L.stamp(marker);
-        const current = gotoTooltips[markerId];
-        if (current) {
-          current.remove();
+        const existing = gotoTooltips[markerId];
+        if (existing) {
+          existing.remove();
           delete gotoTooltips[markerId];
         } else {
-          updateGotoMarkerPopup(marker);
-          const content = currentTooltipContent(marker);
-          const newTooltip = createPointTooltip(marker, popupContent);
+          updateGotoMarkerPopup(marker); // ✅ 加這行確保是最新座標
+          const newContent = currentTooltipContent(marker);
+          const newTooltip = createPointTooltip(marker, newContent);
           gotoTooltips[markerId] = newTooltip;
           moveGotoTooltip(marker);
         }
@@ -91,7 +91,14 @@ export function initGotoPanel(map) {
   });
 
   clearBtn.addEventListener("click", () => {
-    gotoMarkers.forEach((m) => map.removeLayer(m));
+    gotoMarkers.forEach((m) => {
+      map.removeLayer(m);
+      const id = L.stamp(m);
+      if (gotoTooltips[id]) {
+        gotoTooltips[id].remove();
+        delete gotoTooltips[id];
+      }
+    });
     gotoMarkers.length = 0;
   });
   
@@ -226,5 +233,10 @@ function currentTooltipContent(marker) {
 }  
  
 setupAutoParseFromPaste();  
-setupAutoCoordModeSwitch();  
+setupAutoCoordModeSwitch(); 
+  
+map.on("zoom move", () => {
+  gotoMarkers.forEach(moveGotoTooltip);
+});
+  
 }
