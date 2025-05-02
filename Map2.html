@@ -16,6 +16,43 @@
   </head>
 
   <body>
+<div id="map-container">
+  <div id="bat-filter-panel" class="bat-filter">
+    <h3>All Bat Data Filter</h3>
+
+    <label>Date Range:</label>
+    <input type="date" id="dateStart" /> -
+    <input type="date" id="dateEnd" />
+
+    <label>Location:</label>
+    <select id="filterLocation"><option value="">All</option></select>
+
+    <label>Habitat:</label>
+    <select id="filterHabitat"><option value="">All</option></select>
+
+    <label>Data Source:</label>
+    <select id="filterDataSource"><option value="">All</option></select>
+
+    <label>Recorders:</label>
+    <select id="filterRecorders"><option value="">All</option></select>
+
+    <label>Family:</label>
+    <select id="filterFamily"><option value="">All</option></select>
+
+    <label>Genus:</label>
+    <select id="filterGenus"><option value="">All</option></select>
+
+    <label>Species:</label>
+    <select id="filterSpecies"><option value="">All</option></select>
+
+    <label>Common Name (Eng):</label>
+    <select id="filterCommonEng"><option value="">All</option></select>
+
+    <label>Common Name (Chi):</label>
+    <select id="filterCommonChi"><option value="">All</option></select>
+
+    <button id="batFilterSearch">Search</button>
+  </div>
     <div id="map" style="position: relative;">
       <div id="coord-scale-wrapper">
         <div class="crs-selector">
@@ -41,41 +78,7 @@
         <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
       </div>
       <div id="hoverTooltip" class="hover-tooltip"></div>
-<div id="bat-filter-panel" class="bat-filter">
-  <h3>All Bat Data Filter</h3>
-  <label>Date Range:</label>
-  <input type="date" id="dateStart" /> -
-  <input type="date" id="dateEnd" />
-
-  <label>Location:</label>
-  <select id="filterLocation"><option value="">All</option></select>
-
-  <label>Habitat:</label>
-  <select id="filterHabitat"><option value="">All</option></select>
-
-  <label>Data Source:</label>
-  <select id="filterDataSource"><option value="">All</option></select>
-
-  <label>Recorders:</label>
-  <select id="filterRecorders"><option value="">All</option></select>
-
-  <label>Family:</label>
-  <select id="filterFamily"><option value="">All</option></select>
-
-  <label>Genus:</label>
-  <select id="filterGenus"><option value="">All</option></select>
-
-  <label>Species:</label>
-  <select id="filterSpecies"><option value="">All</option></select>
-
-  <label>Common Name (Eng):</label>
-  <select id="filterCommonEng"><option value="">All</option></select>
-
-  <label>Common Name (Chi):</label>
-  <select id="filterCommonChi"><option value="">All</option></select>
-
-  <button id="batFilterSearch">Search</button>
-</div>     
+</div>
     </div>
     <p id="last-modified" style="text-align: center; font-size: 12px; color: gray; margin-top: 30px;"></p>
     <!-- Proj4 轉換工具 -->
