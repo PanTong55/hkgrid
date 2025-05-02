@@ -49,4 +49,49 @@ export function initGotoPanel(map) {
     gotoMarkers.forEach((m) => map.removeLayer(m));
     gotoMarkers.length = 0;
   });
+
+function parseLatLngFromText(text) {
+  const regex = /([-+]?\d{1,3}(?:\.\d+)?)[°\s]*([NS])?[, ]+\s*([-+]?\d{1,3}(?:\.\d+)?)[°\s]*([EW])?/i;
+  const altRegex = /([-+]?\d{1,3}(?:\.\d+)?)[ ,]+([-+]?\d{1,3}(?:\.\d+)?)/;
+
+  const match = text.match(regex);
+  if (match) {
+    let lat = parseFloat(match[1]);
+    let lng = parseFloat(match[3]);
+
+    if (match[2]?.toUpperCase() === 'S') lat *= -1;
+    if (match[4]?.toUpperCase() === 'W') lng *= -1;
+
+    return { lat, lng };
+  }
+
+  const altMatch = text.match(altRegex);
+  if (altMatch) {
+    const lat = parseFloat(altMatch[1]);
+    const lng = parseFloat(altMatch[2]);
+    return { lat, lng };
+  }
+
+  return null;
+}
+
+function setupAutoParseFromPaste() {
+  const latInput = document.getElementById("inputLat");
+  const lngInput = document.getElementById("inputLng");
+
+  function handlePaste(e) {
+    const text = (e.clipboardData || window.clipboardData).getData("text");
+    const parsed = parseLatLngFromText(text);
+    if (parsed) {
+      e.preventDefault(); // 阻止原本的 paste
+      latInput.value = parsed.lat.toFixed(6);
+      lngInput.value = parsed.lng.toFixed(6);
+    }
+  }
+
+  latInput.addEventListener("paste", handlePaste);
+  lngInput.addEventListener("paste", handlePaste);
+}
+setupAutoParseFromPaste();  
+  
 }
