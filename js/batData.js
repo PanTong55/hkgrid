@@ -25,11 +25,8 @@ export async function initBatDataLayer(map, layersControl) {
 
   // 加入 filter toggle
   const toggleBtn = document.getElementById("toggleFilterPanel");
-  const panel = document.getElementById("bat-filter-panel");
-
-  if (toggleBtn && panel) {
-    toggleBtn.addEventListener("click", () => {
-      panel.classList.toggle("collapsed");
-    });
-  }
+  const filterPanel = document.getElementById("bat-filter-panel");
+  toggleBtn.addEventListener("click", () => {
+    filterPanel.classList.toggle("collapsed");
+  });
 }
