@@ -42,6 +42,7 @@ export function initGotoPanel(map) {
     if (latlng) {
       map.setView(latlng, 16);
       const marker = L.marker(latlng, { draggable: true }).addTo(map);
+      marker.on("dblclick", L.DomEvent.stopPropagation);
       gotoMarkers.push(marker);
     
       // 生成 popup 內容
@@ -206,6 +207,7 @@ function moveGotoTooltip(marker) {
   if (top + tooltip.offsetHeight > mapSize.y) top = point.y - tooltip.offsetHeight - 15;
   if (left < 0) left = 10;
   if (top < 0) top = 10;
+  tooltip.style.transition = "left 0.2s ease, top 0.2s ease";
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
 }
