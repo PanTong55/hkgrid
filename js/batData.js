@@ -22,4 +22,14 @@ export async function initBatDataLayer(map, layersControl) {
 
   const batLayer = L.layerGroup(batMarkers);
   layersControl.addOverlay(batLayer, 'All Bat Data');
+
+  // 加入 filter toggle
+  const toggleBtn = document.getElementById("toggleFilterPanel");
+  const panel = document.getElementById("bat-filter-panel");
+
+  if (toggleBtn && panel) {
+    toggleBtn.addEventListener("click", () => {
+      panel.classList.toggle("collapsed");
+    });
+  }
 }
