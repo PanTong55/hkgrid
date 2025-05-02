@@ -275,14 +275,23 @@ select {
 }
 
 #bat-filter-panel {
-  width: 300px;
+  width: 280px;
   background-color: #fff;
-  padding: 15px;
+  padding: 20px;
   border-right: 1px solid #ccc;
   overflow-y: auto;
   box-sizing: border-box;
-  transition: transform 0.3s ease;
-  z-index: 1000;
+  font-family: Arial, sans-serif;
+}
+
+#bat-filter-panel h3 {
+  margin-top: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 16px;
 }
 
 #bat-filter-panel.collapsed {
@@ -293,6 +302,31 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  box-shadow: none;
+  appearance: none;
+}
+
+.form-group input[disabled],
+.form-group select[disabled] {
+  background-color: #f0f0f0;
+  color: #999;
 }
 
 #toggleFilterPanel {
@@ -306,6 +340,17 @@ select {
   display: block;
   margin-top: 10px;
   font-weight: bold;
+}
+
+#batFilterSearch {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
 }
 
 #bat-filter-panel select,
