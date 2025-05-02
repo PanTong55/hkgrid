@@ -5,6 +5,10 @@ export function initGotoPanel(map) {
   const clearBtn = document.getElementById("clearBtn");
   const gotoMarkers = [];
 
+  // ✅ 防止干擾地圖操作
+  L.DomEvent.disableClickPropagation(panel);
+  L.DomEvent.disableScrollPropagation(panel);
+  
   toggleBtn.addEventListener("click", () => {
     const isOpen = getComputedStyle(panel).display === "block";
 
