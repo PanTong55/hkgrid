@@ -275,13 +275,34 @@ select {
 
 #bat-filter-panel {
   width: 300px;
-  padding: 16px;
-  background-color: #f5f5f5;
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+  background: white;
+  padding: 12px;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  height: 100vh;
   overflow-y: auto;
-  border-right: 1px solid #ccc;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+#bat-filter-panel.collapsed {
+  transform: translateX(-100%);
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#toggleFilterPanel {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 #bat-filter-panel label {
