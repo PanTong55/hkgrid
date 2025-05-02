@@ -271,20 +271,16 @@ select {
 #map-container {
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
 #bat-filter-panel {
   width: 300px;
-  transition: transform 0.3s ease;
-  transform: translateX(0);
-  background: white;
-  padding: 12px;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-  height: 100vh;
+  padding: 15px;
+  background-color: white;
+  border-right: 1px solid #ccc;
   overflow-y: auto;
-  position: absolute;
-  left: 0;
-  top: 0;
+  transition: transform 0.3s ease;
   z-index: 1000;
 }
 
@@ -337,6 +333,6 @@ select {
 }
 
 #map {
-  flex: 1;
+  flex-grow: 1;
   position: relative;
 }
