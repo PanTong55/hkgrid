@@ -20,55 +20,76 @@
     <div id="bat-filter-panel" class="bat-filter">
       <button id="toggleFilterPanel">☰ Filter</button>
       <h3>All Bat Data Filter</h3>
-      <label>Date Range:</label>
-      <input type="date" id="dateStart" /> -
-      <input type="date" id="dateEnd" />
-  
-      <label>Location:</label>
-      <select id="filterLocation">
-        <option value="">All</option>
-      </select>
-  
-      <label>Habitat:</label>
-      <select id="filterHabitat">
-        <option value="">All</option>
-      </select>
-  
-      <label>Data Source:</label>
-      <select id="filterDataSource">
-        <option value="">All</option>
-      </select>
-  
-      <label>Recorders:</label>
-      <select id="filterRecorders">
-        <option value="">All</option>
-      </select>
-  
-      <label>Family:</label>
-      <select id="filterFamily">
-        <option value="">All</option>
-      </select>
-  
-      <label>Genus:</label>
-      <select id="filterGenus">
-        <option value="">All</option>
-      </select>
-  
-      <label>Species:</label>
-      <select id="filterSpecies">
-        <option value="">All</option>
-      </select>
-  
-      <label>Common Name (Eng):</label>
-      <select id="filterCommonEng">
-        <option value="">All</option>
-      </select>
-  
-      <label>Common Name (Chi):</label>
-      <select id="filterCommonChi">
-        <option value="">All</option>
-      </select>
-  
+    
+      <div class="form-group">
+        <label for="dateStart">Date Range:</label>
+        <input type="date" id="dateStart" class="form-control" />
+        <input type="date" id="dateEnd" class="form-control" />
+      </div>
+    
+      <div class="form-group">
+        <label for="filterLocation">Location:</label>
+        <select id="filterLocation" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterHabitat">Habitat:</label>
+        <select id="filterHabitat" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterDataSource">Data Source:</label>
+        <select id="filterDataSource" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterRecorders">Recorders:</label>
+        <select id="filterRecorders" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterFamily">Family:</label>
+        <select id="filterFamily" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterGenus">Genus:</label>
+        <select id="filterGenus" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterSpecies">Species:</label>
+        <select id="filterSpecies" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterCommonEng">Common Name (Eng):</label>
+        <select id="filterCommonEng" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="filterCommonChi">Common Name (Chi):</label>
+        <select id="filterCommonChi" class="form-control">
+          <option value="">All</option>
+        </select>
+      </div>
+    
       <button id="batFilterSearch">Search</button>
     </div>
     <div id="map" style="position: relative;">
