@@ -275,23 +275,18 @@ select {
 }
 
 #bat-filter-panel {
-  width: 280px;
-  background-color: #fff;
-  padding: 20px;
-  border-right: 1px solid #ccc;
+  padding: 16px;
+  width: 320px;
+  background: #fafafa;
+  border-right: 1px solid #ddd;
   overflow-y: auto;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  max-height: 100vh;
 }
 
 #bat-filter-panel h3 {
   margin-top: 0;
   font-size: 16px;
   font-weight: bold;
-}
-
-.form-group {
-  margin-bottom: 16px;
 }
 
 #bat-filter-panel.collapsed {
@@ -304,27 +299,28 @@ select {
   align-items: center;
 }
 
-.form-group label {
-  display: block;
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.form-row label {
+  flex: 0 0 130px;
   font-size: 14px;
-  margin-bottom: 6px;
   color: #333;
 }
 
-.form-group select,
-.form-group input {
-  width: 100%;
+.form-control {
+  flex: 1;
   padding: 6px 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: #fff;
-  box-shadow: none;
-  appearance: none;
 }
 
-.form-group input[disabled],
-.form-group select[disabled] {
+.form-control:disabled {
   background-color: #f0f0f0;
   color: #999;
 }
