@@ -23,20 +23,29 @@ export async function initBatDataLayer(map, layersControl) {
   const batLayer = L.layerGroup(batMarkers);
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
-  // 加入 filter toggle
-  const toggleBtn = document.getElementById("toggleFilterPanel");
+  // ✅ Filter toggle 控制邏輯
   const filterPanel = document.getElementById("bat-filter-panel");
-  toggleBtn.addEventListener("click", () => {
-    filterPanel.classList.toggle("collapsed");
-  });
+  const arrowIcon = document.getElementById("filterToggleArrow");
+
+  if (arrowIcon && filterPanel) {
+    arrowIcon.addEventListener("click", () => {
+      const isCollapsed = filterPanel.classList.toggle("collapsed");
+      arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+    });
+  }
+
+  // ✅ 初始化 flatpickr（要確保 DOM 已加載完成）
+  if (typeof flatpickr !== "undefined") {
+    flatpickr("#dateStart", {
+      dateFormat: "Y-m-d",
+      maxDate: "today"
+    });
+
+    flatpickr("#dateEnd", {
+      dateFormat: "Y-m-d",
+      maxDate: "today"
+    });
+  } else {
+    console.warn("flatpickr not loaded");
+  }
 }
-
-flatpickr("#dateStart", {
-  dateFormat: "Y-m-d",
-  maxDate: "today"
-});
-
-flatpickr("#dateEnd", {
-  dateFormat: "Y-m-d",
-  maxDate: "today"
-});
