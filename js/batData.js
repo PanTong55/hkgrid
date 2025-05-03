@@ -231,6 +231,39 @@ export async function initBatDataLayer(map, layersControl) {
     batLayer = L.layerGroup(batMarkers).addTo(map);
   });
 
+  document.getElementById("batFilterReset").addEventListener("click", () => {
+  for (const key in fieldMap) {
+    const select = document.getElementById("filter" + key);
+    if (select) {
+      // 清空再重建初始選單
+      select.innerHTML = "";
+      const optAll = document.createElement("option");
+      optAll.value = "";
+      optAll.textContent = "All";
+      select.appendChild(optAll);
+
+      (initialDropdownValues[key] || []).forEach(val => {
+        const opt = document.createElement("option");
+        opt.value = val;
+        opt.textContent = val;
+        select.appendChild(opt);
+      });
+
+      select.value = "";
+    }
+  }
+
+  // 日期清空
+  document.getElementById("dateStart").value = "";
+  document.getElementById("dateEnd").value = "";
+
+  // 觸發聯動更新（如需要）
+  ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
+    const select = document.getElementById("filter" + field);
+    if (select) select.dispatchEvent(new Event("change"));
+  });
+});
+
   const mapContainer = document.getElementById("map-container");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
