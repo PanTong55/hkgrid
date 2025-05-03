@@ -261,11 +261,11 @@ a.tooltip-close:hover {
   background: white;
 }
 
-input[type="text"],
-input[type="number"],
-textarea,
-select {
-  font-size: 16px !important;
+/* Filter panel */
+#main-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #map-container {
@@ -274,52 +274,46 @@ select {
   overflow: hidden;
 }
 
-#bat-filter-panel {
+.bat-filter {
   width: 300px;
-  background: #fff;
+  min-width: 260px;
+  background-color: #fff;
   border-right: 1px solid #ccc;
-  height: 100%;
-  overflow-y: auto;
   display: flex;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transition: all 0.3s ease;
-  z-index: 1000;
+  flex-direction: row;
+  transition: transform 0.3s ease;
+  z-index: 999;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 }
 
-#filter-toggle-bar {
-  width: 20px;
-  background-color: #e6e6e6;
+/* ▶️ Toggle Bar */
+.toggle-bar {
+  width: 30px;
+  background: #f3f3f3;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-}
-
-.arrow-icon {
-  font-size: 12px;
+  border-left: 1px solid #ccc;
+  writing-mode: vertical-rl;
+  text-align: center;
   user-select: none;
+}
+#filterToggleArrow {
+  font-size: 14px;
 }
 
 .filter-content {
+  padding: 12px;
   flex: 1;
-  padding: 10px 14px;
-  transition: opacity 0.3s ease;
+  overflow-y: auto;
 }
 
-#bat-filter-panel.collapsed .filter-content {
-  display: none;
-}
 
 #bat-filter-panel h3 {
   margin-top: 0;
   font-size: 16px;
   font-weight: bold;
-}
-
-#bat-filter-panel.collapsed {
-  width: 20px;
 }
 
 .filter-header {
@@ -404,6 +398,5 @@ select {
 }
 
 #map {
-  flex-grow: 1;
-  position: relative;
+  flex: 1;
 }
