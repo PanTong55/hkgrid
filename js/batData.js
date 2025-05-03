@@ -26,10 +26,12 @@ export async function initBatDataLayer(map, layersControl) {
   const filterPanel = document.getElementById("bat-filter-panel");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
-
+  const mapContainer = document.getElementById("map-container");
+  
   toggleBar.addEventListener("click", () => {
     const isCollapsed = filterPanel.classList.toggle("collapsed");
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+    mapContainer.classList.toggle("collapsed", isCollapsed);
   });
 }
 
