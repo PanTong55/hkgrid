@@ -44,7 +44,9 @@ export async function initBatDataLayer(map, layersControl) {
   function updateLinkedDropdowns(changedField, selectedValue) {
     if (!linkage[changedField]) return;
   
-    // 篩選出與選定值相關的資料列
+    // 若選到 "All"，不做聯動更新，保留目前 dropdown 的全部內容
+    if (!selectedValue) return;
+  
     const filteredRows = rawData.filter(row => row[fieldMap[changedField]] === selectedValue);
   
     linkage[changedField].forEach(targetField => {
@@ -55,14 +57,12 @@ export async function initBatDataLayer(map, layersControl) {
       targetSelect.innerHTML = "";
   
       if (allowedValues.length === 1) {
-        // ✅ 唯一選項時，直接設為該值（無 "All"）
         const opt = document.createElement("option");
         opt.value = allowedValues[0];
         opt.textContent = allowedValues[0];
         targetSelect.appendChild(opt);
-        targetSelect.value = allowedValues[0]; // 自動選中
+        targetSelect.value = allowedValues[0];
       } else {
-        // ⬇️ 多於一個值時，加上 "All" 選項
         const allOpt = document.createElement("option");
         allOpt.value = "";
         allOpt.textContent = "All";
@@ -75,7 +75,6 @@ export async function initBatDataLayer(map, layersControl) {
           targetSelect.appendChild(opt);
         });
   
-        // 自動設為 "All"
         targetSelect.value = "";
       }
     });
