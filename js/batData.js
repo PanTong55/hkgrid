@@ -41,43 +41,98 @@ export async function initBatDataLayer(map, layersControl) {
     CommonChi: ["Species", "Genus", "Family", "CommonEng"]
   };
 
-  function updateLinkedDropdowns(changedField, selectedValue) {
-    if (!linkage[changedField]) return;
+  function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
+    const getEl = id => document.getElementById("filter" + id);
   
-    // 若選到 "All"，不做聯動更新，保留目前 dropdown 的全部內容
-    if (!selectedValue) return;
+    const allFields = ["Family", "Genus", "Species", "CommonEng", "CommonChi"];
+    const speciesFields = ["Species", "CommonEng", "CommonChi"];
+    const fullFields = [...allFields];
   
-    const filteredRows = rawData.filter(row => row[fieldMap[changedField]] === selectedValue);
-  
-    linkage[changedField].forEach(targetField => {
-      const targetSelect = document.getElementById("filter" + targetField);
-      const allowedValues = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))];
-  
-      // 清空 dropdown
-      targetSelect.innerHTML = "";
-  
-      if (allowedValues.length === 1) {
+    function setOptions(selectEl, values) {
+      selectEl.innerHTML = "";
+      if (values.length > 1) {
         const opt = document.createElement("option");
-        opt.value = allowedValues[0];
-        opt.textContent = allowedValues[0];
-        targetSelect.appendChild(opt);
-        targetSelect.value = allowedValues[0];
-      } else {
-        const allOpt = document.createElement("option");
-        allOpt.value = "";
-        allOpt.textContent = "All";
-        targetSelect.appendChild(allOpt);
-  
-        allowedValues.sort().forEach(val => {
-          const opt = document.createElement("option");
-          opt.value = val;
-          opt.textContent = val;
-          targetSelect.appendChild(opt);
-        });
-  
-        targetSelect.value = "";
+        opt.value = "";
+        opt.textContent = "All";
+        selectEl.appendChild(opt);
       }
-    });
+      values.forEach(val => {
+        const opt = document.createElement("option");
+        opt.value = val;
+        opt.textContent = val;
+        selectEl.appendChild(opt);
+      });
+    }
+  
+    // 當 Family 為 All ➜ 全部重置為 All
+    if (changedField === "Family" && !selectedValue) {
+      fullFields.forEach(f => {
+        setOptions(getEl(f), ["All"]);
+      });
+      return;
+    }
+  
+    // 當 Genus 為 All ➜ 清除 Genus, Species, Common Name (Eng/Chi)，根據 Family 更新
+    if (changedField === "Genus" && !selectedValue) {
+      ["Genus", ...speciesFields].forEach(f => setOptions(getEl(f), ["All"]));
+  
+      const currentFamily = getEl("Family").value;
+      if (!currentFamily) return;
+  
+      const filtered = rawData.filter(r => r[fieldMap["Family"]] === currentFamily);
+      const genusSet = [...new Set(filtered.map(r => r[fieldMap["Genus"]]).filter(Boolean))].sort();
+      setOptions(getEl("Genus"), genusSet.length ? genusSet : ["All"]);
+      return;
+    }
+  
+    // 當 Species/Common Name 為 All ➜ 清除三個 dropdown，根據 Family+Genus 更新
+    if (speciesFields.includes(changedField) && !selectedValue) {
+      speciesFields.forEach(f => setOptions(getEl(f), ["All"]));
+  
+      const currentFamily = getEl("Family").value;
+      const currentGenus = getEl("Genus").value;
+  
+      let filtered = rawData;
+      if (currentFamily) {
+        filtered = filtered.filter(r => r[fieldMap["Family"]] === currentFamily);
+      }
+      if (currentGenus) {
+        filtered = filtered.filter(r => r[fieldMap["Genus"]] === currentGenus);
+      }
+  
+      const newSpecies = [...new Set(filtered.map(r => r[fieldMap["Species"]]).filter(Boolean))].sort();
+      const newEng = [...new Set(filtered.map(r => r[fieldMap["CommonEng"]]).filter(Boolean))].sort();
+      const newChi = [...new Set(filtered.map(r => r[fieldMap["CommonChi"]]).filter(Boolean))].sort();
+  
+      setOptions(getEl("Species"), newSpecies.length ? newSpecies : ["All"]);
+      setOptions(getEl("CommonEng"), newEng.length ? newEng : ["All"]);
+      setOptions(getEl("CommonChi"), newChi.length ? newChi : ["All"]);
+  
+      return;
+    }
+  
+    // 其他情況（有選擇特定值）時 ➜ 篩出對應 row，再反推其他欄位值
+    const filteredRows = rawData.filter(r => r[fieldMap[changedField]] === selectedValue);
+  
+    const targets = {
+      Family: ["Genus", ...speciesFields],
+      Genus: [...speciesFields],
+      Species: ["Family", "Genus", "CommonEng", "CommonChi"],
+      CommonEng: ["Family", "Genus", "Species", "CommonChi"],
+      CommonChi: ["Family", "Genus", "Species", "CommonEng"]
+    };
+  
+    if (targets[changedField]) {
+      targets[changedField].forEach(targetField => {
+        const vals = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))].sort();
+        setOptions(getEl(targetField), vals.length ? vals : ["All"]);
+  
+        // 自動選唯一值
+        if (vals.length === 1) {
+          getEl(targetField).value = vals[0];
+        }
+      });
+    }
   }
 
   ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
