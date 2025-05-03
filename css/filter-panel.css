@@ -14,6 +14,15 @@
   position: relative;
 }
 
+.filter-panel select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #bat-filter-panel {
   width: 320px;
   min-width: 300px;
