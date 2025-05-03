@@ -275,12 +275,41 @@ select {
 }
 
 #bat-filter-panel {
-  padding: 16px;
-  width: 320px;
-  background: #fafafa;
-  border-right: 1px solid #ddd;
+  width: 300px;
+  background: #fff;
+  border-right: 1px solid #ccc;
+  height: 100%;
   overflow-y: auto;
-  max-height: 100vh;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+#filter-toggle-bar {
+  width: 20px;
+  background-color: #e6e6e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  user-select: none;
+}
+
+.filter-content {
+  flex: 1;
+  padding: 10px 14px;
+  transition: opacity 0.3s ease;
+}
+
+#bat-filter-panel.collapsed .filter-content {
+  display: none;
 }
 
 #bat-filter-panel h3 {
@@ -290,7 +319,7 @@ select {
 }
 
 #bat-filter-panel.collapsed {
-  transform: translateX(-100%);
+  width: 20px;
 }
 
 .filter-header {
