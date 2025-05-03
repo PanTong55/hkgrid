@@ -126,10 +126,12 @@ export async function initBatDataLayer(map, layersControl) {
       targets[changedField].forEach(targetField => {
         const vals = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))].sort();
         setOptions(getEl(targetField), vals.length ? vals : ["All"]);
-  
-        // 自動選唯一值
+    
+        // ✅ 只剩一個選項 → 自動選取並觸發 change
         if (vals.length === 1) {
-          getEl(targetField).value = vals[0];
+          const el = getEl(targetField);
+          el.value = vals[0];
+          el.dispatchEvent(new Event("change"));
         }
       });
     }
