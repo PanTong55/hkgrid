@@ -19,7 +19,8 @@ export async function initBatDataLayer(map, layersControl) {
 
   for (const key in fieldMap) {
     const field = fieldMap[key];
-    const values = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort();
+    const values = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort()
+      .filter(val => val !== "All"); // 移除重複 All
     uniqueValues[key] = values;
     initialDropdownValues[key] = values;
 
@@ -125,7 +126,7 @@ export async function initBatDataLayer(map, layersControl) {
       const val = document.getElementById("filter" + key)?.value;
       if (val) currentFilters[key] = val;
     });
-    
+
     const filteredRows = rawData.filter(row =>
       Object.entries(currentFilters).every(([k, val]) => row[fieldMap[k]] === val)
     );
