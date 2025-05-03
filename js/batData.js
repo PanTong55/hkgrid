@@ -48,4 +48,4 @@ toggleBar.addEventListener("click", () => {
   } else {
     console.warn("flatpickr not loaded");
   }
-}
+
