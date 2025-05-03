@@ -46,8 +46,8 @@
 
 .bat-filter-panel select {
   display: block;
-  width: 100%;
-  max-width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
   box-sizing: border-box;
   white-space: nowrap;
   text-overflow: ellipsis;
