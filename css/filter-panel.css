@@ -30,6 +30,7 @@
   background: white;
   z-index: 10;
   overflow: hidden;
+  overflow-x: hidden;
 }
 
 #bat-filter-panel.collapsed {
@@ -44,14 +45,14 @@
   left: 0;
 }
 
-.bat-filter-panel select {
-  display: block;
-  width: 100% !important;
-  max-width: 100% !important;
+#bat-filter-panel select.form-control {
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 
 #filter-toggle-bar {
