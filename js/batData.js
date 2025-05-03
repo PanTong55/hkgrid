@@ -143,22 +143,23 @@ export async function initBatDataLayer(map, layersControl) {
       CommonChi: ["Family", "Genus", "Species", "CommonEng"]
     };
   
-    if (targets[changedField]) {
-      targets[changedField].forEach(targetField => {
-        const vals = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))].sort();
-        
-        if (vals.length === 1) {
-          const el = getEl(targetField);
-          setOptions(el, vals);
-          el.value = vals[0];
-          el.dispatchEvent(new Event("change"));
-        } else {
-          setOptions(getEl(targetField), vals);
-        }
-      });
+if (targets[changedField]) {
+  targets[changedField].forEach(targetField => {
+    const el = getEl(targetField);
+
+    // ✅ 只根據當前 filteredRows 建立對應欄位選單
+    const vals = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))].sort();
+
+    // ✅ 完整覆蓋 dropdown：All + 所有可能值（若多個）
+    setOptions(el, vals);
+
+    // ✅ 若唯一值，自動選取並觸發 change
+    if (vals.length === 1) {
+      el.value = vals[0];
+      el.dispatchEvent(new Event("change"));
     }
-    triggeredFields.delete(changedField);
-  }
+  });
+}
 
   ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
     const select = document.getElementById("filter" + field);
