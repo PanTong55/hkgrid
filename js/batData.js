@@ -30,6 +30,10 @@ export async function initBatDataLayer(map, layersControl) {
   toggleBar.addEventListener("click", () => {
     const isCollapsed = mapContainer.classList.toggle("collapsed");
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300); // 等 CSS transition 完成後再做    
   });
 }
 
