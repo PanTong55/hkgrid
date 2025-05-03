@@ -142,12 +142,10 @@ export async function initBatDataLayer(map, layersControl) {
       targets[changedField].forEach(targetField => {
         const el = getEl(targetField);
         const vals = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))].sort();
+        setOptions(el, vals);
         if (vals.length === 1) {
-          setOptions(el, vals);
           el.value = vals[0];
           el.dispatchEvent(new Event("change"));
-        } else {
-          setOptions(el, vals);
         }
       });
     }
