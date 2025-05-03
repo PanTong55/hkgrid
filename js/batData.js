@@ -30,3 +30,13 @@ export async function initBatDataLayer(map, layersControl) {
     filterPanel.classList.toggle("collapsed");
   });
 }
+
+flatpickr("#dateStart", {
+  dateFormat: "Y-m-d",
+  maxDate: "today"
+});
+
+flatpickr("#dateEnd", {
+  dateFormat: "Y-m-d",
+  maxDate: "today"
+});
