@@ -271,26 +271,16 @@ a.tooltip-close:hover {
 #map-container {
   display: flex;
   height: 100vh;
-  overflow: hidden;
 }
 
 #bat-filter-panel {
   width: 320px;
-  min-width: 260px;
-  background: #fff;
-  height: 100vh;
-  overflow-y: auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #ccc;
+  min-width: 320px;
   transition: transform 0.3s ease;
-  z-index: 999;
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 }
 
 #bat-filter-panel.collapsed {
-  transform: translateX(-100%);
+  transform: translateX(-296px); /* 留下 24px toggle-bar */
 }
 
 #filter-toggle-bar {
@@ -317,15 +307,11 @@ a.tooltip-close:hover {
   width: 24px;
   height: 100%;
   background: #eee;
-  border-left: 1px solid #ccc;
-  position: absolute;
-  right: 0;
-  top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
+  z-index: 2;
 }
 
 .arrow-icon {
@@ -383,7 +369,6 @@ a.tooltip-close:hover {
 /* 地圖佈局處理 */
 #map {
   flex: 1;
-  height: 100vh;
   width: auto !important;
 }
 
