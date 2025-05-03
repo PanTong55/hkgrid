@@ -22,9 +22,11 @@ export async function initBatDataLayer(map, layersControl) {
 
   // Dropdown 之間的聯動規則
   const linkage = {
-    Species: ["Family", "Genus"],
-    Genus: ["Family"],
-    Family: ["Genus", "Species"],
+    Species: ["Family", "Genus", "CommonName_Eng", "CommonName_Chi"],
+    Genus: ["Family", "Species", "CommonName_Eng", "CommonName_Chi"],
+    Family: ["Genus", "Species", "CommonName_Eng", "CommonName_Chi"],
+    CommonName_Eng: ["Species", "Genus", "Family", "CommonName_Chi"],
+    CommonName_Chi: ["Species", "Genus", "Family", "CommonName_Eng"]
   };
 
   function updateLinkedDropdowns(changedField, selectedValue) {
@@ -49,7 +51,7 @@ export async function initBatDataLayer(map, layersControl) {
   }
 
   // 設定 onchange 監聽器
-  ["Species", "Genus", "Family"].forEach(field => {
+  ["Family", "Genus", "Species", "CommonName_Eng", "CommonName_Chi"].forEach(field => {
     const select = document.getElementById("filter" + field);
     select.addEventListener("change", (e) => {
       updateLinkedDropdowns(field, e.target.value);
