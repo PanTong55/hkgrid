@@ -270,33 +270,35 @@ a.tooltip-close:hover {
 
 #map-container {
   display: flex;
+  width: 100%;
   height: 100vh;
+  overflow: hidden;
 }
 
 #bat-filter-panel {
-  width: 320px;
-  min-width: 320px;
-  transition: transform 0.3s ease;
+  width: 300px;
+  transition: width 0.3s ease;
 }
 
 #bat-filter-panel.collapsed {
-  transform: translateX(-296px); /* 留下 24px toggle-bar */
+  width: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 #filter-toggle-bar {
-  position: absolute;
-  left: 320px;  /* 固定位置，不被 collapse 影響 */
-  top: 0;
-  width: 24px;
+  width: 20px;
   height: 100vh;
   background: #eee;
-  border-right: 1px solid #ccc;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
   cursor: pointer;
-  transition: left 0.3s;
+  z-index: 1000;
+  position: absolute;
+  left: 300px; /* 與 panel 寬度一致 */
+  top: 0;
+  transition: left 0.3s ease;
 }
 
 #bat-filter-panel.collapsed + #filter-toggle-bar {
@@ -358,7 +360,8 @@ a.tooltip-close:hover {
 /* 地圖佈局處理 */
 #map {
   flex: 1;
-  width: auto !important;
+  transition: width 0.3s ease;
+  position: relative;
 }
 
 .form-row.date-range {
