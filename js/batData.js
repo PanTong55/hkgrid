@@ -66,7 +66,7 @@ export async function initBatDataLayer(map, layersControl) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
-        select.appendChild(opt);
+        selectEl.appendChild(opt);
       });
     }
 
@@ -188,6 +188,7 @@ export async function initBatDataLayer(map, layersControl) {
     }));
 
   let batLayer = L.layerGroup(batMarkers);
+  // 只加入控制面板，不加入地圖
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
@@ -228,18 +229,6 @@ export async function initBatDataLayer(map, layersControl) {
       fillOpacity: 0.8
     }));
     batLayer = L.layerGroup(batMarkers).addTo(map);
-  });
-
-  document.getElementById("batFilterReset").addEventListener("click", () => {
-    for (const key in fieldMap) {
-      const select = document.getElementById("filter" + key);
-      if (select) {
-        select.value = "";
-        select.dispatchEvent(new Event("change"));
-      }
-    }
-    document.getElementById("dateStart").value = "";
-    document.getElementById("dateEnd").value = "";
   });
 
   const mapContainer = document.getElementById("map-container");
