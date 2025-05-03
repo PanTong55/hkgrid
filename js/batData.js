@@ -120,7 +120,15 @@ export async function initBatDataLayer(map, layersControl) {
       return;
     }
 
-    const filteredRows = rawData.filter(r => r[fieldMap[changedField]] === selectedValue);
+    const currentFilters = {};
+    ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(key => {
+      const val = document.getElementById("filter" + key)?.value;
+      if (val) currentFilters[key] = val;
+    });
+    
+    const filteredRows = rawData.filter(row =>
+      Object.entries(currentFilters).every(([k, val]) => row[fieldMap[k]] === val)
+    );
     const targets = {
       Family: ["Genus", ...speciesFields],
       Genus: [...speciesFields],
