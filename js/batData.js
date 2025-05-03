@@ -24,15 +24,18 @@ export async function initBatDataLayer(map, layersControl) {
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
   // ✅ Filter toggle 控制邏輯
-const filterPanel = document.getElementById("bat-filter-panel");
-const toggleBar = document.getElementById("filter-toggle-bar");
-const arrowIcon = document.getElementById("filterToggleArrow");
-
-toggleBar.addEventListener("click", () => {
-  const isCollapsed = filterPanel.classList.toggle("collapsed");
-  arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-});
-  }
+  document.addEventListener("DOMContentLoaded", () => {
+    const filterPanel = document.getElementById("bat-filter-panel");
+    const toggleBar = document.getElementById("filter-toggle-bar");
+    const arrowIcon = document.getElementById("filterToggleArrow");
+  
+    if (toggleBar && arrowIcon && filterPanel) {
+      toggleBar.addEventListener("click", () => {
+        const isCollapsed = filterPanel.classList.toggle("collapsed");
+        arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+      });
+    }
+  });
 
   // ✅ 初始化 flatpickr（要確保 DOM 已加載完成）
   if (typeof flatpickr !== "undefined") {
