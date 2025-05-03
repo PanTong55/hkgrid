@@ -17,17 +17,37 @@ export async function initBatDataLayer(map, layersControl) {
   const uniqueValues = {};
   const initialDropdownValues = {};
 
+  function setOptions(selectEl, values) {
+    selectEl.innerHTML = "";
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "All";
+    selectEl.appendChild(opt);
+    values.forEach(val => {
+      const opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = val;
+      selectEl.appendChild(opt);
+    });
+  }
+
   for (const key in fieldMap) {
     const field = fieldMap[key];
-    let values;
+    let values = [];
 
     if (key === "Habitat") {
-      values = [...new Set(
-        rawData.flatMap(d => (d[field] || "").split(", ").map(s => s.trim()))
-      )].filter(Boolean).sort();
+      const habitatSet = new Set();
+      rawData.forEach(d => {
+        if (d[field]) {
+          d[field].split(",").forEach(part => {
+            const trimmed = part.trim();
+            if (trimmed) habitatSet.add(trimmed);
+          });
+        }
+      });
+      values = Array.from(habitatSet).sort();
     } else {
-      values = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort()
-        .filter(val => val !== "All");
+      values = [...new Set(rawData.map(d => d[field]).filter(Boolean).filter(v => v !== "All"))].sort();
     }
 
     uniqueValues[key] = values;
@@ -35,17 +55,7 @@ export async function initBatDataLayer(map, layersControl) {
 
     const select = document.getElementById("filter" + key);
     if (select) {
-      const optAll = document.createElement("option");
-      optAll.value = "";
-      optAll.textContent = "All";
-      select.appendChild(optAll);
-
-      values.forEach(val => {
-        const opt = document.createElement("option");
-        opt.value = val;
-        opt.textContent = val;
-        select.appendChild(opt);
-      });
+      setOptions(select, values);
     }
   }
 
@@ -59,24 +69,9 @@ export async function initBatDataLayer(map, layersControl) {
     if (triggeredFields.has(changedField)) return;
     triggeredFields.add(changedField);
 
-    function setOptions(selectEl, values) {
-      selectEl.innerHTML = "";
-      const opt = document.createElement("option");
-      opt.value = "";
-      opt.textContent = "All";
-      selectEl.appendChild(opt);
-      values.forEach(val => {
-        const opt = document.createElement("option");
-        opt.value = val;
-        opt.textContent = val;
-        selectEl.appendChild(opt);
-      });
-    }
-
     if (changedField === "Family" && !selectedValue) {
       allFields.forEach(f => {
-        const allValues = initialDropdownValues[f] || [];
-        setOptions(getEl(f), allValues);
+        setOptions(getEl(f), initialDropdownValues[f] || []);
       });
       triggeredFields.delete(changedField);
       return;
@@ -84,8 +79,7 @@ export async function initBatDataLayer(map, layersControl) {
 
     if (changedField === "Genus" && !selectedValue) {
       ["Genus", ...speciesFields].forEach(f => {
-        const allValues = initialDropdownValues[f] || [];
-        setOptions(getEl(f), allValues);
+        setOptions(getEl(f), initialDropdownValues[f] || []);
       });
 
       const currentFamily = getEl("Family").value;
@@ -103,8 +97,7 @@ export async function initBatDataLayer(map, layersControl) {
 
     if (speciesFields.includes(changedField) && !selectedValue) {
       speciesFields.forEach(f => {
-        const allValues = initialDropdownValues[f] || [];
-        setOptions(getEl(f), allValues);
+        setOptions(getEl(f), initialDropdownValues[f] || []);
       });
 
       const currentFamily = getEl("Family").value;
@@ -139,6 +132,7 @@ export async function initBatDataLayer(map, layersControl) {
     const filteredRows = rawData.filter(row =>
       Object.entries(currentFilters).every(([k, val]) => row[fieldMap[k]] === val)
     );
+
     const targets = {
       Family: ["Genus", ...speciesFields],
       Genus: [...speciesFields],
@@ -164,7 +158,7 @@ export async function initBatDataLayer(map, layersControl) {
     triggeredFields.delete(changedField);
   }
 
-  ["Family", "Genus", "Species", "CommonEng", "CommonChi", "Habitat"].forEach(field => {
+  ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
     const select = document.getElementById("filter" + field);
     if (select) {
       select.addEventListener("change", e => {
@@ -208,7 +202,8 @@ export async function initBatDataLayer(map, layersControl) {
         Object.entries(filters).every(([k, val]) => {
           if (!val) return true;
           if (k === "Habitat") {
-            return row[fieldMap[k]]?.split(", ").map(s => s.trim()).includes(val);
+            const cell = row[fieldMap[k]] || "";
+            return cell.split(",").map(v => v.trim()).includes(val);
           }
           return row[fieldMap[k]] === val;
         }) &&
