@@ -273,11 +273,15 @@ a.tooltip-close:hover {
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 #bat-filter-panel {
   width: 300px;
+  min-width: 300px;
   transition: width 0.3s ease;
+  background: white;
+  z-index: 10;
 }
 
 #bat-filter-panel.collapsed {
@@ -288,16 +292,12 @@ a.tooltip-close:hover {
 
 #filter-toggle-bar {
   width: 20px;
-  height: 100vh;
   background: #eee;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 1000;
-  position: absolute;
-  left: 300px; /* 與 panel 寬度一致 */
-  top: 0;
+  z-index: 20;
   transition: left 0.3s ease;
 }
 
