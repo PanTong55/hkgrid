@@ -35,6 +35,13 @@
   left: 0;
 }
 
+.bat-filter-panel select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 #filter-toggle-bar {
   width: 20px;
   background: #eee;
