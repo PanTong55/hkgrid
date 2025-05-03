@@ -1,23 +1,65 @@
-let allBatData = [];
-let batLayer = null;
-
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
   const rawData = await response.json();
 
-  allBatData = rawData.filter(d => d.Latitude && d.Longitude);
+  // 整理 dropdown options（所有欄位唯一值）
+  const uniqueValues = {};
+  const filterFields = [
+    "Location", "Habitat", "DataSource", "Recorders",
+    "Family", "Genus", "Species", "CommonName_Eng", "CommonName_Chi"
+  ];
 
-  populateFilterOptions(allBatData);
-  renderBatMarkers(allBatData, map, layersControl);
+  filterFields.forEach(field => {
+    uniqueValues[field] = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort();
+    const select = document.getElementById("filter" + field);
+    uniqueValues[field].forEach(val => {
+      const opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = val;
+      select.appendChild(opt);
+    });
+  });
 
-  setupFilterToggle(map);
-  setupFilterSearch(map, layersControl);
-}
+  // Dropdown 之間的聯動規則
+  const linkage = {
+    Species: ["Family", "Genus"],
+    Genus: ["Family"],
+    Family: ["Genus", "Species"],
+  };
 
-function renderBatMarkers(data, map, layersControl) {
-  const seen = new Set();
+  function updateLinkedDropdowns(changedField, selectedValue) {
+    if (!linkage[changedField]) return;
 
-  const markers = data
+    // 篩選出與選定值相關的資料列
+    const filteredRows = rawData.filter(row => row[changedField] === selectedValue);
+
+    linkage[changedField].forEach(targetField => {
+      const targetSelect = document.getElementById("filter" + targetField);
+      const allowedValues = [...new Set(filteredRows.map(r => r[targetField]).filter(Boolean))];
+
+      // 保留第一個 "All" 選項
+      targetSelect.innerHTML = '<option value="">All</option>';
+      allowedValues.sort().forEach(val => {
+        const opt = document.createElement("option");
+        opt.value = val;
+        opt.textContent = val;
+        targetSelect.appendChild(opt);
+      });
+    });
+  }
+
+  // 設定 onchange 監聽器
+  ["Species", "Genus", "Family"].forEach(field => {
+    const select = document.getElementById("filter" + field);
+    select.addEventListener("change", (e) => {
+      updateLinkedDropdowns(field, e.target.value);
+    });
+  });
+
+  // 建立 bat 標記圖層（初始載入）
+  let seen = new Set();
+  let batMarkers = rawData
+    .filter(d => d.Latitude && d.Longitude)
     .filter(d => {
       const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
       if (seen.has(key)) return false;
@@ -32,69 +74,56 @@ function renderBatMarkers(data, map, layersControl) {
       fillOpacity: 0.8,
     }));
 
-  if (batLayer) {
-    batLayer.clearLayers();
-  }
+  let batLayer = L.layerGroup(batMarkers).addTo(map);
+  layersControl.addOverlay(batLayer, 'All Bat Data');
 
-  batLayer = L.layerGroup(markers).addTo(map);
-  if (!layersControl._layers['All Bat Data']) {
-    layersControl.addOverlay(batLayer, 'All Bat Data');
-  }
-}
-
-function populateFilterOptions(data) {
-  const fields = [
-    { id: "filterLocation", key: "Location" },
-    { id: "filterHabitat", key: "Habitat" },
-    { id: "filterDataSource", key: "Data Source" },
-    { id: "filterRecorders", key: "Recorders" },
-    { id: "filterFamily", key: "Family" },
-    { id: "filterGenus", key: "Genus" },
-    { id: "filterSpecies", key: "Species" },
-    { id: "filterCommonEng", key: "Common Name (Eng)" },
-    { id: "filterCommonChi", key: "Common Name (Chi)" }
-  ];
-
-  fields.forEach(({ id, key }) => {
-    const select = document.getElementById(id);
-    const values = [...new Set(data.map(d => d[key]).filter(Boolean))].sort();
-    values.forEach(v => {
-      const option = document.createElement("option");
-      option.value = v;
-      option.textContent = v;
-      select.appendChild(option);
-    });
-  });
-}
-
-function setupFilterSearch(map, layersControl) {
+  // Search 按鈕邏輯
   document.getElementById("batFilterSearch").addEventListener("click", () => {
-    const dateStart = document.getElementById("dateStart").value;
-    const dateEnd = document.getElementById("dateEnd").value;
-
     const filters = {
       Location: document.getElementById("filterLocation").value,
       Habitat: document.getElementById("filterHabitat").value,
-      "Data Source": document.getElementById("filterDataSource").value,
+      DataSource: document.getElementById("filterDataSource").value,
       Recorders: document.getElementById("filterRecorders").value,
       Family: document.getElementById("filterFamily").value,
       Genus: document.getElementById("filterGenus").value,
       Species: document.getElementById("filterSpecies").value,
-      "Common Name (Eng)": document.getElementById("filterCommonEng").value,
-      "Common Name (Chi)": document.getElementById("filterCommonChi").value,
+      CommonName_Eng: document.getElementById("filterCommonEng").value,
+      CommonName_Chi: document.getElementById("filterCommonChi").value,
+      DateStart: document.getElementById("dateStart").value,
+      DateEnd: document.getElementById("dateEnd").value,
     };
 
-    const filtered = allBatData.filter(d => {
-      const dateOk = (!dateStart || d.Date >= dateStart) && (!dateEnd || d.Date <= dateEnd);
-      const matchAll = Object.entries(filters).every(([key, val]) => !val || d[key] === val);
-      return dateOk && matchAll;
-    });
+    seen = new Set();
+    const filtered = rawData
+      .filter(row => {
+        return Object.entries(filters).every(([key, val]) => {
+          if (!val || key === "DateStart" || key === "DateEnd") return true;
+          return row[key] === val;
+        }) &&
+        (!filters.DateStart || row.Date >= filters.DateStart) &&
+        (!filters.DateEnd || row.Date <= filters.DateEnd);
+      })
+      .filter(d => d.Latitude && d.Longitude)
+      .filter(d => {
+        const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
 
-    renderBatMarkers(filtered, map, layersControl);
+    // 移除舊圖層，重建
+    map.removeLayer(batLayer);
+    batMarkers = filtered.map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
+      radius: 4,
+      fillColor: '#FFD700',
+      color: '#FFD700',
+      weight: 1,
+      fillOpacity: 0.8,
+    }));
+    batLayer = L.layerGroup(batMarkers).addTo(map);
   });
-}
 
-function setupFilterToggle(map) {
+  // ✅ Filter Toggle 控制邏輯
   const mapContainer = document.getElementById("map-container");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
@@ -104,8 +133,15 @@ function setupFilterToggle(map) {
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
     setTimeout(() => map.invalidateSize(), 300);
   });
-}
 
-// 日期選擇器初始化
-flatpickr("#dateStart", { dateFormat: "Y-m-d", maxDate: "today" });
-flatpickr("#dateEnd", { dateFormat: "Y-m-d", maxDate: "today" });
+  // ✅ flatpickr 日期初始化
+  flatpickr("#dateStart", {
+    dateFormat: "Y-m-d",
+    maxDate: "today"
+  });
+
+  flatpickr("#dateEnd", {
+    dateFormat: "Y-m-d",
+    maxDate: "today"
+  });
+}
