@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <link rel="apple-touch-icon" href="./image/favicon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="香港蝙蝠地圖">
+    <link rel="apple-touch-icon" href="./image/favicon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="香港蝙蝠地圖" />
     <title>香港蝙蝠地圖</title>
     <link rel="icon" href="./image/favicon.ico" type="image/x-icon" />
     <link href="https://unpkg.com/leaflet/dist/leaflet.css" rel="stylesheet" />
@@ -19,100 +19,118 @@
   </head>
 
   <body>
-  <div id="map-container">
-    <div id="bat-filter-panel" class="bat-filter">
-      <div id="filter-toggle-bar" class="toggle-bar">
-        <span class="arrow-icon" id="filterToggleArrow">◀</span>
-      </div>
-      <div class="filter-content">
-      <h3>All Bat Data Filter</h3>
-      <div class="form-row">
-        <label for="dateStart">Date Range:</label>
-        <input type="date" id="dateStart" class="form-control" />
-      </div>
-      <div class="form-row">
-        <label for="dateEnd">&nbsp;</label>
-        <input type="date" id="dateEnd" class="form-control" />
-      </div>
-      
-      <div class="form-row">
-        <label for="filterLocation">Location:</label>
-        <select id="filterLocation" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterHabitat">Habitat:</label>
-        <select id="filterHabitat" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterDataSource">Data Source:</label>
-        <select id="filterDataSource" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterRecorders">Recorders:</label>
-        <select id="filterRecorders" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterFamily">Family:</label>
-        <select id="filterFamily" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterGenus">Genus:</label>
-        <select id="filterGenus" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterSpecies">Species:</label>
-        <select id="filterSpecies" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterCommonEng">Common Name (Eng):</label>
-        <select id="filterCommonEng" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label for="filterCommonChi">Common Name (Chi):</label>
-        <select id="filterCommonChi" class="form-control"><option value="">All</option></select>
-      </div>
-      
-      <div class="form-row">
-        <label>&nbsp;</label>
-        <button id="batFilterSearch" class="form-control">Search</button>
-      </div>
-      </div>  
-    </div>
-    <div id="map" style="position: relative;">
-      <div id="coord-scale-wrapper">
-        <div class="crs-selector">
-          <select id="crsMode">
-            <option value="hk1980"> HK1980 </option>
-            <option value="wgs84"> WGS84 </option>
-          </select>
-          <span id="mouseCoords">X: –, Y: –</span>
+    <div id="map-container">
+      <div id="bat-filter-panel" class="bat-filter">
+        <div class="filter-content">
+          <h3>All Bat Data Filter</h3>
+          <div class="form-row">
+            <label for="dateStart">Date Range:</label>
+            <input type="date" id="dateStart" class="form-control" />
+          </div>
+          <div class="form-row">
+            <label for="dateEnd">&nbsp;</label>
+            <input type="date" id="dateEnd" class="form-control" />
+          </div>
+
+          <div class="form-row">
+            <label for="filterLocation">Location:</label>
+            <select id="filterLocation" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterHabitat">Habitat:</label>
+            <select id="filterHabitat" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterDataSource">Data Source:</label>
+            <select id="filterDataSource" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterRecorders">Recorders:</label>
+            <select id="filterRecorders" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterFamily">Family:</label>
+            <select id="filterFamily" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterGenus">Genus:</label>
+            <select id="filterGenus" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterSpecies">Species:</label>
+            <select id="filterSpecies" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterCommonEng">Common Name (Eng):</label>
+            <select id="filterCommonEng" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="filterCommonChi">Common Name (Chi):</label>
+            <select id="filterCommonChi" class="form-control">
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>&nbsp;</label>
+            <button id="batFilterSearch" class="form-control">Search</button>
+          </div>
         </div>
       </div>
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="fullscreenBtn" style="top: 95px; left: 10px;" title="Full Screen"> <i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i> </a>
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="homeBtn" style="top: 130px; left: 10px;" title="Go Home"> <i data-lucide="home" style="width: 14px; height: 14px; color: black;"></i> </a>
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="gotoToggleBtn" style="top: 165px; left: 10px;" title="Go To Point"> <i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i> </a>
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="drawPointBtn" style="top: 200px; left: 10px;" title="Draw Point"> <i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i> </a>
-      <a class="leaflet-control leaflet-bar single-btn" href="#" id="locateBtn" style="top: 235px; left: 10px;" title="Navigation"> <i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i> </a>
-      <div id="gotoPanel" class="goto-panel">
-        <h4 style="margin-top: 0;">Go To Point</h4>
-        <div class="goto-row"><input id="modeHK" name="coordMode" type="radio" value="hk1980" /> <label for="modeHK">Easting (X):</label> <input id="inputX" placeholder="828988" type="number" /></div>
-        <div class="goto-row"><span></span> <label>Northing (Y):</label> <input id="inputY" placeholder="824199" type="number" /></div>
-        <div class="goto-row"><input id="modeWGS" name="coordMode" type="radio" value="wgs84" /> <label for="modeWGS">Latitude:</label> <input id="inputLat" placeholder="22.356" type="number" /></div>
-        <div class="goto-row"><span></span> <label>Longitude:</label> <input id="inputLng" placeholder="114.101" type="number" /></div>
-        <button id="clearBtn" style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button>
-        <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
+      <div id="filter-toggle-bar" class="toggle-bar">
+        <span class="arrow-icon" id="filterToggleArrow">◀</span>
+      </div>      
+      <div id="map" style="position: relative;">
+        <div id="coord-scale-wrapper">
+          <div class="crs-selector">
+            <select id="crsMode">
+              <option value="hk1980"> HK1980 </option>
+              <option value="wgs84"> WGS84 </option>
+            </select>
+            <span id="mouseCoords">X: –, Y: –</span>
+          </div>
+        </div>
+        <a class="leaflet-control leaflet-bar single-btn" href="#" id="fullscreenBtn" style="top: 95px; left: 10px;" title="Full Screen"> <i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i> </a>
+        <a class="leaflet-control leaflet-bar single-btn" href="#" id="homeBtn" style="top: 130px; left: 10px;" title="Go Home"> <i data-lucide="home" style="width: 14px; height: 14px; color: black;"></i> </a>
+        <a class="leaflet-control leaflet-bar single-btn" href="#" id="gotoToggleBtn" style="top: 165px; left: 10px;" title="Go To Point"> <i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i> </a>
+        <a class="leaflet-control leaflet-bar single-btn" href="#" id="drawPointBtn" style="top: 200px; left: 10px;" title="Draw Point"> <i data-lucide="map-pin" style="width: 14px; height: 14px; color: black;"></i> </a>
+        <a class="leaflet-control leaflet-bar single-btn" href="#" id="locateBtn" style="top: 235px; left: 10px;" title="Navigation"> <i data-lucide="navigation" style="width: 14px; height: 14px; color: black;"></i> </a>
+        <div id="gotoPanel" class="goto-panel">
+          <h4 style="margin-top: 0;">Go To Point</h4>
+          <div class="goto-row"><input id="modeHK" name="coordMode" type="radio" value="hk1980" /> <label for="modeHK">Easting (X):</label> <input id="inputX" placeholder="828988" type="number" /></div>
+          <div class="goto-row"><span></span> <label>Northing (Y):</label> <input id="inputY" placeholder="824199" type="number" /></div>
+          <div class="goto-row"><input id="modeWGS" name="coordMode" type="radio" value="wgs84" /> <label for="modeWGS">Latitude:</label> <input id="inputLat" placeholder="22.356" type="number" /></div>
+          <div class="goto-row"><span></span> <label>Longitude:</label> <input id="inputLng" placeholder="114.101" type="number" /></div>
+          <button id="clearBtn" style="border: none; padding: 6px 12px; border-radius: 6px; margin-right: 8px;">Clear All Point</button>
+          <button id="goBtn" style="color: white; border: none; padding: 6px 20px; border-radius: 6px;">Go</button>
+        </div>
+        <div id="hoverTooltip" class="hover-tooltip"></div>
       </div>
-      <div id="hoverTooltip" class="hover-tooltip"></div>
     </div>
-  </div>
 
     <p id="last-modified" style="text-align: center; font-size: 12px; color: gray; margin-top: 30px;"></p>
     <!-- Proj4 轉換工具 -->
@@ -145,7 +163,7 @@
       document.getElementById("last-modified").textContent = "最後修改時間：" + formatted;
 
       // 其餘模組初始化
-      import("./js/batGrid.js").then(m => m.initBatGrid(map, layersControl));
+      import("./js/batGrid.js").then((m) => m.initBatGrid(map, layersControl));
       import("./js/fullscreen.js").then(({ openFullscreen, closeFullscreen, setupFullscreenEvents, handleFullscreenChange, isFullscreen }) => {
         const fullscreenBtn = document.getElementById("fullscreenBtn");
         const mapContainer = document.getElementById("map");
@@ -159,28 +177,29 @@
         });
 
         setupFullscreenEvents(() => {
-          fullscreenBtn.innerHTML = isFullscreen()
-            ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>'
-            : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
+          fullscreenBtn.innerHTML = isFullscreen() ? '<i data-lucide="minimize" style="width: 14px; height: 14px; color: black;"></i>' : '<i data-lucide="maximize" style="width: 14px; height: 14px; color: black;"></i>';
           lucide.createIcons();
         });
       });
-      import("./js/homeButton.js").then(m => {
+      import("./js/homeButton.js").then((m) => {
         const hongKongBounds = [
           [22.15, 113.825],
           [22.55, 114.4],
         ];
         m.initHomeButton(map, "homeBtn", hongKongBounds);
       });
-      import("./js/geolocation.js").then(m => {
+      import("./js/geolocation.js").then((m) => {
         m.initOrientationListener();
         m.initLocateButton(map, "locateBtn");
       });
-      import("./js/goto.js").then(m => m.initGotoPanel(map));
-      import("./js/drawPoints.js").then(m => m.initDrawPoint(map, crsModeSelect));
-      import("./js/batData.js").then(m => m.initBatDataLayer(map, layersControl));
+      import("./js/goto.js").then((m) => m.initGotoPanel(map));
+      import("./js/drawPoints.js").then((m) => m.initDrawPoint(map, crsModeSelect));
+      import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
     </script>
-    <div id="alpha-status" style="position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.95); padding: 6px 10px; font-size: 13px; color: #333; border: 1px solid #ccc; border-radius: 6px; font-family: Arial, sans-serif; z-index: 9999;">
+    <div
+      id="alpha-status"
+      style="position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.95); padding: 6px 10px; font-size: 13px; color: #333; border: 1px solid #ccc; border-radius: 6px; font-family: Arial, sans-serif; z-index: 9999;"
+    >
       α: --
     </div>
   </body>
