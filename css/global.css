@@ -294,6 +294,26 @@ a.tooltip-close:hover {
   transform: translateX(-100%);
 }
 
+#filter-toggle-bar {
+  position: absolute;
+  left: 320px;  /* 固定位置，不被 collapse 影響 */
+  top: 0;
+  width: 24px;
+  height: 100vh;
+  background: #eee;
+  border-right: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+  transition: left 0.3s;
+}
+
+#bat-filter-panel.collapsed + #filter-toggle-bar {
+  left: 0;
+}
+
 .toggle-bar {
   width: 24px;
   height: 100%;
@@ -315,6 +335,7 @@ a.tooltip-close:hover {
 
 .filter-content {
   padding: 12px;
+  padding-right: 32px; /* 空出 toggle bar 的寬度 */
   flex: 1;
   overflow-y: auto;
 }
@@ -364,4 +385,9 @@ a.tooltip-close:hover {
 #map {
   flex: 1;
   height: 100vh;
+}
+
+#map-container.collapsed #map {
+  margin-left: 24px; /* 只留 toggle bar 的寬度 */
+  width: calc(100vw - 24px); /* 自動調整寬度 */
 }
