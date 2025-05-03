@@ -31,6 +31,7 @@ export async function initBatDataLayer(map, layersControl) {
 
     const select = document.getElementById("filter" + key);
     if (select) {
+      select.innerHTML = ""; // 確保先清空，避免重複 All
       const optAll = document.createElement("option");
       optAll.value = "";
       optAll.textContent = "All";
@@ -186,7 +187,7 @@ export async function initBatDataLayer(map, layersControl) {
       fillOpacity: 0.8
     }));
 
-  let batLayer = L.layerGroup(batMarkers).addTo(map);
+  let batLayer = L.layerGroup(batMarkers);
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
