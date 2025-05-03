@@ -262,6 +262,11 @@ export async function initBatDataLayer(map, layersControl) {
     const select = document.getElementById("filter" + field);
     if (select) select.dispatchEvent(new Event("change"));
   });
+  
+    // 清除地圖上現有 batLayer（如已顯示）
+  if (map.hasLayer(batLayer)) {
+    map.removeLayer(batLayer);
+  }
 });
 
   const mapContainer = document.getElementById("map-container");
