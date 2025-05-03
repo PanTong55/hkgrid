@@ -40,6 +40,9 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 #filter-toggle-bar {
