@@ -19,18 +19,25 @@ export async function initBatDataLayer(map, layersControl) {
 
   for (const key in fieldMap) {
     const field = fieldMap[key];
-    let values = rawData.map(d => d[field]).filter(Boolean);
+    let values;
 
     if (key === "Habitat") {
-      values = values.flatMap(v => v.split(",").map(s => s.trim()));
+      const habitatSet = new Set();
+      rawData.forEach(row => {
+        const habitats = row[field]?.split(',').map(s => s.trim()).filter(Boolean) || [];
+        habitats.forEach(h => habitatSet.add(h));
+      });
+      values = Array.from(habitatSet).sort();
+    } else {
+      values = [...new Set(rawData.map(d => d[field]).filter(val => val && val !== "All"))].sort();
     }
 
-    values = [...new Set(values)].filter(val => val !== "All").sort();
     uniqueValues[key] = values;
     initialDropdownValues[key] = values;
 
     const select = document.getElementById("filter" + key);
     if (select) {
+      select.innerHTML = ""; // 清空避免重複
       const optAll = document.createElement("option");
       optAll.value = "";
       optAll.textContent = "All";
@@ -61,7 +68,7 @@ export async function initBatDataLayer(map, layersControl) {
       opt.value = "";
       opt.textContent = "All";
       selectEl.appendChild(opt);
-      values.forEach(val => {
+      values.filter(v => v !== "All").forEach(val => {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
@@ -169,25 +176,30 @@ export async function initBatDataLayer(map, layersControl) {
     }
   });
 
+  let batMarkers = [];
   let seen = new Set();
-  let batMarkers = rawData
-    .filter(d => d.Latitude && d.Longitude)
-    .filter(d => {
-      const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-      radius: 4,
-      fillColor: '#FFD700',
-      color: '#FFD700',
-      weight: 1,
-      fillOpacity: 0.8
-    }));
 
-  let batLayer = L.layerGroup(batMarkers);
-  layersControl.addOverlay(batLayer, 'All Bat Data'); // 註冊 overlay，但不加到 map
+  function buildBatMarkers(filtered) {
+    seen = new Set();
+    return filtered
+      .filter(d => d.Latitude && d.Longitude)
+      .filter(d => {
+        const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
+        radius: 4,
+        fillColor: '#FFD700',
+        color: '#FFD700',
+        weight: 1,
+        fillOpacity: 0.8
+      }));
+  }
+
+  let batLayer = L.layerGroup();
+  layersControl.addOverlay(batLayer, 'All Bat Data');
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
     const filters = {};
@@ -198,48 +210,23 @@ export async function initBatDataLayer(map, layersControl) {
     const dateStart = document.getElementById("dateStart").value;
     const dateEnd = document.getElementById("dateEnd").value;
 
-    seen = new Set();
-    const filtered = rawData
-      .filter(row =>
-        Object.entries(filters).every(([k, val]) => {
-          if (k === "Habitat" && val) {
-            return row[fieldMap[k]]?.split(",").map(s => s.trim()).includes(val);
-          }
-          return !val || row[fieldMap[k]] === val;
-        }) &&
-        (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
-        (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
-      )
-      .filter(d => d.Latitude && d.Longitude)
-      .filter(d => {
-        const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
+    let filtered = rawData.filter(row => {
+      const matchFields = Object.entries(filters).every(([k, val]) => {
+        if (!val) return true;
+        if (k === "Habitat") {
+          return row[fieldMap[k]]?.split(',').map(s => s.trim()).includes(val);
+        } else {
+          return row[fieldMap[k]] === val;
+        }
       });
+      const matchDate = (!dateStart || row.Date >= dateStart) && (!dateEnd || row.Date <= dateEnd);
+      return matchFields && matchDate;
+    });
 
     map.removeLayer(batLayer);
-    batMarkers = filtered.map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-      radius: 4,
-      fillColor: '#FFD700',
-      color: '#FFD700',
-      weight: 1,
-      fillOpacity: 0.8
-    }));
+    batMarkers = buildBatMarkers(filtered);
     batLayer = L.layerGroup(batMarkers);
     layersControl.addOverlay(batLayer, 'All Bat Data');
-  });
-
-  map.on("overlayadd", function (e) {
-    if (e.name === "All Bat Data") {
-      map.addLayer(batLayer);
-    }
-  });
-
-  map.on("overlayremove", function (e) {
-    if (e.name === "All Bat Data") {
-      map.removeLayer(batLayer);
-    }
   });
 
   const mapContainer = document.getElementById("map-container");
