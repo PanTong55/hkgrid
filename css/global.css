@@ -286,9 +286,15 @@ a.tooltip-close:hover {
 }
 
 #bat-filter-panel.collapsed {
-  width: 0;
-  padding: 0;
-  overflow: hidden;
+  display: none;
+}
+
+#map-container.collapsed #bat-filter-panel {
+  display: none;
+}
+
+#bat-filter-panel.collapsed + #filter-toggle-bar {
+  left: 0;
 }
 
 #filter-toggle-bar {
@@ -300,10 +306,6 @@ a.tooltip-close:hover {
   cursor: pointer;
   user-select: none;
   z-index: 20;
-}
-
-#bat-filter-panel.collapsed + #filter-toggle-bar {
-  left: 0;
 }
 
 .arrow-icon {
@@ -363,6 +365,10 @@ a.tooltip-close:hover {
   flex: 1;
   transition: width 0.3s ease;
   position: relative;
+}
+
+#map-container.collapsed #map {
+  margin-left: 0;
 }
 
 .form-row.date-range {
