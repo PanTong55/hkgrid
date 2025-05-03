@@ -43,21 +43,41 @@ export async function initBatDataLayer(map, layersControl) {
 
   function updateLinkedDropdowns(changedField, selectedValue) {
     if (!linkage[changedField]) return;
-
+  
+    // 篩選出與選定值相關的資料列
     const filteredRows = rawData.filter(row => row[fieldMap[changedField]] === selectedValue);
-
+  
     linkage[changedField].forEach(targetField => {
       const targetSelect = document.getElementById("filter" + targetField);
-      if (!targetSelect) return;
-
-      const allowed = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))];
-      targetSelect.innerHTML = '<option value="">All</option>';
-      allowed.sort().forEach(val => {
+      const allowedValues = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))];
+  
+      // 清空 dropdown
+      targetSelect.innerHTML = "";
+  
+      if (allowedValues.length === 1) {
+        // ✅ 唯一選項時，直接設為該值（無 "All"）
         const opt = document.createElement("option");
-        opt.value = val;
-        opt.textContent = val;
+        opt.value = allowedValues[0];
+        opt.textContent = allowedValues[0];
         targetSelect.appendChild(opt);
-      });
+        targetSelect.value = allowedValues[0]; // 自動選中
+      } else {
+        // ⬇️ 多於一個值時，加上 "All" 選項
+        const allOpt = document.createElement("option");
+        allOpt.value = "";
+        allOpt.textContent = "All";
+        targetSelect.appendChild(allOpt);
+  
+        allowedValues.sort().forEach(val => {
+          const opt = document.createElement("option");
+          opt.value = val;
+          opt.textContent = val;
+          targetSelect.appendChild(opt);
+        });
+  
+        // 自動設為 "All"
+        targetSelect.value = "";
+      }
     });
   }
 
