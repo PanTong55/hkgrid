@@ -219,6 +219,22 @@ export async function initBatDataLayer(map, layersControl) {
         return true;
       });
 
+  document.getElementById("batFilterReset").addEventListener("click", () => {
+    // 清空所有 dropdown
+    for (const key in fieldMap) {
+      const select = document.getElementById("filter" + key);
+      if (select) {
+        select.value = "";
+        // 重新觸發聯動更新
+        select.dispatchEvent(new Event("change"));
+      }
+    }
+  
+    // 清除日期
+    document.getElementById("dateStart").value = "";
+    document.getElementById("dateEnd").value = "";
+  });    
+
     map.removeLayer(batLayer);
     batMarkers = filtered.map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
       radius: 4,
