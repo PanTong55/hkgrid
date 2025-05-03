@@ -23,20 +23,20 @@ export async function initBatDataLayer(map, layersControl) {
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
   // ✅ Filter toggle 控制邏輯
-  const filterPanel = document.getElementById("bat-filter-panel");
-  const toggleBar = document.getElementById("filter-toggle-bar");
-  const arrowIcon = document.getElementById("filterToggleArrow");
-  const mapContainer = document.getElementById("map-container");
-  
-  toggleBar.addEventListener("click", () => {
-    const isCollapsed = filterPanel.classList.toggle("collapsed");
-    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-    mapContainer.classList.toggle("collapsed", isCollapsed);
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleBar    = document.getElementById('toggle-bar');
+  const filterPanel  = document.getElementById('filter-panel');
+  const mapContainer = document.getElementById('map-container');
+  const arrowIcon    = toggleBar.querySelector('.arrow-icon');
 
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 310); // 時間與你的 CSS transition 一致即可    
+  toggleBar.addEventListener('click', () => {
+    console.log('▶ Toggle clicked');
+    const isCollapsed = filterPanel.classList.toggle('collapsed');
+    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+    mapContainer.classList.toggle('collapsed', isCollapsed);
+    setTimeout(() => map.invalidateSize(), 310);
   });
+});
 }
 
 // ✅ 加上 flatpickr 初始化（外部區域）
