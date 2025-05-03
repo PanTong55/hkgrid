@@ -51,11 +51,16 @@ export async function initBatDataLayer(map, layersControl) {
     CommonChi: ["Species", "Genus", "Family", "CommonEng"]
   };
 
+  const triggeredFields = new Set();
+  
   function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
     const getEl = id => document.getElementById("filter" + id);
-  
     const allFields = ["Family", "Genus", "Species", "CommonEng", "CommonChi"];
     const speciesFields = ["Species", "CommonEng", "CommonChi"];
+
+    if (triggeredFields.has(changedField)) return;
+    triggeredFields.add(changedField);
+    
     const fullFields = [...allFields];
   
     function setOptions(selectEl, values) {
@@ -151,6 +156,7 @@ export async function initBatDataLayer(map, layersControl) {
         }
       });
     }
+    triggeredFields.delete(changedField);
   }
 
   ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
