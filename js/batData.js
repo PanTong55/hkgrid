@@ -32,6 +32,10 @@ export async function initBatDataLayer(map, layersControl) {
     const isCollapsed = filterPanel.classList.toggle("collapsed");
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
     mapContainer.classList.toggle("collapsed", isCollapsed);
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 310); // 時間與你的 CSS transition 一致即可    
   });
 }
 
