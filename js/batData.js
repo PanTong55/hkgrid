@@ -22,21 +22,26 @@ export async function initBatDataLayer(map, layersControl) {
   const batLayer = L.layerGroup(batMarkers);
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
-  // ✅ Filter toggle 控制邏輯
-document.addEventListener('DOMContentLoaded', () => {
-  const toggleBar    = document.getElementById('toggle-bar');
-  const filterPanel  = document.getElementById('filter-panel');
-  const mapContainer = document.getElementById('map-container');
-  const arrowIcon    = toggleBar.querySelector('.arrow-icon');
+ // ✅ Filter Toggle Bar
+  const filterPanel = document.getElementById("bat-filter-panel");
+  const toggleBar = document.getElementById("filter-toggle-bar");
+  const arrowIcon = document.getElementById("filterToggleArrow");
 
-  toggleBar.addEventListener('click', () => {
-    console.log('▶ Toggle clicked');
-    const isCollapsed = filterPanel.classList.toggle('collapsed');
-    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-    mapContainer.classList.toggle('collapsed', isCollapsed);
-    setTimeout(() => map.invalidateSize(), 310);
-  });
-});
+  if (filterPanel && toggleBar && arrowIcon) {
+    toggleBar.addEventListener("click", () => {
+      const isCollapsed = filterPanel.classList.toggle("collapsed");
+      arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+
+      // ✅ 額外控制 toggle bar 位置
+      if (isCollapsed) {
+        toggleBar.style.left = "0px";
+      } else {
+        toggleBar.style.left = "320px";
+      }
+    });
+  } else {
+    console.warn("❌ filterPanel / toggleBar / arrowIcon not found in DOM.");
+  }
 }
 
 // ✅ 加上 flatpickr 初始化（外部區域）
