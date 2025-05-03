@@ -19,13 +19,22 @@ export async function initBatDataLayer(map, layersControl) {
 
   for (const key in fieldMap) {
     const field = fieldMap[key];
-    const values = [...new Set(rawData.map(d => d[field]).filter(Boolean && (val => val !== "All")))].sort();
+    let values;
+
+    if (key === "Habitat") {
+      values = [...new Set(
+        rawData.flatMap(d => (d[field] || "").split(", ").map(s => s.trim()))
+      )].filter(Boolean).sort();
+    } else {
+      values = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort()
+        .filter(val => val !== "All");
+    }
+
     uniqueValues[key] = values;
     initialDropdownValues[key] = values;
 
     const select = document.getElementById("filter" + key);
     if (select) {
-      select.innerHTML = ""; // Clear existing options
       const optAll = document.createElement("option");
       optAll.value = "";
       optAll.textContent = "All";
@@ -56,7 +65,7 @@ export async function initBatDataLayer(map, layersControl) {
       opt.value = "";
       opt.textContent = "All";
       selectEl.appendChild(opt);
-      [...new Set(values.filter(Boolean && (val => val !== "All")))].sort().forEach(val => {
+      values.forEach(val => {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
@@ -155,7 +164,7 @@ export async function initBatDataLayer(map, layersControl) {
     triggeredFields.delete(changedField);
   }
 
-  ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
+  ["Family", "Genus", "Species", "CommonEng", "CommonChi", "Habitat"].forEach(field => {
     const select = document.getElementById("filter" + field);
     if (select) {
       select.addEventListener("change", e => {
@@ -196,7 +205,13 @@ export async function initBatDataLayer(map, layersControl) {
     seen = new Set();
     const filtered = rawData
       .filter(row =>
-        Object.entries(filters).every(([k, val]) => !val || row[fieldMap[k]] === val) &&
+        Object.entries(filters).every(([k, val]) => {
+          if (!val) return true;
+          if (k === "Habitat") {
+            return row[fieldMap[k]]?.split(", ").map(s => s.trim()).includes(val);
+          }
+          return row[fieldMap[k]] === val;
+        }) &&
         (!dateStart || row.Date >= dateStart) &&
         (!dateEnd || row.Date <= dateEnd)
       )
