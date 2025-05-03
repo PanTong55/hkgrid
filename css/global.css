@@ -282,6 +282,7 @@ a.tooltip-close:hover {
   transition: width 0.3s ease;
   background: white;
   z-index: 10;
+  overflow: hidden;
 }
 
 #bat-filter-panel.collapsed {
@@ -297,8 +298,8 @@ a.tooltip-close:hover {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  user-select: none;
   z-index: 20;
-  transition: left 0.3s ease;
 }
 
 #bat-filter-panel.collapsed + #filter-toggle-bar {
