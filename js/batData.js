@@ -1,66 +1,98 @@
+// batData.js
+const fieldMapping = {
+  Family: 'Family',
+  Genus: 'Genus',
+  Species: 'Species',
+  'Common Name (Eng)': 'Common Name (Eng)',
+  'Common Name (Chi)': 'Common Name (Chi)',
+};
+
+let rawData = [];
+let currentFilter = {};
+
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
-  const rawData = await response.json();
+  rawData = await response.json();
 
-  // 整理 dropdown options（所有欄位唯一值）
-  const uniqueValues = {};
-  const filterFields = [
-    "Location", "Habitat", "DataSource", "Recorders",
-    "Family", "Genus", "Species", "CommonName_Eng", "CommonName_Chi"
-  ];
+  updateDropdowns(rawData);
 
-  filterFields.forEach(field => {
-    uniqueValues[field] = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort();
-    const select = document.getElementById("filter" + field);
-    uniqueValues[field].forEach(val => {
-      const opt = document.createElement("option");
-      opt.value = val;
-      opt.textContent = val;
-      select.appendChild(opt);
-    });
+  // 初始化 Marker
+  const batLayer = renderBatMarkers(rawData);
+  layersControl.addOverlay(batLayer, 'All Bat Data');
+
+  // Toggle 控制
+  const mapContainer = document.getElementById("map-container");
+  const toggleBar = document.getElementById("filter-toggle-bar");
+  const arrowIcon = document.getElementById("filterToggleArrow");
+
+  toggleBar.addEventListener("click", () => {
+    const isCollapsed = mapContainer.classList.toggle("collapsed");
+    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+    setTimeout(() => map.invalidateSize(), 300);
   });
 
-  // Dropdown 之間的聯動規則
-  const linkage = {
-    Species: ["Family", "Genus", "CommonName_Eng", "CommonName_Chi"],
-    Genus: ["Family", "Species", "CommonName_Eng", "CommonName_Chi"],
-    Family: ["Genus", "Species", "CommonName_Eng", "CommonName_Chi"],
-    CommonName_Eng: ["Species", "Genus", "Family", "CommonName_Chi"],
-    CommonName_Chi: ["Species", "Genus", "Family", "CommonName_Eng"]
-  };
+  // Flatpickr
+  flatpickr("#dateStart", { dateFormat: "Y-m-d", maxDate: "today" });
+  flatpickr("#dateEnd", { dateFormat: "Y-m-d", maxDate: "today" });
 
-  function updateLinkedDropdowns(changedField, selectedValue) {
-    if (!linkage[changedField]) return;
-
-    // 篩選出與選定值相關的資料列
-    const filteredRows = rawData.filter(row => row[changedField] === selectedValue);
-
-    linkage[changedField].forEach(targetField => {
-      const targetSelect = document.getElementById("filter" + targetField);
-      const allowedValues = [...new Set(filteredRows.map(r => r[targetField]).filter(Boolean))];
-
-      // 保留第一個 "All" 選項
-      targetSelect.innerHTML = '<option value="">All</option>';
-      allowedValues.sort().forEach(val => {
-        const opt = document.createElement("option");
-        opt.value = val;
-        opt.textContent = val;
-        targetSelect.appendChild(opt);
+  // Dropdown onchange → AJAX filter logic
+  Object.keys(fieldMapping).forEach(label => {
+    const domId = getDomIdFromLabel(label);
+    const dropdown = document.getElementById(domId);
+    if (dropdown) {
+      dropdown.addEventListener("change", () => {
+        const selected = dropdown.value;
+        currentFilter[label] = selected;
+        autoUpdateRelatedDropdowns(label);
+        applyFilterToMap(map, layersControl);
       });
-    });
-  }
+    }
+  });
+}
 
-  // 設定 onchange 監聽器
-  ["Family", "Genus", "Species", "CommonName_Eng", "CommonName_Chi"].forEach(field => {
-    const select = document.getElementById("filter" + field);
-    select.addEventListener("change", (e) => {
-      updateLinkedDropdowns(field, e.target.value);
+function getDomIdFromLabel(label) {
+  return 'filter' + label.replace(/[^a-zA-Z0-9]/g, ''); // Remove space/symbols
+}
+
+function updateDropdowns(data) {
+  Object.keys(fieldMapping).forEach(label => {
+    const domId = getDomIdFromLabel(label);
+    const field = fieldMapping[label];
+    const select = document.getElementById(domId);
+    if (!select) return;
+    const values = [...new Set(data.map(d => d[field]).filter(v => v))].sort();
+    select.innerHTML = '<option value="">All</option>' + values.map(v => `<option value="${v}">${v}</option>`).join('');
+  });
+}
+
+function autoUpdateRelatedDropdowns(triggeredLabel) {
+  const filtered = rawData.filter(row => {
+    return Object.entries(currentFilter).every(([label, val]) => {
+      if (!val) return true;
+      const field = fieldMapping[label];
+      return row[field] === val;
     });
   });
+  updateDropdowns(filtered);
+}
 
-  // 建立 bat 標記圖層（初始載入）
-  let seen = new Set();
-  let batMarkers = rawData
+function applyFilterToMap(map, layersControl) {
+  const filtered = rawData.filter(row => {
+    return Object.entries(currentFilter).every(([label, val]) => {
+      if (!val) return true;
+      const field = fieldMapping[label];
+      return row[field] === val;
+    });
+  });
+  const newLayer = renderBatMarkers(filtered);
+  layersControl.removeLayer(map.batLayer); // 如果之前有記錄
+  layersControl.addOverlay(newLayer, 'All Bat Data');
+  map.batLayer = newLayer; // 更新參考
+}
+
+function renderBatMarkers(data) {
+  const seen = new Set();
+  const markers = data
     .filter(d => d.Latitude && d.Longitude)
     .filter(d => {
       const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
@@ -75,75 +107,5 @@ export async function initBatDataLayer(map, layersControl) {
       weight: 1,
       fillOpacity: 0.8,
     }));
-
-  let batLayer = L.layerGroup(batMarkers).addTo(map);
-  layersControl.addOverlay(batLayer, 'All Bat Data');
-
-  // Search 按鈕邏輯
-  document.getElementById("batFilterSearch").addEventListener("click", () => {
-    const filters = {
-      Location: document.getElementById("filterLocation").value,
-      Habitat: document.getElementById("filterHabitat").value,
-      DataSource: document.getElementById("filterDataSource").value,
-      Recorders: document.getElementById("filterRecorders").value,
-      Family: document.getElementById("filterFamily").value,
-      Genus: document.getElementById("filterGenus").value,
-      Species: document.getElementById("filterSpecies").value,
-      CommonName_Eng: document.getElementById("filterCommonEng").value,
-      CommonName_Chi: document.getElementById("filterCommonChi").value,
-      DateStart: document.getElementById("dateStart").value,
-      DateEnd: document.getElementById("dateEnd").value,
-    };
-
-    seen = new Set();
-    const filtered = rawData
-      .filter(row => {
-        return Object.entries(filters).every(([key, val]) => {
-          if (!val || key === "DateStart" || key === "DateEnd") return true;
-          return row[key] === val;
-        }) &&
-        (!filters.DateStart || row.Date >= filters.DateStart) &&
-        (!filters.DateEnd || row.Date <= filters.DateEnd);
-      })
-      .filter(d => d.Latitude && d.Longitude)
-      .filter(d => {
-        const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-
-    // 移除舊圖層，重建
-    map.removeLayer(batLayer);
-    batMarkers = filtered.map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-      radius: 4,
-      fillColor: '#FFD700',
-      color: '#FFD700',
-      weight: 1,
-      fillOpacity: 0.8,
-    }));
-    batLayer = L.layerGroup(batMarkers).addTo(map);
-  });
-
-  // ✅ Filter Toggle 控制邏輯
-  const mapContainer = document.getElementById("map-container");
-  const toggleBar = document.getElementById("filter-toggle-bar");
-  const arrowIcon = document.getElementById("filterToggleArrow");
-
-  toggleBar.addEventListener("click", () => {
-    const isCollapsed = mapContainer.classList.toggle("collapsed");
-    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-    setTimeout(() => map.invalidateSize(), 300);
-  });
-
-  // ✅ flatpickr 日期初始化
-  flatpickr("#dateStart", {
-    dateFormat: "Y-m-d",
-    maxDate: "today"
-  });
-
-  flatpickr("#dateEnd", {
-    dateFormat: "Y-m-d",
-    maxDate: "today"
-  });
+  return L.layerGroup(markers);
 }
