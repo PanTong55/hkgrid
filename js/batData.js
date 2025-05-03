@@ -17,13 +17,23 @@ export async function initBatDataLayer(map, layersControl) {
 
   // 初始化 dropdown 選單
   const uniqueValues = {};
+  const initialDropdownValues = {};
+  
   for (const key in fieldMap) {
     const field = fieldMap[key];
-    uniqueValues[key] = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort();
-
+    const values = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort();
+  
+    uniqueValues[key] = values;
+    initialDropdownValues[key] = values;  // ← 保存起來
+  
     const select = document.getElementById("filter" + key);
     if (select) {
-      uniqueValues[key].forEach(val => {
+      const optAll = document.createElement("option");
+      optAll.value = "";
+      optAll.textContent = "All";
+      select.appendChild(optAll);
+  
+      values.forEach(val => {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
@@ -50,12 +60,11 @@ export async function initBatDataLayer(map, layersControl) {
   
     function setOptions(selectEl, values) {
       selectEl.innerHTML = "";
-      if (values.length > 1) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "All";
-        selectEl.appendChild(opt);
-      }
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "All";
+      selectEl.appendChild(opt);
+    
       values.forEach(val => {
         const opt = document.createElement("option");
         opt.value = val;
@@ -64,17 +73,21 @@ export async function initBatDataLayer(map, layersControl) {
       });
     }
   
-    // 當 Family 為 All ➜ 全部重置為 All
+    // 當 Family 為 All ➜ 全部重置
     if (changedField === "Family" && !selectedValue) {
       fullFields.forEach(f => {
-        setOptions(getEl(f), ["All"]);
+        const allValues = initialDropdownValues[f] || [];
+        setOptions(getEl(f), allValues);
       });
       return;
     }
   
     // 當 Genus 為 All ➜ 清除 Genus, Species, Common Name (Eng/Chi)，根據 Family 更新
     if (changedField === "Genus" && !selectedValue) {
-      ["Genus", ...speciesFields].forEach(f => setOptions(getEl(f), ["All"]));
+      ["Genus", ...speciesFields].forEach(f => {
+        const allValues = initialDropdownValues[f] || [];
+        setOptions(getEl(f), allValues);
+      });
   
       const currentFamily = getEl("Family").value;
       if (!currentFamily) return;
@@ -87,7 +100,10 @@ export async function initBatDataLayer(map, layersControl) {
   
     // 當 Species/Common Name 為 All ➜ 清除三個 dropdown，根據 Family+Genus 更新
     if (speciesFields.includes(changedField) && !selectedValue) {
-      speciesFields.forEach(f => setOptions(getEl(f), ["All"]));
+      speciesFields.forEach(f => {
+        const allValues = initialDropdownValues[f] || [];
+        setOptions(getEl(f), allValues);
+      });
   
       const currentFamily = getEl("Family").value;
       const currentGenus = getEl("Genus").value;
@@ -141,8 +157,8 @@ export async function initBatDataLayer(map, layersControl) {
     const select = document.getElementById("filter" + field);
     if (select) {
       select.addEventListener("change", e => {
-        updateLinkedDropdowns(field, e.target.value);
-      });
+        updateLinkedDropdowns(field, e.target.value, rawData, fieldMap);
+      }); 
     }
   });
 
