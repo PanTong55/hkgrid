@@ -11,8 +11,8 @@ export async function initBatDataLayer(map, layersControl) {
     Family: "Family",
     Genus: "Genus",
     Species: "Species",
-    CommonName_Eng: "Common Name (Eng)",
-    CommonName_Chi: "Common Name (Chi)"
+    CommonEng: "Common Name (Eng)",
+    CommonChi: "Common Name (Chi)"
   };
 
   // 初始化 dropdown 選單
@@ -34,11 +34,11 @@ export async function initBatDataLayer(map, layersControl) {
 
   // Dropdown 聯動邏輯
   const linkage = {
-    Species: ["Family", "Genus", "CommonName_Eng", "CommonName_Chi"],
-    Genus: ["Family", "Species", "CommonName_Eng", "CommonName_Chi"],
-    Family: ["Genus", "Species", "CommonName_Eng", "CommonName_Chi"],
-    CommonName_Eng: ["Species", "Genus", "Family", "CommonName_Chi"],
-    CommonName_Chi: ["Species", "Genus", "Family", "CommonName_Eng"]
+    Species: ["Family", "Genus", "CommonEng", "CommonChi"],
+    Genus: ["Family", "Species", "CommonEng", "CommonChi"],
+    Family: ["Genus", "Species", "CommonEng", "CommonChi"],
+    CommonEng: ["Species", "Genus", "Family", "CommonChi"],
+    CommonChi: ["Species", "Genus", "Family", "CommonEng"]
   };
 
   function updateLinkedDropdowns(changedField, selectedValue) {
@@ -61,7 +61,7 @@ export async function initBatDataLayer(map, layersControl) {
     });
   }
 
-  ["Family", "Genus", "Species", "CommonName_Eng", "CommonName_Chi"].forEach(field => {
+  ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
     const select = document.getElementById("filter" + field);
     if (select) {
       select.addEventListener("change", e => {
