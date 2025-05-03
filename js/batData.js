@@ -22,10 +22,10 @@ export async function initBatDataLayer(map, layersControl) {
     let values = rawData.map(d => d[field]).filter(Boolean);
 
     if (key === "Habitat") {
-      values = values.flatMap(v => v.split(',').map(s => s.trim()));
+      values = values.flatMap(v => v.split(",").map(s => s.trim()));
     }
 
-    values = [...new Set(values)].sort().filter(val => val !== "All");
+    values = [...new Set(values)].filter(val => val !== "All").sort();
     uniqueValues[key] = values;
     initialDropdownValues[key] = values;
 
@@ -186,8 +186,8 @@ export async function initBatDataLayer(map, layersControl) {
       fillOpacity: 0.8
     }));
 
-  let batLayer = L.layerGroup(batMarkers).addTo(map);
-  layersControl.addOverlay(batLayer, 'All Bat Data');
+  let batLayer = L.layerGroup(batMarkers);
+  layersControl.addOverlay(batLayer, 'All Bat Data'); // 註冊 overlay，但不加到 map
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
     const filters = {};
@@ -203,7 +203,7 @@ export async function initBatDataLayer(map, layersControl) {
       .filter(row =>
         Object.entries(filters).every(([k, val]) => {
           if (k === "Habitat" && val) {
-            return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
+            return row[fieldMap[k]]?.split(",").map(s => s.trim()).includes(val);
           }
           return !val || row[fieldMap[k]] === val;
         }) &&
@@ -226,7 +226,20 @@ export async function initBatDataLayer(map, layersControl) {
       weight: 1,
       fillOpacity: 0.8
     }));
-    batLayer = L.layerGroup(batMarkers).addTo(map);
+    batLayer = L.layerGroup(batMarkers);
+    layersControl.addOverlay(batLayer, 'All Bat Data');
+  });
+
+  map.on("overlayadd", function (e) {
+    if (e.name === "All Bat Data") {
+      map.addLayer(batLayer);
+    }
+  });
+
+  map.on("overlayremove", function (e) {
+    if (e.name === "All Bat Data") {
+      map.removeLayer(batLayer);
+    }
   });
 
   const mapContainer = document.getElementById("map-container");
