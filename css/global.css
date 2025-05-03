@@ -4,6 +4,10 @@
   transition: margin-left 0.3s;  
 }
 
+html, body, button, input, select, label {
+  font-family: 'Noto Sans HK', sans-serif;
+}
+
 @media (max-width: 1023px) {
   #map {
     height: 80vh;
