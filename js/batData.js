@@ -31,7 +31,7 @@ export async function initBatDataLayer(map, layersControl) {
 
     const select = document.getElementById("filter" + key);
     if (select) {
-      select.innerHTML = ""; // 確保先清空，避免重複 All
+      select.innerHTML = "";
       const optAll = document.createElement("option");
       optAll.value = "";
       optAll.textContent = "All";
@@ -66,7 +66,7 @@ export async function initBatDataLayer(map, layersControl) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
-        selectEl.appendChild(opt);
+        select.appendChild(opt);
       });
     }
 
@@ -219,22 +219,6 @@ export async function initBatDataLayer(map, layersControl) {
         return true;
       });
 
-  document.getElementById("batFilterReset").addEventListener("click", () => {
-    // 清空所有 dropdown
-    for (const key in fieldMap) {
-      const select = document.getElementById("filter" + key);
-      if (select) {
-        select.value = "";
-        // 重新觸發聯動更新
-        select.dispatchEvent(new Event("change"));
-      }
-    }
-  
-    // 清除日期
-    document.getElementById("dateStart").value = "";
-    document.getElementById("dateEnd").value = "";
-  });    
-
     map.removeLayer(batLayer);
     batMarkers = filtered.map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
       radius: 4,
@@ -244,6 +228,18 @@ export async function initBatDataLayer(map, layersControl) {
       fillOpacity: 0.8
     }));
     batLayer = L.layerGroup(batMarkers).addTo(map);
+  });
+
+  document.getElementById("batFilterReset").addEventListener("click", () => {
+    for (const key in fieldMap) {
+      const select = document.getElementById("filter" + key);
+      if (select) {
+        select.value = "";
+        select.dispatchEvent(new Event("change"));
+      }
+    }
+    document.getElementById("dateStart").value = "";
+    document.getElementById("dateEnd").value = "";
   });
 
   const mapContainer = document.getElementById("map-container");
