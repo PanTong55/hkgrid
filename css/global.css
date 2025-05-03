@@ -1,6 +1,6 @@
 /* 地圖尺寸 */
 #map {
-  width: 1140px;
+  margin-left: 320px;
   height: 800px;
   transition: margin-left 0.3s;  
 }
@@ -388,6 +388,16 @@ a.tooltip-close:hover {
 }
 
 #map-container.collapsed #map {
-  margin-left: 24px; /* 只留 toggle bar 的寬度 */
-  width: calc(100vw - 24px); /* 自動調整寬度 */
+  margin-left: 0;
 }
+
+.form-row.date-range {
+  display: flex;
+  gap: 6px;
+}
+
+.form-row.date-range input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+
