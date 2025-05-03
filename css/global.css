@@ -2,6 +2,8 @@
 #map {
   width: 1140px;
   height: 800px;
+  margin-left: 320px; /* Filter panel 寬度 */
+  transition: margin-left 0.3s;  
 }
 
 @media (max-width: 1023px) {
@@ -326,6 +328,10 @@ a.tooltip-close:hover {
 
 #bat-filter-panel.collapsed {
   margin-left: -320px; /* 或 transform: translateX(-100%) */
+}
+
+#bat-filter-panel.collapsed + #map {
+  margin-left: 24px; /* 僅剩 toggle bar */
 }
 
 #bat-filter-panel h3 {
