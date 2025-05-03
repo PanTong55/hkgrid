@@ -1,4 +1,3 @@
-// js/batData.js
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
   const rawData = await response.json();
@@ -24,31 +23,23 @@ export async function initBatDataLayer(map, layersControl) {
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
   // ✅ Filter toggle 控制邏輯
-  document.addEventListener("DOMContentLoaded", () => {
-    const filterPanel = document.getElementById("bat-filter-panel");
-    const toggleBar = document.getElementById("filter-toggle-bar");
-    const arrowIcon = document.getElementById("filterToggleArrow");
-  
-    if (toggleBar && arrowIcon && filterPanel) {
-      toggleBar.addEventListener("click", () => {
-        const isCollapsed = filterPanel.classList.toggle("collapsed");
-        arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-      });
-    }
+  const filterPanel = document.getElementById("bat-filter-panel");
+  const toggleBar = document.getElementById("filter-toggle-bar");
+  const arrowIcon = document.getElementById("filterToggleArrow");
+
+  toggleBar.addEventListener("click", () => {
+    const isCollapsed = filterPanel.classList.toggle("collapsed");
+    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
   });
+}
 
-  // ✅ 初始化 flatpickr（要確保 DOM 已加載完成）
-  if (typeof flatpickr !== "undefined") {
-    flatpickr("#dateStart", {
-      dateFormat: "Y-m-d",
-      maxDate: "today"
-    });
+// ✅ 加上 flatpickr 初始化（外部區域）
+flatpickr("#dateStart", {
+  dateFormat: "Y-m-d",
+  maxDate: "today"
+});
 
-    flatpickr("#dateEnd", {
-      dateFormat: "Y-m-d",
-      maxDate: "today"
-    });
-  } else {
-    console.warn("flatpickr not loaded");
-  }
-
+flatpickr("#dateEnd", {
+  dateFormat: "Y-m-d",
+  maxDate: "today"
+});
