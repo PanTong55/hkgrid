@@ -19,13 +19,13 @@ export async function initBatDataLayer(map, layersControl) {
 
   for (const key in fieldMap) {
     const field = fieldMap[key];
-    const values = [...new Set(rawData.map(d => d[field]).filter(Boolean))].sort()
-      .filter(val => val !== "All"); // 移除重複 All
+    const values = [...new Set(rawData.map(d => d[field]).filter(Boolean && (val => val !== "All")))].sort();
     uniqueValues[key] = values;
     initialDropdownValues[key] = values;
 
     const select = document.getElementById("filter" + key);
     if (select) {
+      select.innerHTML = ""; // Clear existing options
       const optAll = document.createElement("option");
       optAll.value = "";
       optAll.textContent = "All";
@@ -56,7 +56,7 @@ export async function initBatDataLayer(map, layersControl) {
       opt.value = "";
       opt.textContent = "All";
       selectEl.appendChild(opt);
-      values.forEach(val => {
+      [...new Set(values.filter(Boolean && (val => val !== "All")))].sort().forEach(val => {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
@@ -142,10 +142,12 @@ export async function initBatDataLayer(map, layersControl) {
       targets[changedField].forEach(targetField => {
         const el = getEl(targetField);
         const vals = [...new Set(filteredRows.map(r => r[fieldMap[targetField]]).filter(Boolean))].sort();
-        setOptions(el, vals);
         if (vals.length === 1) {
+          setOptions(el, vals);
           el.value = vals[0];
           el.dispatchEvent(new Event("change"));
+        } else {
+          setOptions(el, vals);
         }
       });
     }
