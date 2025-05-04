@@ -1,6 +1,6 @@
 /* 地圖尺寸 */
 #map {
-  height: 800px;
+  height: 100vh;
   flex: 1;
   position: relative;
   transition: margin-left 0.3s ease, width 0.3s ease;
