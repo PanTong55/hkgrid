@@ -32,7 +32,7 @@ export async function initMap() {
         '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
         '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">',
       minZoom: 0,maxZoom: 19});  
-  const hkStreetBase = L.tileLayer("https://api.hkmapservice.gov.hk/maptile/v1.0.0/streetmap/{z}/{x}/{y}.png",{attribution: '&copy; <a href="https://api.hkmapservice.gov.hk/">地政總署</a>',maxZoom: 19,minZoom: 0});
+  const hkStreetBase = L.tileLayer("https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/wgs84/{z}/{x}/{y}.png",{attribution: '&copy; <a href="https://api.hkmapservice.gov.hk/">地圖資料由地政總署提供</a>',maxZoom: 19,minZoom: 0});
   const baseMaps = {
     "街道圖 (OSM)": streets,
     "街道圖 (Carto)": cartoLight,
