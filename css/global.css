@@ -106,7 +106,28 @@ a.tooltip-close:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  z-index: 1001;
+  flex-wrap: nowrap; /* 防止換行 */
+}
+
+#coord-scale-wrapper select {
+  font-weight: bold;
+  color: #0074d9;
+  border: none;
+  background: transparent;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+  width: auto !important;
+  min-width: unset !important;
+  max-width: 100px;
+  flex-shrink: 0; /* 避免被壓縮 */
+}
+
+#coord-scale-wrapper span {
+  white-space: nowrap;
+  font-weight: bold;
+  color: #333;
+  font-size: 13px;
 }
 
 #coord-scale-wrapper .leaflet-control-scale {
