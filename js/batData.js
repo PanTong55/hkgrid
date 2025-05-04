@@ -303,11 +303,26 @@ export async function initBatDataLayer(map, layersControl) {
   const mapContainer = document.getElementById("map-container");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
+  const filterPanel = document.getElementById("bat-filter-panel");
 
   toggleBar.addEventListener("click", () => {
-    const isCollapsed = mapContainer.classList.toggle("collapsed");
-    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-    setTimeout(() => map.invalidateSize(), 300);
+    const isCollapsed = filterPanel.classList.contains("collapsing");
+  
+    if (isCollapsed) {
+      // 展開
+      filterPanel.classList.remove("collapsing");
+      filterPanel.classList.add("expanding");
+      arrowIcon.textContent = '◀';
+    } else {
+      // 收起
+      filterPanel.classList.remove("expanding");
+      filterPanel.classList.add("collapsing");
+      arrowIcon.textContent = '▶';
+    }
+  
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 350);
   });
 
   flatpickr("#dateStart", { dateFormat: "Y-m-d", maxDate: "today" });
