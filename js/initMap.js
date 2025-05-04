@@ -42,6 +42,7 @@ export async function initMap() {
     'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/tc/wgs84/{z}/{x}/{y}.png',
     {attribution: false,maxZoom: 20,minZoom: 0});
   const hkVectorGroup = L.layerGroup([hkVectorBase, hkVectorLabel]);
+  const hkImageryGroup = L.layerGroup([hkImageryLayer, hkVectorLabel]);
 
   const baseMaps = {
     "街道圖 (OSM)": streets,
@@ -49,8 +50,8 @@ export async function initMap() {
     "街道圖 (Google)": googleStreets,
     "衛星圖 (Esri)": esriSatellite,
     "混合圖 (Google)": googleHybrid,
-    "衛星圖 (Google Satellite)": googleSatellite,
-    "影像圖 (HKMap)": hkImageryLayer,
+    "衛星圖 (Google)": googleSatellite,
+    "衛星圖 (HKMap)": hkImageryGroup,
     "街道圖 (HKMap)": hkVectorGroup,
   };
 
