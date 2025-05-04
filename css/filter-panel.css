@@ -1,5 +1,4 @@
 /* filter-panel.css */
-/* Filter panel */
 #main-wrapper {
   display: flex;
   height: 100vh;
@@ -24,9 +23,10 @@
 }
 
 #bat-filter-panel {
-  width: 320px;
+  width: 300px;
   min-width: 300px;
-  transition: width 0.3s ease;
+  transition: max-width 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
   background: white;
   z-index: 10;
   overflow: hidden;
@@ -34,7 +34,13 @@
 }
 
 #bat-filter-panel.collapsed {
-  display: none;
+  max-width: 0;
+  opacity: 0;
+}
+
+#bat-filter-panel.expanding {
+  max-width: 300px;
+  opacity: 1;
 }
 
 #map-container.collapsed #bat-filter-panel {
