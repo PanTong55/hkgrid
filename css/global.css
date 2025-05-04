@@ -146,6 +146,9 @@ a.tooltip-close:hover {
   text-decoration: underline;
   cursor: pointer;
   font-size: 13px;
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
 }
 
 .crs-selector span {
