@@ -32,7 +32,17 @@ export async function initMap() {
         '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
         '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">',
       minZoom: 0,maxZoom: 19});  
-  const hkStreetBase = L.tileLayer("https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/wgs84/{z}/{x}/{y}.png",{attribution: '&copy; <a href="https://api.hkmapservice.gov.hk/">地圖資料由地政總署提供</a>',maxZoom: 19,minZoom: 0});
+  const hkVectorBase = L.tileLayer(
+    'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/wgs84/{z}/{x}/{y}.png',
+    {attribution:
+        '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
+        '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">',
+      maxZoom: 20,minZoom: 10});
+  const hkVectorLabel = L.tileLayer(
+    'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/tc/wgs84/{z}/{x}/{y}.png',
+    {attribution: false,maxZoom: 20,minZoom: 0});
+  const hkVectorGroup = L.layerGroup([hkVectorBase, hkVectorLabel]);
+
   const baseMaps = {
     "街道圖 (OSM)": streets,
     "街道圖 (Carto)": cartoLight,
@@ -41,7 +51,7 @@ export async function initMap() {
     "混合圖 (Google)": googleHybrid,
     "衛星圖 (Google Satellite)": googleSatellite,
     "影像圖 (HKMap)": hkImageryLayer,
-    "街道圖 (HKMap)": hkStreetBase,
+    "街道圖 (HKMap)": hkVectorGroup,
   };
 
   const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
