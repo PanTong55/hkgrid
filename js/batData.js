@@ -43,6 +43,40 @@ export async function initBatDataLayer(map, layersControl) {
         opt.textContent = val;
         select.appendChild(opt);
       });
+
+      // === ComboBox enhancement ===
+      select.addEventListener("input", e => {
+        const inputText = e.target.value.toLowerCase();
+        const fullList = initialDropdownValues[key] || [];
+        const filtered = fullList.filter(v => v.toLowerCase().includes(inputText));
+
+        const currentValue = select.value;
+        select.innerHTML = "";
+        const optAll = document.createElement("option");
+        optAll.value = "";
+        optAll.textContent = "All";
+        select.appendChild(optAll);
+        filtered.forEach(val => {
+          const opt = document.createElement("option");
+          opt.value = val;
+          opt.textContent = val;
+          select.appendChild(opt);
+        });
+        select.value = currentValue;
+      });
+
+      select.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          const inputText = e.target.value.trim().toLowerCase();
+          const fullList = initialDropdownValues[key] || [];
+          const matched = fullList.find(v => v.toLowerCase() === inputText);
+          if (matched) {
+            select.value = matched;
+            select.dispatchEvent(new Event("change"));
+            e.preventDefault();
+          }
+        }
+      });
     }
   }
 
@@ -57,6 +91,7 @@ export async function initBatDataLayer(map, layersControl) {
     triggeredFields.add(changedField);
 
     function setOptions(selectEl, values) {
+      const currentText = selectEl.value.toLowerCase();
       selectEl.innerHTML = "";
       const opt = document.createElement("option");
       opt.value = "";
@@ -68,6 +103,7 @@ export async function initBatDataLayer(map, layersControl) {
         opt.textContent = val;
         selectEl.appendChild(opt);
       });
+      selectEl.value = "";
     }
 
     if (changedField === "Family" && !selectedValue) {
@@ -188,7 +224,6 @@ export async function initBatDataLayer(map, layersControl) {
     }));
 
   let batLayer = L.layerGroup(batMarkers);
-  // 只加入控制面板，不加入地圖
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
@@ -232,42 +267,38 @@ export async function initBatDataLayer(map, layersControl) {
   });
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
-  for (const key in fieldMap) {
-    const select = document.getElementById("filter" + key);
-    if (select) {
-      // 清空再重建初始選單
-      select.innerHTML = "";
-      const optAll = document.createElement("option");
-      optAll.value = "";
-      optAll.textContent = "All";
-      select.appendChild(optAll);
+    for (const key in fieldMap) {
+      const select = document.getElementById("filter" + key);
+      if (select) {
+        select.innerHTML = "";
+        const optAll = document.createElement("option");
+        optAll.value = "";
+        optAll.textContent = "All";
+        select.appendChild(optAll);
 
-      (initialDropdownValues[key] || []).forEach(val => {
-        const opt = document.createElement("option");
-        opt.value = val;
-        opt.textContent = val;
-        select.appendChild(opt);
-      });
+        (initialDropdownValues[key] || []).forEach(val => {
+          const opt = document.createElement("option");
+          opt.value = val;
+          opt.textContent = val;
+          select.appendChild(opt);
+        });
 
-      select.value = "";
+        select.value = "";
+      }
     }
-  }
 
-  // 日期清空
-  document.getElementById("dateStart").value = "";
-  document.getElementById("dateEnd").value = "";
+    document.getElementById("dateStart").value = "";
+    document.getElementById("dateEnd").value = "";
 
-  // 觸發聯動更新（如需要）
-  ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
-    const select = document.getElementById("filter" + field);
-    if (select) select.dispatchEvent(new Event("change"));
+    ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
+      const select = document.getElementById("filter" + field);
+      if (select) select.dispatchEvent(new Event("change"));
+    });
+
+    if (map.hasLayer(batLayer)) {
+      map.removeLayer(batLayer);
+    }
   });
-  
-    // 清除地圖上現有 batLayer（如已顯示）
-  if (map.hasLayer(batLayer)) {
-    map.removeLayer(batLayer);
-  }
-});
 
   const mapContainer = document.getElementById("map-container");
   const toggleBar = document.getElementById("filter-toggle-bar");
