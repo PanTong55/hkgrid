@@ -93,34 +93,41 @@ a.tooltip-close:hover {
 /* CRS 與比例尺容器 */
 #coord-scale-wrapper {
   position: absolute;
-  bottom: 5px;
-  left: 5px;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  font-family: 'Noto Sans HK', sans-serif;
+  font-size: 13px;
+  color: #000;
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(240, 248, 255, 0.95);
-  border: 1px solid #bbb;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  color: #111;
   z-index: 1001;
 }
 
+#coord-scale-wrapper .leaflet-control-scale {
+  position: static !important;
+  margin-left: 8px;
+}
+
 .crs-selector select {
-  margin-right: 4px;
   font-weight: bold;
-  color: #0000cc;
+  color: #0074d9;
   border: none;
   background: transparent;
   text-decoration: underline;
   cursor: pointer;
+  font-size: 13px;
 }
 
 .crs-selector span {
   font-weight: bold;
-  color: #222;
+  color: #333;
+  font-size: 13px;
 }
 
 .leaflet-control-scale {
