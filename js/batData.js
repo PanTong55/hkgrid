@@ -304,18 +304,14 @@ export async function initBatDataLayer(map, layersControl) {
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
   const filterPanel = document.getElementById("bat-filter-panel");
-
+  
   toggleBar.addEventListener("click", () => {
     const isCollapsed = filterPanel.classList.contains("collapsing");
   
     if (isCollapsed) {
-      // 展開
       filterPanel.classList.remove("collapsing");
-      filterPanel.classList.add("expanding");
       arrowIcon.textContent = '◀';
     } else {
-      // 收起
-      filterPanel.classList.remove("expanding");
       filterPanel.classList.add("collapsing");
       arrowIcon.textContent = '▶';
     }
