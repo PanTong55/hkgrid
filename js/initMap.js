@@ -32,10 +32,18 @@ export async function initMap() {
         'Image ©2002 NASA/USGS | Image ©2016 NASA/USGS | Contains modified Copernicus Sentinel data [2022] | ' +
         '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
         '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">',
-      minZoom: 0,
-      maxZoom: 19
-    }
-  );  
+      minZoom: 0,maxZoom: 19});  
+  const hkVectorBase = L.tileLayer(
+    'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/tc/{z}/{x}/{y}.png',
+    {
+      attribution: '© 地圖資料由地政總署提供 <img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px;vertical-align:middle;">',
+      maxZoom: 19,minZoom: 0});
+  const hkVectorLabel = L.tileLayer(
+    'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/tc/{z}/{x}/{y}.png',
+    {
+      attribution: false,
+      maxZoom: 19,minZoom: 0});
+  const hkVectorGroup = L.layerGroup([hkVectorBase, hkVectorLabel]);
 
   const baseMaps = {
     "街道圖 (OSM)": streets,
@@ -44,7 +52,8 @@ export async function initMap() {
     "衛星圖 (Esri)": esriSatellite,
     "混合圖 (Google)": googleHybrid,
     "衛星圖 (Google Satellite)": googleSatellite,
-    "影像圖 (HK Map API)": hkImageryLayer,
+    "影像圖 (HKMap)": hkImageryLayer,
+    "街道圖（HKMap）": hkVectorGroup,
   };
 
   const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
