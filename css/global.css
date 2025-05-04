@@ -146,6 +146,7 @@ a.tooltip-close:hover {
   text-decoration: underline;
   cursor: pointer;
   font-size: 13px;
+  padding-right: 8px;
   appearance: auto;
   -webkit-appearance: auto;
   -moz-appearance: auto;
