@@ -106,7 +106,9 @@ a.tooltip-close:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: nowrap; /* 防止換行 */
+  flex-wrap: nowrap;
+  z-index: 1001; /* ✅ 一定要高於 map 內容 */
+  pointer-events: none; /* 防止遮住地圖點擊，可視情況使用 */
 }
 
 #coord-scale-wrapper select {
@@ -120,7 +122,8 @@ a.tooltip-close:hover {
   width: auto !important;
   min-width: unset !important;
   max-width: 100px;
-  flex-shrink: 0; /* 避免被壓縮 */
+  flex-shrink: 0;
+  pointer-events: auto; /* ✅ 為 select 恢復互動 */
 }
 
 #coord-scale-wrapper span {
