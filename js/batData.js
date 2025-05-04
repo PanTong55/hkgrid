@@ -300,25 +300,17 @@ export async function initBatDataLayer(map, layersControl) {
     }
   });
 
-  const mapContainer = document.getElementById("map-container");
+  const panel = document.getElementById("bat-filter-panel");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
-  const filterPanel = document.getElementById("bat-filter-panel");
   
   toggleBar.addEventListener("click", () => {
-    const isCollapsed = filterPanel.classList.contains("collapsing");
-  
-    if (isCollapsed) {
-      filterPanel.classList.remove("collapsing");
-      arrowIcon.textContent = '◀';
-    } else {
-      filterPanel.classList.add("collapsing");
-      arrowIcon.textContent = '▶';
-    }
+    const isCollapsed = panel.classList.toggle("collapsing");
+    arrowIcon.textContent = isCollapsed ? '▶' : '◀';
   
     setTimeout(() => {
-      map.invalidateSize();
-    }, 350);
+      map.invalidateSize();  // 讓地圖重算尺寸
+    }, 310);  // 等動畫完成再重算
   });
 
   flatpickr("#dateStart", { dateFormat: "Y-m-d", maxDate: "today" });
