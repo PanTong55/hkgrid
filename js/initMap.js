@@ -44,6 +44,13 @@ export async function initMap() {
   const hkVectorGroup = L.layerGroup([hkVectorBase, hkVectorLabel]);
   const hkImageryGroup = L.layerGroup([hkImageryLayer, hkVectorLabel]);
 
+  map.on("zoomend", () => {
+    const currentZoom = map.getZoom();
+    if (currentZoom > 19 && map.hasLayer(hkImageryGroup)) {
+      map.setZoom(19); // 強制縮回
+    }
+  });  
+
   const baseMaps = {
     "街道圖 (OSM)": streets,
     "街道圖 (Carto)": cartoLight,
