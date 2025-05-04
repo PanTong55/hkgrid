@@ -80,6 +80,55 @@ export async function initBatDataLayer(map, layersControl) {
     }
   }
 
+function setupComboBox(field) {
+  const input = document.getElementById("filter" + field + "Input");
+  const list = document.getElementById("filter" + field + "List");
+
+  input.addEventListener("input", () => {
+    const val = input.value.toLowerCase();
+    const values = initialDropdownValues[field] || [];
+    const matched = values.filter(v => v.toLowerCase().includes(val));
+
+    list.innerHTML = "";
+    if (val && matched.length > 0) {
+      matched.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        li.addEventListener("click", () => {
+          input.value = item;
+          list.classList.add("hidden");
+          input.dispatchEvent(new Event("change"));
+        });
+        list.appendChild(li);
+      });
+      list.classList.remove("hidden");
+    } else {
+      list.classList.add("hidden");
+    }
+  });
+
+  // enter 選擇完全匹配者
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      const val = input.value.trim().toLowerCase();
+      const values = initialDropdownValues[field] || [];
+      const match = values.find(v => v.toLowerCase() === val);
+      if (match) {
+        input.value = match;
+        input.dispatchEvent(new Event("change"));
+        list.classList.add("hidden");
+      }
+    }
+  });
+
+  // blur 收起清單
+  input.addEventListener("blur", () => {
+    setTimeout(() => list.classList.add("hidden"), 200);
+  });
+}
+
+["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(setupComboBox);  
+
   const triggeredFields = new Set();
 
   function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
