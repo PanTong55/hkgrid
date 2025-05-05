@@ -1,9 +1,19 @@
 let lockMarker = null;
 let isLocked = false;
 let lockedCoord = null;
+let clickLockEnabled = true; // 🔸 控制是否啟用點擊鎖定功能
+
+export function disableClickLock() {
+  clickLockEnabled = false;
+}
+export function enableClickLock() {
+  clickLockEnabled = true;
+}
 
 export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
   map.on("click", (e) => {
+    if (!clickLockEnabled) return; // ⛔ 若被禁用就不執行點擊鎖定
+
     const latlng = e.latlng;
     const mode = crsModeSelect.value;
 
@@ -18,19 +28,14 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
       lockMarker = L.marker(latlng, {
         icon: L.divIcon({
           className: "lucide-lock-icon",
-          html: `
-            <div class="lock-hitbox">
-              <i data-lucide="locate-fixed"></i>
-            </div>
-          `,
+          html: `<div class="lock-hitbox"><i data-lucide="locate-fixed"></i></div>`,
           iconSize: [36, 36],
           iconAnchor: [18, 18],
         }),
       }).addTo(map);
 
-      // 🔁 加入 icon 點擊來取消鎖定
       lockMarker.getElement().addEventListener("click", (ev) => {
-        ev.stopPropagation(); // 不冒泡到地圖 click
+        ev.stopPropagation();
         map.removeLayer(lockMarker);
         lockMarker = null;
         isLocked = false;
@@ -43,11 +48,9 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
 
     if (window.lucide) lucide.createIcons();
 
-    if (mode === "wgs84") {
-      coordDisplay.textContent = `${currentClickedCoord[0]}\u00A0\u00A0\u00A0${currentClickedCoord[1]}`;
-    } else {
-      coordDisplay.textContent = `X: ${Math.round(currentClickedCoord[0])}\u00A0\u00A0\u00A0Y: ${Math.round(currentClickedCoord[1])}`;
-    }
+    coordDisplay.textContent = mode === "wgs84"
+      ? `${currentClickedCoord[0]}\u00A0\u00A0\u00A0${currentClickedCoord[1]}`
+      : `X: ${Math.round(currentClickedCoord[0])}\u00A0\u00A0\u00A0Y: ${Math.round(currentClickedCoord[1])}`;
 
     coordDisplay.classList.add("locked");
   });
