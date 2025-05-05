@@ -49,7 +49,7 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
     if (window.lucide) lucide.createIcons();
 
     coordDisplay.textContent = mode === "wgs84"
-      ? `${currentClickedCoord[0]}\u00A0\u00A0\u00A0${currentClickedCoord[1]}`
+      ? `${currentClickedCoord[0].toFixed(4)}\u00A0\u00A0\u00A0${currentClickedCoord[1].toFixed(4)}`
       : `X: ${Math.round(currentClickedCoord[0])}\u00A0\u00A0\u00A0Y: ${Math.round(currentClickedCoord[1])}`;
 
     coordDisplay.classList.add("locked");
