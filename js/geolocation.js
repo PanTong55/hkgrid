@@ -123,72 +123,33 @@ function updateAlphaStatus(pos) {
 }
 
 function makeAlphaStatusDraggable() {
-  const el = document.getElementById("alpha-status");
-  if (!el) return;
+  const box = document.getElementById("alpha-status");
+  if (!box) return;
 
   let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-  let offsetX = 0;
-  let offsetY = 0;
+  let offsetX, offsetY;
 
-  function onStart(x, y) {
+  box.addEventListener("mousedown", (e) => {
     isDragging = true;
-    offsetX = el.offsetLeft;
-    offsetY = el.offsetTop;
-    startX = x;
-    startY = y;
-    el.style.opacity = "0.6";
-    el.style.transition = "none";
-  }
-
-  function onMove(x, y) {
-    if (!isDragging) return;
-    const dx = x - startX;
-    const dy = y - startY;
-    el.style.left = offsetX + dx + "px";
-    el.style.top = offsetY + dy + "px";
-  }
-
-  function onEnd() {
-    isDragging = false;
-    el.style.opacity = "1";
-    el.style.transition = ""; // Reset to default
-  }
-
-  // Desktop
-  el.addEventListener("mousedown", (e) => {
+    box.classList.add("dragging");
+    offsetX = e.clientX - box.getBoundingClientRect().left;
+    offsetY = e.clientY - box.getBoundingClientRect().top;
     e.preventDefault();
-    onStart(e.clientX, e.clientY);
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
   });
 
-  function onMouseMove(e) {
-    onMove(e.clientX, e.clientY);
-  }
-
-  function onMouseUp() {
-    document.removeEventListener("mousemove", onMouseMove);
-    document.removeEventListener("mouseup", onMouseUp);
-    onEnd();
-  }
-
-  // Mobile
-  el.addEventListener("touchstart", (e) => {
-    if (e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    onStart(touch.clientX, touch.clientY);
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    box.style.left = `${e.clientX - offsetX}px`;
+    box.style.top = `${e.clientY - offsetY}px`;
+    box.style.right = "auto";
+    box.style.bottom = "auto";
   });
 
-  el.addEventListener("touchmove", (e) => {
-    if (!isDragging || e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    onMove(touch.clientX, touch.clientY);
-  });
-
-  el.addEventListener("touchend", () => {
-    if (isDragging) onEnd();
+  document.addEventListener("mouseup", () => {
+    if (isDragging) {
+      isDragging = false;
+      box.classList.remove("dragging");
+    }
   });
 }
 
