@@ -317,6 +317,18 @@ a.tooltip-close:hover {
 
 #alpha-status {
   position: absolute;
+  left: calc(50% - 100px); /* 假設 box 寬度約 200px，可微調 */
+  top: calc(100% - 150px); /* 視窗底部往上 150px，即距離 bottom 約 50px */
+  width: 200px;            /* 明確寬度有助於置中，非必要可省略 */
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 10px;
+  font-size: 13px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: 'Noto Sans HK', sans-serif;
+  z-index: 9999;
   cursor: grab;
+  user-select: none;
   touch-action: none;
 }
