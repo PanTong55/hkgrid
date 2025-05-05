@@ -105,7 +105,7 @@ function updateAlphaStatus(pos) {
   const altAcc = pos.coords.altitudeAccuracy ? `${Math.round(pos.coords.altitudeAccuracy)} m` : "N/A";
   const heading = window.currentHeading != null ? `${window.currentHeading.toFixed(2)}°` : "--";
 
-  const crsMode = document.getElementById("crsModeSelect")?.value || "wgs84";
+  const crsMode = document.getElementById("crsMode")?.value || "wgs84";
 
   let coordText = "";
   if (crsMode === "hk1980") {
@@ -143,7 +143,7 @@ export function initOrientationListener() {
 export function initLocateButton(map, buttonId) {
   const locateBtn = document.getElementById(buttonId);
   const statusEl = document.getElementById("alpha-status");
-  const crsSelect = document.getElementById("crsModeSelect");
+  const crsSelect = document.getElementById("crsMode");
   
   if (crsSelect) {
     crsSelect.addEventListener("change", () => {
