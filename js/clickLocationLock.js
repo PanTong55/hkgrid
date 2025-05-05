@@ -2,22 +2,27 @@ let lockMarker = null;
 let isLocked = false;
 let lockedCoord = null;
 
+function isSameLocation(latlng1, latlng2, toleranceMeters = 10) {
+  if (!latlng1 || !latlng2) return false;
+  return map.distance(
+    L.latLng(latlng1[1], latlng1[0]),  // 注意：lockedCoord 是 [lng, lat]
+    L.latLng(latlng2[1], latlng2[0])
+  ) <= toleranceMeters;
+}
+
 export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
   map.on("click", (e) => {
     const latlng = e.latlng;
     const mode = crsModeSelect.value;
   
-    // 正確取得座標：不做 round 處理以避免判斷錯誤
-    const projectedCoord = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
-    const currentClickedCoord = mode === "wgs84"
-      ? [latlng.lng.toFixed(4), latlng.lat.toFixed(4)]
-      : projectedCoord;
-  
     // 比對原始數值（不要四捨五入）確保精確
     const sameAsLocked = lockedCoord &&
       currentClickedCoord[0] === lockedCoord[0] &&
       currentClickedCoord[1] === lockedCoord[1];
-  
+
+    // 正確取得座標：不做 round 處理以避免判斷錯誤
+    const sameAsLocked = isSameLocation(currentClickedCoord, lockedCoord);
+    
     if (isLocked && sameAsLocked) {
       if (lockMarker) {
         map.removeLayer(lockMarker);
