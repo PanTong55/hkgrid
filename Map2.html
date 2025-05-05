@@ -149,10 +149,10 @@
       map.on("mousemove", function (e) {
         const mode = crsModeSelect.value;
         if (mode === "wgs84") {
-          coordDisplay.textContent = `Lon: ${e.latlng.lng.toFixed(4)}\u00A0\u00A0\u00A0\u00A0Lat: ${e.latlng.lat.toFixed(4)}`;
+          coordDisplay.textContent = `Lon: ${e.latlng.lng.toFixed(4)}\u00A0\u00A0\u00A0Lat: ${e.latlng.lat.toFixed(4)}`;
         } else {
           const [x, y] = proj4("EPSG:4326", "EPSG:2326", [e.latlng.lng, e.latlng.lat]);
-          coordDisplay.textContent = `X: ${Math.round(x)}\u00A0\u00A0\u00A0\u00A0Y: ${Math.round(y)}`;
+          coordDisplay.textContent = `X: ${Math.round(x)}\u00A0\u00A0\u00A0Y: ${Math.round(y)}`;
         }
       });
 
@@ -200,5 +200,8 @@
       import("./js/drawPoints.js").then((m) => m.initDrawPoint(map, crsModeSelect));
       import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
     </script>
+    <div id="alpha-status" style="position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.95); padding: 6px 10px; font-size: 13px; color: #333; border: 1px solid #ccc; border-radius: 6px; font-family: Arial, sans-serif; z-index: 9999;">
+      α: --
+    </div>    
   </body>
 </html>
