@@ -19,28 +19,55 @@ export async function initMap() {
     lucide.createIcons();
   });
 
-  const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap contributors" }).addTo(map);
-  const esriSatellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { attribution: "Tiles © Esri" });
-  const cartoLight = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", { attribution: "CARTO" });
-  const googleStreets = L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", { attribution: "Map data ©2024 Google" });
-  const googleSatellite = L.tileLayer("https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", { attribution: "Imagery ©2024 Google" });
-  const googleHybrid = L.tileLayer("https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", { attribution: "Imagery ©2024 Google" });
+  function isMobile() {
+    return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  }
+  
+  // 建立通用 attribution 設定
+  const osmAttr = isMobile() ? {} : { attribution: "© OpenStreetMap contributors" };
+  const esriAttr = isMobile() ? {} : { attribution: "Tiles © Esri" };
+  const cartoAttr = isMobile() ? {} : { attribution: "CARTO" };
+  const googleAttr = isMobile() ? {} : { attribution: "Map data ©2024 Google" };
+  const imageryAttr = isMobile()
+    ? {}
+    : {
+        attribution:
+          'Image ©2002 NASA/USGS | Image ©2016 NASA/USGS | Contains modified Copernicus Sentinel data [2022] | ' +
+          '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
+          '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">'
+      };
+  const landsdAttr = isMobile()
+    ? {}
+    : {
+        attribution:
+          '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
+          '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">'
+      };
+  
+  // 建立各底圖圖層
+  const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", osmAttr).addTo(map);
+  const esriSatellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", esriAttr);
+  const cartoLight = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", cartoAttr);
+  const googleStreets = L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", googleAttr);
+  const googleSatellite = L.tileLayer("https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", googleAttr);
+  const googleHybrid = L.tileLayer("https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", googleAttr);
+  
   const hkImageryLayer = L.tileLayer(
     'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/imagery/wgs84/{z}/{x}/{y}.png',
-    {attribution:
-        'Image ©2002 NASA/USGS | Image ©2016 NASA/USGS | Contains modified Copernicus Sentinel data [2022] | ' +
-        '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
-        '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">',
-      minZoom: 0,maxZoom: 19});  
+    { ...imageryAttr, minZoom: 0, maxZoom: 19 }
+  );
+  
   const hkVectorBase = L.tileLayer(
     'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/wgs84/{z}/{x}/{y}.png',
-    {attribution:
-        '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
-        '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">',
-      maxZoom: 20,minZoom: 10});
+    { ...landsdAttr, maxZoom: 20, minZoom: 10 }
+  );
+  
   const hkVectorLabel = L.tileLayer(
     'https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/tc/wgs84/{z}/{x}/{y}.png',
-    {attribution: false,maxZoom: 20,minZoom: 0});
+    { attribution: false, maxZoom: 20, minZoom: 0 }
+  );
+  
+  // Grouped basemaps
   const hkVectorGroup = L.layerGroup([hkVectorBase, hkVectorLabel]);
   const hkImageryGroup = L.layerGroup([hkImageryLayer, hkVectorLabel]);
 
