@@ -147,33 +147,19 @@ export function initOrientationListener() {
   }
 }
 
-export function initLocateButton(map, buttonId) {
+export function initLocateTool(map, buttonId) {
   const locateBtn = document.getElementById(buttonId);
   const statusEl = document.getElementById("alpha-status");
   const crsSelect = document.getElementById("crsMode");
-  
-  if (crsSelect) {
-    crsSelect.addEventListener("change", () => {
-      if (window.lastGeoPosition) {
-        updateAlphaStatus(window.lastGeoPosition);
-      }
-    });
-  }
 
-  locateBtn.addEventListener("click", () => {
-    if (watchId !== null) {
-      navigator.geolocation.clearWatch(watchId);
-      watchId = null;
-      if (locateMarker) map.removeLayer(locateMarker);
-      if (accuracyCircle) map.removeLayer(accuracyCircle);
-      locateMarker = null;
-      accuracyCircle = null;
-      locateBtn.classList.remove("active");
-      window.removeEventListener("deviceorientationabsolute", handleHeading);
-      window.removeEventListener("deviceorientation", handleHeading);
-      statusEl.style.display = "none";
-      return;
-    }
+  let locateMarker = null;
+  let accuracyCircle = null;
+  let watchId = null;
+  let autoFollow = true;
+  let currentRadius = 0;
+
+  function enable() {
+    if (watchId !== null) return; // 已啟用就不重複執行
 
     locateBtn.classList.add("active");
     autoFollow = true;
@@ -186,7 +172,7 @@ export function initLocateButton(map, buttonId) {
         const accuracy = pos.coords.accuracy;
         window.lastGeoPosition = pos;
 
-        updateAlphaStatus(pos); // ← 加入這行來「立即根據目前 crs 顯示座標」
+        updateAlphaStatus(pos);
 
         if (!locateMarker) {
           locateMarker = L.marker(latlng, {
@@ -231,6 +217,39 @@ export function initLocateButton(map, buttonId) {
         maximumAge: 0
       }
     );
-  });
+
+    window.addEventListener("deviceorientationabsolute", handleHeading, true);
+    setTimeout(() => {
+      if (!window.headingEventTriggered) {
+        window.addEventListener("deviceorientation", handleHeading, true);
+      }
+    }, 3000);
+  }
+
+  function disable() {
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+    if (locateMarker) map.removeLayer(locateMarker);
+    if (accuracyCircle) map.removeLayer(accuracyCircle);
+    locateMarker = null;
+    accuracyCircle = null;
+    locateBtn.classList.remove("active");
+    statusEl.style.display = "none";
+    window.removeEventListener("deviceorientationabsolute", handleHeading);
+    window.removeEventListener("deviceorientation", handleHeading);
+  }
+
+  if (crsSelect) {
+    crsSelect.addEventListener("change", () => {
+      if (window.lastGeoPosition) {
+        updateAlphaStatus(window.lastGeoPosition);
+      }
+    });
+  }
+
   makeAlphaStatusDraggable();
+
+  return { enable, disable };
 }
