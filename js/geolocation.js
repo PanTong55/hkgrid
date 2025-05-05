@@ -98,15 +98,27 @@ function updateAlphaStatus(pos) {
   const statusEl = document.getElementById("alpha-status");
   if (!statusEl || !pos) return;
 
-  const lat = pos.coords.latitude.toFixed(6);
-  const lng = pos.coords.longitude.toFixed(6);
-  const alt = pos.coords.altitude != null ? `${pos.coords.altitude.toFixed(1)} m` : "N/A";
-  const acc = pos.coords.accuracy ? `${Math.round(pos.coords.accuracy)} m` : "N/A";
-  const altAcc = pos.coords.altitudeAccuracy ? `${Math.round(pos.coords.altitudeAccuracy)} m` : "N/A";
+  const crsModeSelect = document.getElementById("crsModeSelect");
+  const mode = crsModeSelect?.value || "wgs84";
+
+  let lat = pos.coords.latitude;
+  let lng = pos.coords.longitude;
+
+  let coordText = "";
+  if (mode === "hk1980") {
+    const [x, y] = proj4("EPSG:4326", "EPSG:2326", [lng, lat]);
+    coordText = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
+  } else {
+    coordText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  }
+
+  const acc = pos.coords.accuracy ? `${Math.round(pos.coords.accuracy)}&nbsp;m` : "N/A";
+  const alt = pos.coords.altitude != null ? `${pos.coords.altitude.toFixed(1)}&nbsp;m` : "N/A";
+  const altAcc = pos.coords.altitudeAccuracy ? `${Math.round(pos.coords.altitudeAccuracy)}&nbsp;m` : "N/A";
   const heading = window.currentHeading != null ? `${window.currentHeading.toFixed(2)}°` : "--";
 
   statusEl.innerHTML = `
-    <div><strong>座標：</strong> ${lat} ${lng} (±${acc})</div>
+    <div><strong>座標：</strong> ${coordText} (±${acc})</div>
     <div><strong>高度：</strong> ${alt} (±${altAcc})</div>
     <div><strong>方向：</strong> ${heading}</div>
   `;
