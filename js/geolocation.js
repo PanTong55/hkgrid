@@ -98,27 +98,25 @@ function updateAlphaStatus(pos) {
   const statusEl = document.getElementById("alpha-status");
   if (!statusEl || !pos) return;
 
-  const crsModeSelect = document.getElementById("crsModeSelect");
-  const mode = crsModeSelect?.value || "wgs84";
-
-  let lat = pos.coords.latitude;
-  let lng = pos.coords.longitude;
-
-  let coordText = "";
-  if (mode === "hk1980") {
-    const [x, y] = proj4("EPSG:4326", "EPSG:2326", [lng, lat]);
-    coordText = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
-  } else {
-    coordText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-  }
-
-  const acc = pos.coords.accuracy ? `${Math.round(pos.coords.accuracy)}&nbsp;m` : "N/A";
-  const alt = pos.coords.altitude != null ? `${pos.coords.altitude.toFixed(1)}&nbsp;m` : "N/A";
-  const altAcc = pos.coords.altitudeAccuracy ? `${Math.round(pos.coords.altitudeAccuracy)}&nbsp;m` : "N/A";
+  const lat = pos.coords.latitude;
+  const lng = pos.coords.longitude;
+  const acc = pos.coords.accuracy ? `${Math.round(pos.coords.accuracy)} m` : "N/A";
+  const alt = pos.coords.altitude != null ? `${pos.coords.altitude.toFixed(1)} m` : "N/A";
+  const altAcc = pos.coords.altitudeAccuracy ? `${Math.round(pos.coords.altitudeAccuracy)} m` : "N/A";
   const heading = window.currentHeading != null ? `${window.currentHeading.toFixed(2)}°` : "--";
 
+  const crsMode = document.getElementById("crsModeSelect")?.value || "wgs84";
+
+  let coordText = "";
+  if (crsMode === "hk1980") {
+    const [x, y] = proj4("EPSG:4326", "EPSG:2326", [lng, lat]);
+    coordText = `X: ${Math.round(x)}, Y: ${Math.round(y)} (±${acc})`;
+  } else {
+    coordText = `${lat.toFixed(6)}, ${lng.toFixed(6)} (±${acc})`;
+  }
+
   statusEl.innerHTML = `
-    <div><strong>座標：</strong> ${coordText} (±${acc})</div>
+    <div><strong>座標：</strong> ${coordText}</div>
     <div><strong>高度：</strong> ${alt} (±${altAcc})</div>
     <div><strong>方向：</strong> ${heading}</div>
   `;
@@ -145,15 +143,15 @@ export function initOrientationListener() {
 export function initLocateButton(map, buttonId) {
   const locateBtn = document.getElementById(buttonId);
   const statusEl = document.getElementById("alpha-status");
-
   const crsSelect = document.getElementById("crsModeSelect");
+  
   if (crsSelect) {
     crsSelect.addEventListener("change", () => {
       if (window.lastGeoPosition) {
         updateAlphaStatus(window.lastGeoPosition);
       }
     });
-  }  
+  }
 
   locateBtn.addEventListener("click", () => {
     if (watchId !== null) {
@@ -173,14 +171,15 @@ export function initLocateButton(map, buttonId) {
     locateBtn.classList.add("active");
     autoFollow = true;
     statusEl.style.display = "block";
-    statusEl.textContent = "α: --";
+    statusEl.innerHTML = "<div>取得座標中...</div>";
 
     watchId = navigator.geolocation.watchPosition(
       (pos) => {
         const latlng = [pos.coords.latitude, pos.coords.longitude];
         const accuracy = pos.coords.accuracy;
-        window.lastGeoPosition = pos;  // ⬅️ 記錄最新定位
-        updateAlphaStatus(pos);  // ⬅️ 更新 UI 狀態欄
+        window.lastGeoPosition = pos;
+
+        updateAlphaStatus(pos); // ← 加入這行來「立即根據目前 crs 顯示座標」
 
         if (!locateMarker) {
           locateMarker = L.marker(latlng, {
