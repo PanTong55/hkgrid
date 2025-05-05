@@ -23,7 +23,7 @@ html, body, button, input, select, label {
 
 @media (max-width: 1023px) {
   #map {
-    height: 80vh;
+    height: 100dvh;
     width: 100%;
   }
 }
@@ -139,12 +139,12 @@ a.tooltip-close:hover {
   font-weight: bold;
   color: #333;
   font-size: 13px;
-  padding-left: 10px
+  padding-left: 5px
 }
 
 #coord-scale-wrapper .leaflet-control-scale {
   position: static !important;
-  margin-left: 5px;
+  margin-left: 0px;
 }
 
 .crs-selector select {
