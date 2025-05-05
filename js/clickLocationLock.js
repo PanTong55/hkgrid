@@ -1,26 +1,28 @@
-let lockMarker = null;
+let lockedMarker = null;
 let isLocked = false;
-let lockedCoord = null;
+let lockedLatLng = null;
 
 export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
   map.on("click", function (e) {
     const crsMode = crsModeSelect.value;
     const latlng = e.latlng;
-  
+
+    // 🔁 點擊相同位置 → 解除鎖定
     if (
+      isLocked &&
       lockedMarker &&
-      lockedMarker.getLatLng().lat === latlng.lat &&
-      lockedMarker.getLatLng().lng === latlng.lng
+      lockedLatLng &&
+      lockedLatLng.lat === latlng.lat &&
+      lockedLatLng.lng === latlng.lng
     ) {
-      // 點擊相同位置 → 移除鎖定
       map.removeLayer(lockedMarker);
       lockedMarker = null;
       lockedLatLng = null;
-      coordLocked = false;
+      isLocked = false;
       return;
     }
-  
-    // 更新鎖定狀態
+
+    // 🔐 鎖定新位置
     if (!lockedMarker) {
       lockedMarker = L.marker(latlng, {
         icon: L.divIcon({
@@ -32,11 +34,11 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
     } else {
       lockedMarker.setLatLng(latlng);
     }
-  
+
     lockedLatLng = latlng;
-    coordLocked = true;
-  
-    // ✅ 轉換顯示座標文字
+    isLocked = true;
+
+    // 🧭 顯示座標（依據 crsMode）
     if (crsMode === "wgs84") {
       coordDisplay.textContent = `${latlng.lng.toFixed(4)}\u00A0\u00A0\u00A0${latlng.lat.toFixed(4)}`;
     } else {
@@ -45,9 +47,10 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
     }
   });
 
-  // 當滑鼠移動時，如果未鎖定才更新座標
-  map.on("mousemove", (e) => {
+  // 📍 滑鼠移動更新座標（未鎖定時）
+  map.on("mousemove", function (e) {
     if (isLocked) return;
+
     const mode = crsModeSelect.value;
     if (mode === "wgs84") {
       coordDisplay.textContent = `${e.latlng.lng.toFixed(4)}\u00A0\u00A0\u00A0${e.latlng.lat.toFixed(4)}`;
