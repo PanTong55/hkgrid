@@ -106,9 +106,9 @@ function updateAlphaStatus(pos) {
   const heading = window.currentHeading != null ? `${window.currentHeading.toFixed(2)}°` : "--";
 
   statusEl.innerHTML = `
-    <div><strong>Coord:</strong> Lat ${lat} / Lng ${lng} (±${acc})</div>
-    <div><strong>Height:</strong> ${alt} (±${altAcc})</div>
-    <div><strong>Heading:</strong> ${heading}</div>
+    <div><strong>座標：</strong> ${lat} ${lng} (±${acc})</div>
+    <div><strong>高度：</strong> ${alt} (±${altAcc})</div>
+    <div><strong>方向：</strong> ${heading}</div>
   `;
 }
 
