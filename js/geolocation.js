@@ -146,6 +146,15 @@ export function initLocateButton(map, buttonId) {
   const locateBtn = document.getElementById(buttonId);
   const statusEl = document.getElementById("alpha-status");
 
+  const crsSelect = document.getElementById("crsModeSelect");
+  if (crsSelect) {
+    crsSelect.addEventListener("change", () => {
+      if (window.lastGeoPosition) {
+        updateAlphaStatus(window.lastGeoPosition);
+      }
+    });
+  }  
+
   locateBtn.addEventListener("click", () => {
     if (watchId !== null) {
       navigator.geolocation.clearWatch(watchId);
