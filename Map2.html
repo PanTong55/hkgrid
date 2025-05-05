@@ -187,7 +187,6 @@
       
         import("./js/drawPoints.js").then((drawMod) => {
           const tool = drawMod.initDrawPoint(map, crsModeSelect);
-      
           let drawActive = false;
           document.getElementById("drawPointBtn").addEventListener("click", () => {
             drawActive = !drawActive;
@@ -200,10 +199,20 @@
             }
           });
         });
-      });
-      import("./js/geolocation.js").then((m) => {
-        m.initOrientationListener();
-        m.initLocateButton(map, "locateBtn");
+        import("./js/geolocation.js").then((geoMod) => {
+          const tool = geoMod.initLocateTool(map, "locateBtn");
+          let locateActive = false;
+          document.getElementById("locateBtn").addEventListener("click", () => {
+            locateActive = !locateActive;
+            if (locateActive) {
+              tool.enable();
+              clickLockModule.disableClickLock();
+            } else {
+              tool.disable();
+              clickLockModule.enableClickLock();
+            }
+          });
+        });        
       });
       import("./js/goto.js").then((m) => m.initGotoPanel(map));
       import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
