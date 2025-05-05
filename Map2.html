@@ -206,10 +206,10 @@
             locateActive = !locateActive;
             if (locateActive) {
               tool.enable();
-              LockModule.disableClickLock();
+              lockModule.disableClickLock();
             } else {
               tool.disable();
-              LockModule.enableClickLock();
+              lockModule.enableClickLock();
             }
           });
         });        
