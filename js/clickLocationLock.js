@@ -36,9 +36,13 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
       lockMarker = L.marker(latlng, {
         icon: L.divIcon({
           className: "lucide-lock-icon",
-          html: '<i data-lucide="locate-fixed"></i>',
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
+          html: `
+            <div class="lock-hitbox">
+              <i data-lucide="locate-fixed"></i>
+            </div>
+          `,
+          iconSize: [36, 36],       // 實際點擊區域大小
+          iconAnchor: [18, 18],     // 中心對齊
         }),
       }).addTo(map);
     } else {
