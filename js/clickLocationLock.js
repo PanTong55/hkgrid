@@ -16,7 +16,13 @@ function isClickIgnored(el) {
     el.closest("#gotoPanel") ||
     el.closest("#clearBtn") ||
     el.closest("#goBtn") ||
-    el.closest("#fullscreenBtn")
+    el.closest("#fullscreenBtn") ||
+    el.tagName === "BUTTON" ||
+    el.tagName === "A" ||
+    el.tagName === "INPUT" ||
+    el.tagName === "SELECT" ||
+    el.tagName === "LABEL" ||
+    el.closest(".leaflet-control")
   );
 }
 
