@@ -86,15 +86,30 @@ export function handleHeading(event) {
     heading = 360 - event.alpha;
   }
 
-  const statusEl = document.getElementById("alpha-status");
-  if (heading != null) {
-    statusEl.textContent = `Heading: ${heading.toFixed(2)}°`;
-    if (locateMarker) {
-      rotateMarker(locateMarker, heading);
-    }
-  } else {
-    statusEl.textContent = `⚠️無法取得方向感應數據`;
+  window.currentHeading = heading;
+  updateAlphaStatus(window.lastGeoPosition);
+
+  if (locateMarker && heading != null) {
+    rotateMarker(locateMarker, heading);
   }
+}
+
+function updateAlphaStatus(pos) {
+  const statusEl = document.getElementById("alpha-status");
+  if (!statusEl || !pos) return;
+
+  const lat = pos.coords.latitude.toFixed(6);
+  const lng = pos.coords.longitude.toFixed(6);
+  const alt = pos.coords.altitude != null ? `${pos.coords.altitude.toFixed(1)} m` : "N/A";
+  const acc = pos.coords.accuracy ? `${Math.round(pos.coords.accuracy)} m` : "N/A";
+  const altAcc = pos.coords.altitudeAccuracy ? `${Math.round(pos.coords.altitudeAccuracy)} m` : "N/A";
+  const heading = window.currentHeading != null ? `${window.currentHeading.toFixed(2)}°` : "--";
+
+  statusEl.innerHTML = `
+    <div><strong>Coord:</strong> Lat ${lat} / Lng ${lng} (±${acc})</div>
+    <div><strong>Height:</strong> ${alt} (±${altAcc})</div>
+    <div><strong>Heading:</strong> ${heading}</div>
+  `;
 }
 
 export function initOrientationListener() {
@@ -143,6 +158,8 @@ export function initLocateButton(map, buttonId) {
       (pos) => {
         const latlng = [pos.coords.latitude, pos.coords.longitude];
         const accuracy = pos.coords.accuracy;
+        window.lastGeoPosition = pos;  // ⬅️ 記錄最新定位
+        updateAlphaStatus(pos);  // ⬅️ 更新 UI 狀態欄
 
         if (!locateMarker) {
           locateMarker = L.marker(latlng, {
