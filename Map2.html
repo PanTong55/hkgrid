@@ -143,8 +143,6 @@
       import { initMap } from "./js/initMap.js";
       const { map, layersControl } = await initMap();
 
-      import("./js/clickLocationLock.js").then((m) => {
-        m.initClickLocationLock(map, coordDisplay, crsModeSelect);
       const crsModeSelect = document.getElementById("crsMode");
       const coordDisplay = document.getElementById("mouseCoords");
 
@@ -186,12 +184,30 @@
         ];
         m.initHomeButton(map, "homeBtn", hongKongBounds);
       });
+      import("./js/clickLocationLock.js").then((lockModule) => {
+        lockModule.initClickLocationLock(map, coordDisplay, crsModeSelect);
+      
+        import("./js/drawPoints.js").then((drawMod) => {
+          const tool = drawMod.initDrawPoint(map, crsModeSelect);
+      
+          let drawActive = false;
+          document.getElementById("drawPointBtn").addEventListener("click", () => {
+            drawActive = !drawActive;
+            if (drawActive) {
+              tool.enable();              // 開啟繪圖模式
+              lockModule.disableClickLock(); // 關掉點擊座標鎖定
+            } else {
+              tool.disable();             // 關閉繪圖模式
+              lockModule.enableClickLock();  // 恢復座標鎖定功能
+            }
+          });
+        });
+      });
       import("./js/geolocation.js").then((m) => {
         m.initOrientationListener();
         m.initLocateButton(map, "locateBtn");
       });
       import("./js/goto.js").then((m) => m.initGotoPanel(map));
-      import("./js/drawPoints.js").then((m) => m.initDrawPoint(map, crsModeSelect));
       import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
     </script>
     <div id="alpha-status">α: --</div>    
