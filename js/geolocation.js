@@ -6,6 +6,13 @@ let watchId = null;
 let autoFollow = true;
 let currentRadius = 0;
 
+import { makeTooltipDraggable } from './draggableTooltip.js';
+
+const alphaStatus = document.getElementById("alpha-status");
+if (alphaStatus) {
+  makeTooltipDraggable(alphaStatus);
+}
+
 function easeOutCubic(t) {
   return --t * t * t + 1;
 }
@@ -120,37 +127,6 @@ function updateAlphaStatus(pos) {
     <div><strong>高度：</strong> ${alt} (±${altAcc})</div>
     <div><strong>方向：</strong> ${heading}</div>
   `;
-}
-
-function makeAlphaStatusDraggable() {
-  const box = document.getElementById("alpha-status");
-  if (!box) return;
-
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  box.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    box.classList.add("dragging");
-    offsetX = e.clientX - box.getBoundingClientRect().left;
-    offsetY = e.clientY - box.getBoundingClientRect().top;
-    e.preventDefault();
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
-    box.style.left = `${e.clientX - offsetX}px`;
-    box.style.top = `${e.clientY - offsetY}px`;
-    box.style.right = "auto";
-    box.style.bottom = "auto";
-  });
-
-  document.addEventListener("mouseup", () => {
-    if (isDragging) {
-      isDragging = false;
-      box.classList.remove("dragging");
-    }
-  });
 }
 
 export function initOrientationListener() {
