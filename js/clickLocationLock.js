@@ -10,8 +10,21 @@ export function enableClickLock() {
   clickLockEnabled = true;
 }
 
+function isClickIgnored(el) {
+  return (
+    el.closest("#coord-scale-wrapper") ||
+    el.closest("#gotoPanel") ||
+    el.closest("#clearBtn") ||
+    el.closest("#goBtn") ||
+    el.closest("#fullscreenBtn")
+  );
+}
+
 export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
   map.on("click", (e) => {
+    const el = e.originalEvent.target;
+    if (isClickIgnored(el)) return;
+    
     if (!clickLockEnabled) return; // ⛔ 若被禁用就不執行點擊鎖定
 
     const latlng = e.latlng;
@@ -57,6 +70,9 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
 
   map.on("mousemove", (e) => {
     if (isLocked) return;
+    const el = e.originalEvent.target;
+    if (isClickIgnored(el)) return;  // ✅ 滑過 UI 不顯示座標
+    
     const mode = crsModeSelect.value;
     if (mode === "wgs84") {
       coordDisplay.textContent = `${e.latlng.lng.toFixed(4)}\u00A0\u00A0\u00A0${e.latlng.lat.toFixed(4)}`;
