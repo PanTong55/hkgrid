@@ -104,7 +104,7 @@ a.tooltip-close:hover {
   left: 10px;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #ccc;
-  padding: 1px 10px;
+  padding: 5px 10px 5px 0px;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   font-family: 'Noto Sans HK', sans-serif;
@@ -114,7 +114,7 @@ a.tooltip-close:hover {
   align-items: center;
   gap: 12px;
   flex-wrap: nowrap;
-  z-index: 1001; /* ✅ 一定要高於 map 內容 */
+  z-index: 1001;
   pointer-events: none; /* 防止遮住地圖點擊，可視情況使用 */
 }
 
@@ -129,6 +129,7 @@ a.tooltip-close:hover {
   width: auto !important;
   min-width: unset !important;
   max-width: 100px;
+  padding-left: 10px;
   flex-shrink: 0;
   pointer-events: auto; /* ✅ 為 select 恢復互動 */
 }
@@ -313,8 +314,3 @@ a.tooltip-close:hover {
   z-index: 1000 !important;
   background: white;
 }
-
-
-/* 地圖佈局處理 */
-
-
