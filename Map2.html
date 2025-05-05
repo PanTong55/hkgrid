@@ -200,7 +200,21 @@
       import("./js/drawPoints.js").then((m) => m.initDrawPoint(map, crsModeSelect));
       import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
     </script>
-    <div id="alpha-status" style="display: none; position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.95); padding: 6px 10px; font-size: 13px; color: #333; border: 1px solid #ccc; border-radius: 6px; font-family: Arial, sans-serif; z-index: 9999;">
+    <div id="alpha-status" style="
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: 'Noto Sans HK', sans-serif;
+      z-index: 9999;
+      cursor: grab;
+      user-select: none;
+    ">
       α: --
     </div>    
   </body>
