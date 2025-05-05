@@ -315,7 +315,8 @@ a.tooltip-close:hover {
   background: white;
 }
 
-#alpha-status.dragging {
-  opacity: 0.6;
-  cursor: move;
+#alpha-status {
+  position: absolute;
+  cursor: grab;
+  touch-action: none;
 }
