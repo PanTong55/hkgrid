@@ -4,8 +4,7 @@ let lockedCoord = null;
 
 function isSameLocation(latlng1, latlng2, toleranceMeters = 10) {
   if (!latlng1 || !latlng2) return false;
-  return map.distance(
-    L.latLng(latlng1[1], latlng1[0]),  // 注意：lockedCoord 是 [lng, lat]
+  return L.latLng(latlng1[1], latlng1[0]).distanceTo(
     L.latLng(latlng2[1], latlng2[0])
   ) <= toleranceMeters;
 }
