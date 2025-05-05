@@ -333,3 +333,12 @@ a.tooltip-close:hover {
   user-select: none;
   touch-action: none;
 }
+
+.lucide-lock-icon i {
+  color: #007aff;
+  font-size: 24px;
+}
+#mouseCoords.locked {
+  color: #007aff;
+  font-weight: bold;
+}
