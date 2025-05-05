@@ -338,7 +338,21 @@ a.tooltip-close:hover {
   color: #007aff;
   font-size: 24px;
 }
+.lucide-lock-icon {
+  pointer-events: auto; /* 確保 icon 可以觸發 click */
+}
 #mouseCoords.locked {
   color: #007aff;
   font-weight: bold;
+}
+.lucide-lock-icon .lock-hitbox {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent; /* 可改為 rgba(0,0,0,0.1) 測試點擊區 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: pointer;
 }
