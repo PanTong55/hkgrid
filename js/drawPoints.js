@@ -10,9 +10,13 @@ export function initDrawPoint(map, crsModeSelect) {
     drawPointBtn.classList.toggle("active", drawMode);
   });
 
-  map.on("click", function (e) {
+  const mapClickHandler = function (e) {
     const el = e.originalEvent.target;
-    if (["a", "button", "input", "label", "select", "i", "svg", "path"].includes(el.tagName.toLowerCase()) || el.closest(".leaflet-control")) return;
+    if (
+      ["a", "button", "input", "label", "select", "i", "svg", "path"].includes(el.tagName.toLowerCase()) ||
+      el.closest(".leaflet-control")
+    ) return;
+
     if (!drawMode) return;
 
     const latlng = e.latlng;
@@ -51,7 +55,9 @@ export function initDrawPoint(map, crsModeSelect) {
         updateTooltipPosition(marker);
       }
     });
-  });
+  };
+
+  map.on("click", mapClickHandler);
 
   function createTooltip(marker, content, markerId) {
     const tooltip = document.createElement("div");
@@ -119,5 +125,17 @@ export function initDrawPoint(map, crsModeSelect) {
       drawnPoints.splice(idx, 1);
       delete drawnTooltips[markerId];
     }
+  };
+
+  // ✅ 回傳 enable / disable 控制
+  return {
+    enable() {
+      drawMode = true;
+      drawPointBtn.classList.add("active");
+    },
+    disable() {
+      drawMode = false;
+      drawPointBtn.classList.remove("active");
+    },
   };
 }
