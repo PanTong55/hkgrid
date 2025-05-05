@@ -316,6 +316,7 @@ a.tooltip-close:hover {
 }
 
 #alpha-status {
+  display: none;
   position: absolute;
   left: calc(50% - 125px); /* 假設 box 寬度約 200px，可微調 */
   top: calc(100% - 150px); /* 視窗底部往上 150px，即距離 bottom 約 50px */
