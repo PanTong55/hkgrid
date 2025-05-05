@@ -1,56 +1,65 @@
-let lockedMarker = null;
+let lockMarker = null;
 let isLocked = false;
-let lockedLatLng = null;
+let lockedCoord = null;
 
 export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
-  map.on("click", function (e) {
-    const crsMode = crsModeSelect.value;
+  map.on("click", (e) => {
     const latlng = e.latlng;
-
-    // 🔁 點擊相同位置 → 解除鎖定
-    if (
-      isLocked &&
-      lockedMarker &&
-      lockedLatLng &&
-      lockedLatLng.lat === latlng.lat &&
-      lockedLatLng.lng === latlng.lng
-    ) {
-      map.removeLayer(lockedMarker);
-      lockedMarker = null;
-      lockedLatLng = null;
+    const mode = crsModeSelect.value;
+  
+    // 正確取得座標：不做 round 處理以避免判斷錯誤
+    const projectedCoord = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
+    const currentClickedCoord = mode === "wgs84"
+      ? [latlng.lng.toFixed(4), latlng.lat.toFixed(4)]
+      : projectedCoord;
+  
+    // 比對原始數值（不要四捨五入）確保精確
+    const sameAsLocked = lockedCoord &&
+      currentClickedCoord[0] === lockedCoord[0] &&
+      currentClickedCoord[1] === lockedCoord[1];
+  
+    if (isLocked && sameAsLocked) {
+      if (lockMarker) {
+        map.removeLayer(lockMarker);
+        lockMarker = null;
+      }
       isLocked = false;
+      lockedCoord = null;
+      coordDisplay.classList.remove("locked");
       return;
     }
-
-    // 🔐 鎖定新位置
-    if (!lockedMarker) {
-      lockedMarker = L.marker(latlng, {
+  
+    lockedCoord = currentClickedCoord;
+    isLocked = true;
+  
+    if (!lockMarker) {
+      lockMarker = L.marker(latlng, {
         icon: L.divIcon({
-          className: "lucide-icon",
-          html: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#007aff" viewBox="0 0 24 24"><path d="M12 2L6 12h12L12 2zm0 13a2 2 0 100 4 2 2 0 000-4z"/></svg>`,
-          iconAnchor: [9, 9],
+          className: "lucide-lock-icon",
+          html: '<i data-lucide="locate-fixed"></i>',
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
         }),
       }).addTo(map);
     } else {
-      lockedMarker.setLatLng(latlng);
+      lockMarker.setLatLng(latlng);
     }
-
-    lockedLatLng = latlng;
-    isLocked = true;
-
-    // 🧭 顯示座標（依據 crsMode）
-    if (crsMode === "wgs84") {
-      coordDisplay.textContent = `${latlng.lng.toFixed(4)}\u00A0\u00A0\u00A0${latlng.lat.toFixed(4)}`;
+  
+    if (window.lucide) lucide.createIcons();
+  
+    // 正確顯示（在此才 round 顯示用）
+    if (mode === "wgs84") {
+      coordDisplay.textContent = `${currentClickedCoord[0]}\u00A0\u00A0\u00A0${currentClickedCoord[1]}`;
     } else {
-      const [x, y] = proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
-      coordDisplay.textContent = `X: ${Math.round(x)}\u00A0\u00A0\u00A0Y: ${Math.round(y)}`;
+      coordDisplay.textContent = `X: ${Math.round(currentClickedCoord[0])}\u00A0\u00A0\u00A0Y: ${Math.round(currentClickedCoord[1])}`;
     }
+  
+    coordDisplay.classList.add("locked");
   });
 
-  // 📍 滑鼠移動更新座標（未鎖定時）
-  map.on("mousemove", function (e) {
+  // 當滑鼠移動時，如果未鎖定才更新座標
+  map.on("mousemove", (e) => {
     if (isLocked) return;
-
     const mode = crsModeSelect.value;
     if (mode === "wgs84") {
       coordDisplay.textContent = `${e.latlng.lng.toFixed(4)}\u00A0\u00A0\u00A0${e.latlng.lat.toFixed(4)}`;
