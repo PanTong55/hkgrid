@@ -117,6 +117,7 @@ export function initOrientationListener() {
 
 export function initLocateButton(map, buttonId) {
   const locateBtn = document.getElementById(buttonId);
+  const statusEl = document.getElementById("alpha-status");
 
   locateBtn.addEventListener("click", () => {
     if (watchId !== null) {
@@ -129,11 +130,14 @@ export function initLocateButton(map, buttonId) {
       locateBtn.classList.remove("active");
       window.removeEventListener("deviceorientationabsolute", handleHeading);
       window.removeEventListener("deviceorientation", handleHeading);
+      statusEl.style.display = "none";
       return;
     }
 
     locateBtn.classList.add("active");
     autoFollow = true;
+    statusEl.style.display = "block";
+    statusEl.textContent = "α: --";
 
     watchId = navigator.geolocation.watchPosition(
       (pos) => {
