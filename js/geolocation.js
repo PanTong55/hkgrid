@@ -8,11 +8,6 @@ let currentRadius = 0;
 
 import { makeTooltipDraggable } from './draggableTooltip.js';
 
-const alphaStatus = document.getElementById("alpha-status");
-if (alphaStatus) {
-  makeTooltipDraggable(alphaStatus);
-}
-
 function easeOutCubic(t) {
   return --t * t * t + 1;
 }
@@ -249,7 +244,10 @@ export function initLocateTool(map, buttonId) {
     });
   }
 
-  makeAlphaStatusDraggable();
+  const alphaStatus = document.getElementById("alpha-status");
+  if (alphaStatus) {
+    makeTooltipDraggable(alphaStatus);
+  }
 
   return { enable, disable };
 }
