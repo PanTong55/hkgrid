@@ -314,3 +314,8 @@ a.tooltip-close:hover {
   z-index: 1000 !important;
   background: white;
 }
+
+#alpha-status.dragging {
+  opacity: 0.6;
+  cursor: move;
+}
