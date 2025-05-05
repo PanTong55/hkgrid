@@ -16,9 +16,9 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
     const mode = crsModeSelect.value;
   
     // 比對原始數值（不要四捨五入）確保精確
-    const sameAsLocked = lockedCoord &&
-      currentClickedCoord[0] === lockedCoord[0] &&
-      currentClickedCoord[1] === lockedCoord[1];
+    const currentClickedCoord = mode === "wgs84"
+      ? [latlng.lng, latlng.lat]
+      : proj4("EPSG:4326", "EPSG:2326", [latlng.lng, latlng.lat]);
 
     // 正確取得座標：不做 round 處理以避免判斷錯誤
     const sameAsLocked = isSameLocation(currentClickedCoord, lockedCoord);
