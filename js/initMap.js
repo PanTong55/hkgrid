@@ -79,6 +79,28 @@ export async function initMap() {
     }
   });  
 
+  const ib20000Group = L.layerGroup();
+  
+  fetch("./js/iB20000_Index_2024-11-14_converted.json")
+    .then(res => res.json())
+    .then(ibData => {
+      ibData.features.forEach((feature) => {
+        const bounds = L.geoJSON(feature).getBounds();
+        const url = feature.properties.TIFF;
+        const overlay = L.imageOverlay(url, bounds, {
+          opacity: 1,
+          interactive: false,
+        });
+        ib20000Group.addLayer(overlay);
+      });
+  
+      // 加到 Basemap 控制選單
+      baseMaps["iB20000 Map"] = ib20000Group;
+  
+      // 更新 layersControl（必須先建立完 baseMaps 才能加）
+      layersControl.addBaseLayer(ib20000Group, "iB20000 Map (All TIFF)");
+    });
+  
   const baseMaps = {
     "Street (OSM)": streets,
     "Street (Carto) Light": cartoLight,
@@ -105,56 +127,6 @@ export async function initMap() {
         },
       });
       layersControl.addOverlay(hkcpLayer, "CP Boundary (OSM)");
-    });
-
-  // 初始化一個 baseMap 對應的圖層容器（只會顯示一張）
-  let ib20000Overlay = null;
-  
-  function clearExistingIBLayer(map) {
-    if (ib20000Overlay) {
-      map.removeLayer(ib20000Overlay);
-      ib20000Overlay = null;
-    }
-  }
-
-  // 加入所有 TIFF 作為單一 Basemap group（只會顯示一張）
-  fetch("./data/iB20000.json")
-    .then((res) => res.json())
-    .then((ibData) => {
-      const baseIbOptions = {};
-  
-      ibData.features.forEach((feature) => {
-        const bounds = L.geoJSON(feature).getBounds();
-        const url = feature.properties.TIFF;
-        const sheetNo = feature.properties.SHEETNO;
-  
-        baseIbOptions[`iB20000 - ${sheetNo}`] = {
-          addToMap: () => {
-            clearExistingIBLayer(map);
-            ib20000Overlay = L.imageOverlay(url, bounds, {
-              opacity: 1,
-              interactive: false,
-            }).addTo(map);
-            map.fitBounds(bounds);
-          }
-        };
-      });
-  
-      // 將這些圖層當成 Basemap 加入控制器
-      Object.keys(baseIbOptions).forEach((name) => {
-        layersControl.addBaseLayer(
-          {
-            onAdd: function (map) {
-              baseIbOptions[name].addToMap(map);
-              return L.layerGroup();
-            },
-            onRemove: function (map) {
-              clearExistingIBLayer(map);
-            }
-          },
-          name
-        );
-      });
     });
   
   return { map, layersControl };
