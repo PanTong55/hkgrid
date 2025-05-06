@@ -65,6 +65,15 @@
   z-index: 20;
 }
 
+@media (max-width: 1023px) {
+  #filter-toggle-bar::before {
+    content: "";
+    position: absolute;
+    left: -15px;
+    right: -15px;
+  }
+}
+
 .arrow-icon {
   font-size: 14px;
 }
