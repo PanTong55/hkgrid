@@ -17,6 +17,8 @@ function isClickIgnored(el) {
     el.closest("#clearBtn") ||
     el.closest("#goBtn") ||
     el.closest("#fullscreenBtn") ||
+    el.closest("path.leaflet-interactive") ||    // ✅ Grid
+    el.closest("circle.leaflet-interactive") ||      // ✅ Point
     el.tagName === "BUTTON" ||
     el.tagName === "A" ||
     el.tagName === "INPUT" ||
@@ -77,7 +79,6 @@ export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
   map.on("mousemove", (e) => {
     if (isLocked) return;
     const el = e.originalEvent.target;
-    if (isClickIgnored(el)) return;  // ✅ 滑過 UI 不顯示座標
     
     const mode = crsModeSelect.value;
     if (mode === "wgs84") {
