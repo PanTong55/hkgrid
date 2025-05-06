@@ -79,28 +79,6 @@ export async function initMap() {
     }
   });  
 
-  const ib20000Group = L.layerGroup();
-  
-  fetch("./data/iB20000.json")
-    .then(res => res.json())
-    .then(ibData => {
-      ibData.features.forEach((feature) => {
-        const bounds = L.geoJSON(feature).getBounds();
-        const url = feature.properties.TIFF;
-        const overlay = L.imageOverlay(url, bounds, {
-          opacity: 1,
-          interactive: false,
-        });
-        ib20000Group.addLayer(overlay);
-      });
-  
-      // 加到 Basemap 控制選單
-      baseMaps["iB20000 Map"] = ib20000Group;
-  
-      // 更新 layersControl（必須先建立完 baseMaps 才能加）
-      layersControl.addBaseLayer(ib20000Group, "iB20000 Map (All TIFF)");
-    });
-  
   const baseMaps = {
     "Street (OSM)": streets,
     "Street (Carto) Light": cartoLight,
