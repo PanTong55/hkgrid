@@ -26,7 +26,7 @@ export async function initMap() {
   // 建立通用 attribution 設定
   const osmAttr = isMobile() ? {} : { attribution: "© OpenStreetMap contributors" };
   const esriAttr = isMobile() ? {} : { attribution: "Tiles © Esri" };
-  const cartoAttr = isMobile() ? {} : { attribution: "CARTO" };
+  const cartoAttr = isMobile() ? {} : { attribution: '© <a href="https://carto.com/">Carto</a>' };
   const googleAttr = isMobile() ? {} : { attribution: "Map data ©2024 Google" };
   const imageryAttr = isMobile()
     ? {}
@@ -48,6 +48,7 @@ export async function initMap() {
   const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", osmAttr).addTo(map);
   const esriSatellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", esriAttr);
   const cartoLight = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", cartoAttr);
+  const cartoDark = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", cartoAttr);
   const googleStreets = L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", googleAttr);
   const googleSatellite = L.tileLayer("https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", googleAttr);
   const googleHybrid = L.tileLayer("https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", googleAttr);
@@ -79,14 +80,15 @@ export async function initMap() {
   });  
 
   const baseMaps = {
-    "街道圖 (OSM)": streets,
-    "街道圖 (Carto)": cartoLight,
-    "街道圖 (Google)": googleStreets,
-    "衛星圖 (Esri)": esriSatellite,
-    "混合圖 (Google)": googleHybrid,
-    "衛星圖 (Google)": googleSatellite,
-    "衛星圖 (HKMap)": hkImageryGroup,
-    "街道圖 (HKMap)": hkVectorGroup,
+    "Street (OSM)": streets,
+    "Street (Carto) Light": cartoLight,
+    "Street (Carto) Dark": cartoDark,
+    "Street (Google)": googleStreets,
+    "Hybrid (Google)": googleHybrid,
+    "Satellite (Google)": googleSatellite,
+    "Satellite (Esri)": esriSatellite,
+    "Satellite (HKMap)": hkImageryGroup,
+    "Street (HKMap)": hkVectorGroup,
   };
 
   const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
@@ -102,7 +104,7 @@ export async function initMap() {
           fillOpacity: 0.1,
         },
       });
-      layersControl.addOverlay(hkcpLayer, "郊野公園邊界 (OSM)");
+      layersControl.addOverlay(hkcpLayer, "CP Boundary (OSM)");
     });
 
   return { map, layersControl };
