@@ -81,7 +81,7 @@ export async function initMap() {
 
   const ib20000Group = L.layerGroup();
   
-  fetch("./js/iB20000_Index_2024-11-14_converted.json")
+  fetch("./data/iB20000.json")
     .then(res => res.json())
     .then(ibData => {
       ibData.features.forEach((feature) => {
