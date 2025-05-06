@@ -414,6 +414,7 @@ function closeLockTooltip(event, closeButton) {
         style: {
           color: '#3388ff',
           weight: 2,
+          fillColor: '#3388ff',
           fillOpacity: 0.3
         },
         onEachFeature: (feature, layer) => {
@@ -461,6 +462,7 @@ function closeLockTooltip(event, closeButton) {
               layer.setStyle({
                 color: '#3388ff',
                 weight: 2,
+                fillColor: '#3388ff',
                 fillOpacity: 0.3
               });              
             } else {
