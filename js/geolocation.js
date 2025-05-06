@@ -159,7 +159,7 @@ export function initLocateTool(map, buttonId) {
     locateBtn.classList.add("active");
     autoFollow = true;
     statusEl.style.display = "block";
-    statusEl.innerHTML = "<div>取得座標中...</div>";
+    statusEl.innerHTML = "<div style="text-align: center;">取得座標中...</div>";
 
     watchId = navigator.geolocation.watchPosition(
       (pos) => {
