@@ -280,6 +280,63 @@ export async function initBatDataLayer(map, layersControl) {
           fillOpacity: 0.8
         }));
       batLayer = L.layerGroup(pointMarkers).addTo(map);
+    pointMarkers.forEach(marker => {
+      const lat = marker.getLatLng().lat.toFixed(5);
+      const lng = marker.getLatLng().lng.toFixed(5);
+      
+      const matchedData = filteredData.filter(d =>
+        parseFloat(d.Latitude).toFixed(5) === lat &&
+        parseFloat(d.Longitude).toFixed(5) === lng
+      );
+  
+      const speciesSet = new Set(matchedData.map(d => d["Species"]).filter(Boolean));
+      const locationName = matchedData[0]?.["Location"] || "未知地點";
+  
+      const tooltipContent = `
+        <strong>地點:</strong> ${locationName}<br>
+        <strong>物種數量:</strong> ${speciesSet.size} 種<br>
+        <strong>清單:</strong><br>
+        ${[...speciesSet].sort().map((s, i) => `${i + 1}. <i>${s}</i>`).join("<br>")}
+      `;
+  
+      marker.options.tooltipContent = tooltipContent;
+  
+      if (!("ontouchstart" in window)) {
+        marker.on("mouseover", e => {
+          if (!lockedLayers.includes(marker)) {
+            hoverTooltip.innerHTML = tooltipContent;
+            hoverTooltip.style.display = "block";
+          }
+        });
+  
+        marker.on("mousemove", e => {
+          if (!lockedLayers.includes(marker)) {
+            const point = map.latLngToContainerPoint(e.latlng);
+            positionTooltip(hoverTooltip, point);
+          }
+        });
+  
+        marker.on("mouseout", () => {
+          hoverTooltip.style.display = "none";
+        });
+      }
+  
+      marker.on("click", () => {
+        if (lockedLayers.includes(marker)) {
+          const idx = lockedLayers.indexOf(marker);
+          lockedLayers.splice(idx, 1);
+          tooltipElements[idx].remove();
+          tooltipElements.splice(idx, 1);
+          manualMoved.splice(idx, 1);
+        } else {
+          if (lockedLayers.length >= 3) {
+            alert("最多只能顯示 3 個標記的資料");
+            return;
+          }
+          openLockTooltip(marker, tooltipContent);
+        }
+      });
+    });
     } else if (mode === "grid") {
       const matchedGridNos = new Set(filteredData.map(d => d.Grid));
       gridLayer = L.geoJSON(gridGeoJson, {
@@ -342,65 +399,6 @@ export async function initBatDataLayer(map, layersControl) {
       }).addTo(map);
     }
   });
-
-batMarkers.forEach(marker => {
-  const lat = marker.getLatLng().lat.toFixed(5);
-  const lng = marker.getLatLng().lng.toFixed(5);
-  
-  const matchedData = filteredData.filter(d =>
-    parseFloat(d.Latitude).toFixed(5) === lat &&
-    parseFloat(d.Longitude).toFixed(5) === lng
-  );
-
-  const speciesSet = new Set(matchedData.map(d => d["Species"]).filter(Boolean));
-  const locationName = matchedData[0]?.["Location"] || "未知地點";
-
-  const tooltipContent = `
-    <strong>地點:</strong> ${locationName}<br>
-    <strong>物種數量:</strong> ${speciesSet.size} 種<br>
-    <strong>清單:</strong><br>
-    ${[...speciesSet].sort().map((s, i) => `${i + 1}. <i>${s}</i>`).join("<br>")}
-  `;
-
-  marker.options.tooltipContent = tooltipContent;
-
-  // hover + click tooltip
-  if (!("ontouchstart" in window)) {
-    marker.on("mouseover", e => {
-      if (!lockedLayers.includes(marker)) {
-        hoverTooltip.innerHTML = tooltipContent;
-        hoverTooltip.style.display = "block";
-      }
-    });
-
-    marker.on("mousemove", e => {
-      if (!lockedLayers.includes(marker)) {
-        const point = map.latLngToContainerPoint(e.latlng);
-        positionTooltip(hoverTooltip, point);
-      }
-    });
-
-    marker.on("mouseout", () => {
-      hoverTooltip.style.display = "none";
-    });
-  }
-
-  marker.on("click", () => {
-    if (lockedLayers.includes(marker)) {
-      const idx = lockedLayers.indexOf(marker);
-      lockedLayers.splice(idx, 1);
-      tooltipElements[idx].remove();
-      tooltipElements.splice(idx, 1);
-      manualMoved.splice(idx, 1);
-    } else {
-      if (lockedLayers.length >= 3) {
-        alert("最多只能顯示 3 個標記的資料");
-        return;
-      }
-      openLockTooltip(marker, tooltipContent);
-    }
-  });
-});
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
     for (const key in fieldMap) {
