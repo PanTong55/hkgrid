@@ -96,7 +96,7 @@ export function handleHeading(event) {
   }
 }
 
-function updateAlphaStatus(pos) {
+export function updateAlphaStatus(pos) {
   const statusEl = document.getElementById("alpha-status");
   if (!statusEl || !pos) return;
 
