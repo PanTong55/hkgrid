@@ -313,9 +313,6 @@ export async function initBatDataLayer(map, layersControl) {
       fillOpacity: 0.8
     }));
 
-  let batLayer = L.layerGroup(batMarkers);
-  layersControl.addOverlay(batLayer, 'All Bat Data');
-
   document.getElementById("batFilterSearch").addEventListener("click", () => {
     const mode = document.getElementById("displayMode").value;
   
