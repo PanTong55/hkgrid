@@ -1,0 +1,498 @@
+{
+	"type" : "FeatureCollection",
+	"name" : "TileIndex",
+	"crs" : {
+		"type" : "name",
+		"properties" : {
+			"name" : "EPSG:2326"
+		}
+	},
+	"features" : [
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 800000.0001800004, 848000.0001800023 ],
+						[ 800000.0001800004, 836000.0001800023 ],
+						[ 815000.0001800004, 836000.0001800023 ],
+						[ 815000.0001800004, 848000.0001800023 ],
+						[ 800000.0001800004, 848000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 1,
+				"SHEETNO" : "1",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T1&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T1&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T1&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T1&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T1&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 815000.0001800004, 848000.0001800023 ],
+						[ 815000.0001800004, 836000.0001800023 ],
+						[ 830000.0001800004, 836000.0001800023 ],
+						[ 830000.0001800004, 848000.0001800023 ],
+						[ 815000.0001800004, 848000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 2,
+				"SHEETNO" : "2",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T2&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T2&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T2&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T2&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T2&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 845000.0001800004, 848000.0001800023 ],
+						[ 845000.0001800004, 836000.0001800023 ],
+						[ 860000.0001800004, 836000.0001800023 ],
+						[ 860000.0001800004, 848000.0001800023 ],
+						[ 845000.0001800004, 848000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 3,
+				"SHEETNO" : "4",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T4&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T4&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T4&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T4&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T4&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 860000.0001800004, 848000.0001800023 ],
+						[ 860000.0001800004, 836000.0001800023 ],
+						[ 875000.0001800004, 836000.0001800023 ],
+						[ 875000.0001800004, 848000.0001800023 ],
+						[ 860000.0001800004, 848000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 4,
+				"SHEETNO" : "17",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T17&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T17&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T17&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T17&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T17&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 815000.0001800004, 836000.0001800023 ],
+						[ 815000.0001800004, 824000.0001800023 ],
+						[ 830000.0001800004, 824000.0001800023 ],
+						[ 830000.0001800004, 836000.0001800023 ],
+						[ 815000.0001800004, 836000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 5,
+				"SHEETNO" : "6",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T6&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T6&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T6&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T6&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T6&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 845000.0001800004, 836000.0001800023 ],
+						[ 845000.0001800004, 824000.0001800023 ],
+						[ 860000.0001800004, 824000.0001800023 ],
+						[ 860000.0001800004, 836000.0001800023 ],
+						[ 845000.0001800004, 836000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 6,
+				"SHEETNO" : "8",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T8&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T8&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T8&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T8&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T8&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 860000.0001800004, 836000.0001800023 ],
+						[ 860000.0001800004, 824000.0001800023 ],
+						[ 875000.0001800004, 824000.0001800023 ],
+						[ 875000.0001800004, 836000.0001800023 ],
+						[ 860000.0001800004, 836000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 7,
+				"SHEETNO" : "18",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T18&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T18&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T18&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T18&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T18&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 800000.0001800004, 824000.0001800023 ],
+						[ 800000.0001800004, 812000.0001800023 ],
+						[ 815000.0001800004, 812000.0001800023 ],
+						[ 815000.0001800004, 824000.0001800023 ],
+						[ 800000.0001800004, 824000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 8,
+				"SHEETNO" : "9",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T9&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T9&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T9&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T9&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T9&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 845000.0001800004, 824000.0001800023 ],
+						[ 845000.0001800004, 812000.0001800023 ],
+						[ 860000.0001800004, 812000.0001800023 ],
+						[ 860000.0001800004, 824000.0001800023 ],
+						[ 845000.0001800004, 824000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 9,
+				"SHEETNO" : "12",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T12&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T12&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T12&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T12&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T12&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 800000.0001800004, 812000.0001800023 ],
+						[ 800000.0001800004, 800000.0001800023 ],
+						[ 815000.0001800004, 800000.0001800023 ],
+						[ 815000.0001800004, 812000.0001800023 ],
+						[ 800000.0001800004, 812000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 11,
+				"SHEETNO" : "13",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T13&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T13&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T13&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T13&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T13&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 815000.0001800004, 812000.0001800023 ],
+						[ 815000.0001800004, 800000.0001800023 ],
+						[ 830000.0001800004, 800000.0001800023 ],
+						[ 830000.0001800004, 812000.0001800023 ],
+						[ 815000.0001800004, 812000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 12,
+				"SHEETNO" : "14",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T14&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T14&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T14&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T14&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T14&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 845000.0001800004, 812000.0001800023 ],
+						[ 845000.0001800004, 800000.0001800023 ],
+						[ 860000.0001800004, 800000.0001800023 ],
+						[ 860000.0001800004, 812000.0001800023 ],
+						[ 845000.0001800004, 812000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 13,
+				"SHEETNO" : "16",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T16&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T16&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T16&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T16&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T16&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 800000.0001800004, 836000.0001800023 ],
+						[ 800000.0001800004, 824000.0001800023 ],
+						[ 815000.0001800004, 824000.0001800023 ],
+						[ 815000.0001800004, 836000.0001800023 ],
+						[ 800000.0001800004, 836000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 15,
+				"SHEETNO" : "5",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T5&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T5&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T5&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T5&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T5&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 815000.0001800004, 824000.0001800023 ],
+						[ 815000.0001800004, 812000.0001800023 ],
+						[ 830000.0001800004, 812000.0001800023 ],
+						[ 830000.0001800004, 824000.0001800023 ],
+						[ 815000.0001800004, 824000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 16,
+				"SHEETNO" : "10",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T10&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T10&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T10&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T10&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T10&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 830000.0001800004, 848000.0001800023 ],
+						[ 830000.0001800004, 836000.0001800023 ],
+						[ 845000.0001800004, 836000.0001800023 ],
+						[ 845000.0001800004, 848000.0001800023 ],
+						[ 830000.0001800004, 848000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 17,
+				"SHEETNO" : "3",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T3&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T3&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T3&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T3&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T3&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 830000.0001800004, 836000.0001800023 ],
+						[ 830000.0001800004, 824000.0001800023 ],
+						[ 845000.0001800004, 824000.0001800023 ],
+						[ 845000.0001800004, 836000.0001800023 ],
+						[ 830000.0001800004, 836000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 18,
+				"SHEETNO" : "7",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T7&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T7&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T7&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T7&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T7&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 830000.0001800004, 824000.0001800023 ],
+						[ 830000.0001800004, 812000.0001800023 ],
+						[ 845000.0001800004, 812000.0001800023 ],
+						[ 845000.0001800004, 824000.0001800023 ],
+						[ 830000.0001800004, 824000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 19,
+				"SHEETNO" : "11",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T11&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T11&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T11&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T11&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T11&productFormat=TIFF"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Polygon",
+				"coordinates" : [
+					[
+						[ 830000.0001800004, 812000.0001800023 ],
+						[ 830000.0001800004, 800000.0001800023 ],
+						[ 845000.0001800004, 800000.0001800023 ],
+						[ 845000.0001800004, 812000.0001800023 ],
+						[ 830000.0001800004, 812000.0001800023 ]
+					]
+				]
+			},
+			"properties" : {
+				"OBJECTID" : 20,
+				"SHEETNO" : "15",
+				"Shape_Length" : 54000,
+				"Shape_Area" : 180000000,
+				"REVISIONDATE" : "20241114",
+				"FGDB" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T15&productFormat=FGDB",
+				"GML" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T15&productFormat=GML",
+				"DGN" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T15&productFormat=DGN",
+				"DWG" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T15&productFormat=DWG",
+				"TIFF" : "https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iB20000&sheetName=T15&productFormat=TIFF"
+			}
+		}
+	]
+}
