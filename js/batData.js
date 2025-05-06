@@ -231,66 +231,175 @@ export async function initBatDataLayer(map, layersControl) {
   let batLayer = L.layerGroup(batMarkers);
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
-document.getElementById("batFilterSearch").addEventListener("click", () => {
-  const mode = document.getElementById("displayMode").value;
+  document.getElementById("batFilterSearch").addEventListener("click", () => {
+    const mode = document.getElementById("displayMode").value;
+  
+    // 先清除圖層（不能用 map.eachLayer，那是讀取不是清除）
+    if (batLayer && map.hasLayer(batLayer)) {
+      map.removeLayer(batLayer);
+    }
+    if (gridLayer && map.hasLayer(gridLayer)) {
+      map.removeLayer(gridLayer);
+    }
+  
+    // 濾資料
+    const filters = {};
+    for (const key in fieldMap) {
+      const select = document.getElementById("filter" + key);
+      filters[key] = select?.value || "";
+    }
+    const dateStart = document.getElementById("dateStart").value;
+    const dateEnd = document.getElementById("dateEnd").value;
+  
+    const filteredData = rawData.filter(row =>
+      Object.entries(filters).every(([k, val]) => {
+        if (k === "Habitat" && val) {
+          return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
+        }
+        return !val || row[fieldMap[k]] === val;
+      }) &&
+      (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
+      (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
+    );
+  
+    if (mode === "point") {
+      seen = new Set();
+      const pointMarkers = filteredData
+        .filter(d => d.Latitude && d.Longitude)
+        .filter(d => {
+          const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
+          radius: 4,
+          fillColor: '#FFD700',
+          color: '#FFD700',
+          weight: 1,
+          fillOpacity: 0.8
+        }));
+      batLayer = L.layerGroup(pointMarkers).addTo(map);
+    } else if (mode === "grid") {
+      const matchedGridNos = new Set(filteredData.map(d => d.Grid));
+      gridLayer = L.geoJSON(gridGeoJson, {
+        filter: feature => matchedGridNos.has(String(feature.properties.Grid_No)),
+        style: {
+          color: '#3388ff',
+          weight: 2,
+          fillOpacity: 0.3
+        },
+        onEachFeature: (feature, layer) => {
+          const gridNo = String(feature.properties.Grid_No);
+          const matchedData = filteredData.filter(d => d["Grid"] === gridNo);
+          const speciesSet = new Set(matchedData.map(d => d["Species"]).filter(Boolean));
+      
+          const tooltipContent = `
+            <strong>網格:</strong> ${gridNo}<br>
+            <strong>物種數量:</strong> ${speciesSet.size} 種<br>
+            <strong>清單:</strong><br>
+            ${[...speciesSet].sort().map((s, i) => `${i + 1}. <i>${s}</i>`).join("<br>")}
+          `;
+      
+          layer.options.tooltipContent = tooltipContent;
+      
+          if (!("ontouchstart" in window)) {
+            layer.on("mouseover", () => {
+              if (!lockedLayers.includes(layer)) {
+                hoverTooltip.innerHTML = tooltipContent;
+                hoverTooltip.style.display = "block";
+              }
+            });
+      
+            layer.on("mousemove", (e) => {
+              if (!lockedLayers.includes(layer)) {
+                const point = map.latLngToContainerPoint(e.latlng);
+                positionTooltip(hoverTooltip, point);
+              }
+            });
+      
+            layer.on("mouseout", () => {
+              hoverTooltip.style.display = "none";
+            });
+          }
+      
+          layer.on("click", () => {
+            if (lockedLayers.includes(layer)) {
+              const idx = lockedLayers.indexOf(layer);
+              lockedLayers.splice(idx, 1);
+              tooltipElements[idx].remove();
+              tooltipElements.splice(idx, 1);
+              manualMoved.splice(idx, 1);
+            } else {
+              if (lockedLayers.length >= 3) {
+                alert("最多只能顯示 3 個格網的資料");
+                return;
+              }
+              openLockTooltip(layer, tooltipContent);
+            }
+          });
+        }
+      }).addTo(map);
+    }
+  });
 
-  // 先清除圖層（不能用 map.eachLayer，那是讀取不是清除）
-  if (batLayer && map.hasLayer(batLayer)) {
-    map.removeLayer(batLayer);
-  }
-  if (gridLayer && map.hasLayer(gridLayer)) {
-    map.removeLayer(gridLayer);
-  }
-
-  // 濾資料
-  const filters = {};
-  for (const key in fieldMap) {
-    const select = document.getElementById("filter" + key);
-    filters[key] = select?.value || "";
-  }
-  const dateStart = document.getElementById("dateStart").value;
-  const dateEnd = document.getElementById("dateEnd").value;
-
-  const filteredData = rawData.filter(row =>
-    Object.entries(filters).every(([k, val]) => {
-      if (k === "Habitat" && val) {
-        return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
-      }
-      return !val || row[fieldMap[k]] === val;
-    }) &&
-    (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
-    (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
+batMarkers.forEach(marker => {
+  const lat = marker.getLatLng().lat.toFixed(5);
+  const lng = marker.getLatLng().lng.toFixed(5);
+  
+  const matchedData = filteredData.filter(d =>
+    parseFloat(d.Latitude).toFixed(5) === lat &&
+    parseFloat(d.Longitude).toFixed(5) === lng
   );
 
-  if (mode === "point") {
-    seen = new Set();
-    const pointMarkers = filteredData
-      .filter(d => d.Latitude && d.Longitude)
-      .filter(d => {
-        const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      })
-      .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-        radius: 4,
-        fillColor: '#FFD700',
-        color: '#FFD700',
-        weight: 1,
-        fillOpacity: 0.8
-      }));
-    batLayer = L.layerGroup(pointMarkers).addTo(map);
-  } else if (mode === "grid") {
-    const matchedGridNos = new Set(filteredData.map(d => d.Grid));
-    gridLayer = L.geoJSON(gridGeoJson, {
-      filter: feature => matchedGridNos.has(String(feature.properties.Grid_No)),
-      style: {
-        color: '#3388ff',
-        weight: 2,
-        fillOpacity: 0.3
+  const speciesSet = new Set(matchedData.map(d => d["Species"]).filter(Boolean));
+  const locationName = matchedData[0]?.["Location"] || "未知地點";
+
+  const tooltipContent = `
+    <strong>地點:</strong> ${locationName}<br>
+    <strong>物種數量:</strong> ${speciesSet.size} 種<br>
+    <strong>清單:</strong><br>
+    ${[...speciesSet].sort().map((s, i) => `${i + 1}. <i>${s}</i>`).join("<br>")}
+  `;
+
+  marker.options.tooltipContent = tooltipContent;
+
+  // hover + click tooltip
+  if (!("ontouchstart" in window)) {
+    marker.on("mouseover", e => {
+      if (!lockedLayers.includes(marker)) {
+        hoverTooltip.innerHTML = tooltipContent;
+        hoverTooltip.style.display = "block";
       }
-    }).addTo(map);
+    });
+
+    marker.on("mousemove", e => {
+      if (!lockedLayers.includes(marker)) {
+        const point = map.latLngToContainerPoint(e.latlng);
+        positionTooltip(hoverTooltip, point);
+      }
+    });
+
+    marker.on("mouseout", () => {
+      hoverTooltip.style.display = "none";
+    });
   }
+
+  marker.on("click", () => {
+    if (lockedLayers.includes(marker)) {
+      const idx = lockedLayers.indexOf(marker);
+      lockedLayers.splice(idx, 1);
+      tooltipElements[idx].remove();
+      tooltipElements.splice(idx, 1);
+      manualMoved.splice(idx, 1);
+    } else {
+      if (lockedLayers.length >= 3) {
+        alert("最多只能顯示 3 個標記的資料");
+        return;
+      }
+      openLockTooltip(marker, tooltipContent);
+    }
+  });
 });
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
