@@ -1,3 +1,8 @@
+const lockedLayers = [];
+const tooltipElements = [];
+const manualMoved = [];
+const hoverTooltip = document.getElementById("hoverTooltip");
+
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
   const rawData = await response.json();
