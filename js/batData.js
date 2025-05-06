@@ -10,7 +10,8 @@ export async function initBatDataLayer(map, layersControl) {
 
   const gridGeoJson = await fetch('https://raw.githubusercontent.com/PanTong55/hkgrid/main/hkgrid.geojson')
     .then(res => res.json());
-  
+
+  let batLayer = null;
   let gridLayer = null;
   
   const fieldMap = {
