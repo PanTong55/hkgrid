@@ -569,13 +569,27 @@ export async function initBatDataLayer(map, layersControl) {
   toggleBar.addEventListener("click", () => {
     const isCollapsed = panel.classList.toggle("collapsing");
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-  });
   
     setTimeout(() => {
       map.invalidateSize();  // 讓地圖重算尺寸
     }, 310);  // 等動畫完成再重算
   });
 
+  window.addEventListener("resize", () => {
+    if (window.innerWidth < 1023) {
+      panel.classList.add("collapsing");
+      arrowIcon.textContent = '▶';
+    } else {
+      panel.classList.remove("collapsing");
+      arrowIcon.textContent = '◀';
+    }
+  
+    // 重新調整地圖尺寸
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 310);
+  });  
+  
   flatpickr("#dateStart", { dateFormat: "Y-m-d", maxDate: "today" });
   flatpickr("#dateEnd", { dateFormat: "Y-m-d", maxDate: "today" });
 }
