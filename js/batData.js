@@ -560,6 +560,9 @@ export async function initBatDataLayer(map, layersControl) {
   if (window.innerWidth < 1023) {
     panel.classList.add("collapsing");  // Mobile：預設收起
     arrowIcon.textContent = '▶';
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 310);
   } else {
     panel.classList.remove("collapsing"); // Desktop：預設打開
     arrowIcon.textContent = '◀';
@@ -569,10 +572,9 @@ export async function initBatDataLayer(map, layersControl) {
   toggleBar.addEventListener("click", () => {
     const isCollapsed = panel.classList.toggle("collapsing");
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-  
     setTimeout(() => {
-      map.invalidateSize();  // 讓地圖重算尺寸
-    }, 310);  // 等動畫完成再重算
+      map.invalidateSize();
+    }, 310);
   });
 
   window.addEventListener("resize", () => {
@@ -584,7 +586,6 @@ export async function initBatDataLayer(map, layersControl) {
       arrowIcon.textContent = '◀';
     }
   
-    // 重新調整地圖尺寸
     setTimeout(() => {
       map.invalidateSize();
     }, 310);
