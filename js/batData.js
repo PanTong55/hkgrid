@@ -135,10 +135,12 @@ export async function initBatDataLayer(map, layersControl) {
   makeTooltipDraggable(tooltip);
 
   const closeBtn = tooltip.querySelector(".tooltip-close");
-  closeBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-    closeLockTooltip(layer);
-  });    
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      closeLockTooltip(layer);
+    });
+  }   
 }
 
 function closeLockTooltip(event, closeButton) {
