@@ -337,6 +337,11 @@ a.tooltip-close:hover {
 .lucide-lock-icon i {
   color: #007aff;
   font-size: 24px;
+  text-shadow:
+    0 0 2px white,
+    0 0 2px white,
+    0 0 2px white,
+    0 0 2px white;  
 }
 .lucide-lock-icon {
   pointer-events: auto; /* 確保 icon 可以觸發 click */
