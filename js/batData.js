@@ -556,10 +556,13 @@ export async function initBatDataLayer(map, layersControl) {
   const panel = document.getElementById("bat-filter-panel");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
-
+  const hongKongBounds = [
+    [22.15, 113.825],
+    [22.55, 114.4],
+  ];
   function resizeAndFit() {
     map.invalidateSize();
-    map.fitBounds(bounds);
+    map.fitBounds(hongKongBounds);
   }
   
   if (window.innerWidth < 1023) {
