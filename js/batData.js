@@ -92,6 +92,25 @@ export async function initBatDataLayer(map, layersControl) {
 
   const triggeredFields = new Set();
 
+  function positionTooltip(domElement, point) {
+    const mapSize = map.getSize();
+    let left = point.x + 15;
+    let top = point.y + 15;
+  
+    if (left + domElement.offsetWidth > mapSize.x) {
+      left = point.x - domElement.offsetWidth - 15;
+    }
+    if (top + domElement.offsetHeight > mapSize.y) {
+      top = point.y - domElement.offsetHeight - 15;
+    }
+    if (left < 0) left = 10;
+    if (top < 0) top = 10;
+  
+    domElement.style.left = `${left}px`;
+    domElement.style.top = `${top}px`;
+    domElement.style.position = "absolute";
+  }
+
   function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
     const getEl = id => document.getElementById("filter" + id);
     const allFields = ["Family", "Genus", "Species", "CommonEng", "CommonChi"];
