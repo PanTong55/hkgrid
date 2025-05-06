@@ -283,7 +283,7 @@ document.getElementById("batFilterSearch").addEventListener("click", () => {
   } else if (mode === "grid") {
     const matchedGridNos = new Set(filteredData.map(d => d.Grid));
     gridLayer = L.geoJSON(gridGeoJson, {
-      filter: feature => matchedGridNos.has(feature.properties.Grid_No),
+      filter: feature => matchedGridNos.has(String(feature.properties.Grid_No)),
       style: {
         color: '#3388ff',
         weight: 2,
