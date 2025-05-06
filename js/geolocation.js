@@ -100,6 +100,8 @@ function updateAlphaStatus(pos) {
   const statusEl = document.getElementById("alpha-status");
   if (!statusEl || !pos) return;
 
+  if (window.isDraggingAlphaStatus) return;
+
   const lat = pos.coords.latitude;
   const lng = pos.coords.longitude;
   const acc = pos.coords.accuracy ? `${Math.round(pos.coords.accuracy)} m` : "N/A";
