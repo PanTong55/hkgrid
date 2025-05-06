@@ -143,21 +143,24 @@ export async function initBatDataLayer(map, layersControl) {
   }   
 }
 
-function closeLockTooltip(event, closeButton) {
-  event.preventDefault();
-  const tooltip = closeButton.closest(".floatingTooltip");
-  const layerId = parseInt(tooltip.dataset.layerId);
-  const idx = lockedLayers.findIndex((l) => L.stamp(l) === layerId);
-
-  if (idx !== -1) {
-    const layer = lockedLayers[idx];
-    layer.setStyle?.({ color: '#3388ff', weight: 2, fillOpacity: 0.3 });  // 還原樣式（僅限 Grid）
-    lockedLayers.splice(idx, 1);
-    tooltipElements[idx].remove();
-    tooltipElements.splice(idx, 1);
-    manualMoved.splice(idx, 1);
+  function closeLockTooltip(layer) {
+    const layerId = L.stamp(layer);
+    const idx = lockedLayers.findIndex((l) => L.stamp(l) === layerId);
+  
+    if (idx !== -1) {
+      layer.setStyle?.({
+        color: '#3388ff',
+        weight: 2,
+        fillColor: '#3388ff',
+        fillOpacity: 0.3
+      });
+  
+      lockedLayers.splice(idx, 1);
+      tooltipElements[idx].remove();
+      tooltipElements.splice(idx, 1);
+      manualMoved.splice(idx, 1);
+    }
   }
-}  
 
   function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
     const getEl = id => document.getElementById("filter" + id);
