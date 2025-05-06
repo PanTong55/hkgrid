@@ -352,7 +352,7 @@ export async function initBatDataLayer(map, layersControl) {
           fillColor: '#FFD700',
           color: '#FFD700',
           weight: 1,
-          fillOpacity: 0.8
+          fillOpacity: 0.3
         }));
       batLayer = L.layerGroup(pointMarkers).addTo(map);
     pointMarkers.forEach(marker => {
@@ -410,7 +410,7 @@ export async function initBatDataLayer(map, layersControl) {
               fillColor: '#FFD700',
               color: '#FFD700',
               weight: 1,
-              fillOpacity: 0.8
+              fillOpacity: 0.3
             });
           } else {
             if (lockedLayers.length >= 3) {
@@ -418,13 +418,13 @@ export async function initBatDataLayer(map, layersControl) {
               return;
             }
         
-            // ✅ 點擊選中樣式（例如紅色）
+            // ✅ 點擊選中樣式
             marker.setStyle({
-              radius: 6,
-              fillColor: '#ff4444',
-              color: '#ff4444',
+              radius: 4,
+              fillColor: '#ff7300',
+              color: '#ff7300',
               weight: 2,
-              fillOpacity: 1
+              fillOpacity: 0.7
             });
         
             openLockTooltip(marker, tooltipContent);
