@@ -335,11 +335,13 @@ a.tooltip-close:hover {
 }
 
 .lucide-lock-icon svg {
-  stroke: #007aff;
+  stroke: white;
+  stroke-width: 4;
+  fill: none; 
+}
+.lucide-lock-icon svg path {
+  stroke: black;
   stroke-width: 2;
-  filter: drop-shadow(0 0 2px white);
-  width: 24px;
-  height: 24px;
 }
 .lucide-lock-icon {
   pointer-events: auto; /* 確保 icon 可以觸發 click */
