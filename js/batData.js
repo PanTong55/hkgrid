@@ -2,6 +2,7 @@ const lockedLayers = [];
 const tooltipElements = [];
 const manualMoved = [];
 const hoverTooltip = document.getElementById("hoverTooltip");
+import { makeTooltipDraggable } from './draggableTooltip.js';
 
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
@@ -110,6 +111,45 @@ export async function initBatDataLayer(map, layersControl) {
     domElement.style.top = `${top}px`;
     domElement.style.position = "absolute";
   }
+
+  function openLockTooltip(layer, htmlContent) {
+  const tooltip = document.createElement("div");
+  tooltip.className = "floatingTooltip";
+  tooltip.setAttribute("data-layer-id", L.stamp(layer));
+  tooltip.innerHTML = `
+    <div class="tooltip-container">
+      <a href="#" class="tooltip-close" onclick="closeLockTooltip(event, this);">✖</a>
+      <div class="tooltip-content">${htmlContent}</div>
+    </div>`;
+  document.getElementById("map").appendChild(tooltip);
+
+  lockedLayers.push(layer);
+  tooltipElements.push(tooltip);
+  manualMoved.push(false);
+
+  const center = map.latLngToContainerPoint(
+    layer.getLatLng ? layer.getLatLng() : layer.getBounds().getCenter()
+  );
+  positionTooltip(tooltip, center);
+
+  makeTooltipDraggable(tooltip);
+}
+
+function closeLockTooltip(event, closeButton) {
+  event.preventDefault();
+  const tooltip = closeButton.closest(".floatingTooltip");
+  const layerId = parseInt(tooltip.dataset.layerId);
+  const idx = lockedLayers.findIndex((l) => L.stamp(l) === layerId);
+
+  if (idx !== -1) {
+    const layer = lockedLayers[idx];
+    layer.setStyle?.({ color: '#3388ff', weight: 2, fillOpacity: 0.3 });  // 還原樣式（僅限 Grid）
+    lockedLayers.splice(idx, 1);
+    tooltipElements[idx].remove();
+    tooltipElements.splice(idx, 1);
+    manualMoved.splice(idx, 1);
+  }
+}  
 
   function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
     const getEl = id => document.getElementById("filter" + id);
