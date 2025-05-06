@@ -231,63 +231,67 @@ export async function initBatDataLayer(map, layersControl) {
   let batLayer = L.layerGroup(batMarkers);
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
-  document.getElementById("batFilterSearch").addEventListener("click", () => {
-    const mode = document.getElementById("displayMode").value;
-    const filters = {};
-    for (const key in fieldMap) {
-      const select = document.getElementById("filter" + key);
-      filters[key] = select?.value || "";
-    }
-    const dateStart = document.getElementById("dateStart").value;
-    const dateEnd = document.getElementById("dateEnd").value;
-  
-    const filteredData = rawData.filter(row =>
-      Object.entries(filters).every(([k, val]) => {
-        if (k === "Habitat" && val) {
-          return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
-        }
-        return !val || row[fieldMap[k]] === val;
-      }) &&
-      (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
-      (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
-    );
-  
-    map.eachLayer(layer => {
-      if (batLayer && map.hasLayer(batLayer)) map.removeLayer(batLayer);
-      if (gridLayer && map.hasLayer(gridLayer)) map.removeLayer(gridLayer);
-    });
-  
-    if (mode === "point") {
-      seen = new Set();
-      const pointMarkers = filteredData
-        .filter(d => d.Latitude && d.Longitude)
-        .filter(d => {
-          const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        })
-        .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-          radius: 4,
-          fillColor: '#FFD700',
-          color: '#FFD700',
-          weight: 1,
-          fillOpacity: 0.8
-        }));
-      batLayer = L.layerGroup(pointMarkers).addTo(map);
-    } else if (mode === "grid") {
-      const matchedGridNos = new Set(filteredData.map(d => d.Grid));
-      const matchedGrids = L.geoJSON(gridGeoJson, {
-        filter: feature => matchedGridNos.has(feature.properties.Grid_No),
-        style: {
-          color: '#3388ff',
-          weight: 2,
-          fillOpacity: 0.3
-        }
-      });
-      gridLayer = matchedGrids.addTo(map);
-    }
-  });
+document.getElementById("batFilterSearch").addEventListener("click", () => {
+  const mode = document.getElementById("displayMode").value;
+
+  // 先清除圖層（不能用 map.eachLayer，那是讀取不是清除）
+  if (batLayer && map.hasLayer(batLayer)) {
+    map.removeLayer(batLayer);
+  }
+  if (gridLayer && map.hasLayer(gridLayer)) {
+    map.removeLayer(gridLayer);
+  }
+
+  // 濾資料
+  const filters = {};
+  for (const key in fieldMap) {
+    const select = document.getElementById("filter" + key);
+    filters[key] = select?.value || "";
+  }
+  const dateStart = document.getElementById("dateStart").value;
+  const dateEnd = document.getElementById("dateEnd").value;
+
+  const filteredData = rawData.filter(row =>
+    Object.entries(filters).every(([k, val]) => {
+      if (k === "Habitat" && val) {
+        return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
+      }
+      return !val || row[fieldMap[k]] === val;
+    }) &&
+    (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
+    (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
+  );
+
+  if (mode === "point") {
+    seen = new Set();
+    const pointMarkers = filteredData
+      .filter(d => d.Latitude && d.Longitude)
+      .filter(d => {
+        const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
+        radius: 4,
+        fillColor: '#FFD700',
+        color: '#FFD700',
+        weight: 1,
+        fillOpacity: 0.8
+      }));
+    batLayer = L.layerGroup(pointMarkers).addTo(map);
+  } else if (mode === "grid") {
+    const matchedGridNos = new Set(filteredData.map(d => d.Grid));
+    gridLayer = L.geoJSON(gridGeoJson, {
+      filter: feature => matchedGridNos.has(feature.properties.Grid_No),
+      style: {
+        color: '#3388ff',
+        weight: 2,
+        fillOpacity: 0.3
+      }
+    }).addTo(map);
+  }
+});
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
     for (const key in fieldMap) {
