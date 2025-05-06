@@ -2,6 +2,11 @@ export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
   const rawData = await response.json();
 
+  const gridGeoJson = await fetch('https://raw.githubusercontent.com/PanTong55/hkgrid/main/hkgrid.geojson')
+    .then(res => res.json());
+  
+  let gridLayer = null;
+  
   const fieldMap = {
     Location: "Location",
     Habitat: "Habitat",
@@ -227,6 +232,7 @@ export async function initBatDataLayer(map, layersControl) {
   layersControl.addOverlay(batLayer, 'All Bat Data');
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
+    const mode = document.getElementById("displayMode").value;
     const filters = {};
     for (const key in fieldMap) {
       const select = document.getElementById("filter" + key);
@@ -234,36 +240,53 @@ export async function initBatDataLayer(map, layersControl) {
     }
     const dateStart = document.getElementById("dateStart").value;
     const dateEnd = document.getElementById("dateEnd").value;
-
-    seen = new Set();
-    const filtered = rawData
-      .filter(row =>
-        Object.entries(filters).every(([k, val]) => {
-          if (k === "Habitat" && val) {
-            return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
-          }
-          return !val || row[fieldMap[k]] === val;
-        }) &&
-        (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
-        (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
-      )
-      .filter(d => d.Latitude && d.Longitude)
-      .filter(d => {
-        const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
+  
+    const filteredData = rawData.filter(row =>
+      Object.entries(filters).every(([k, val]) => {
+        if (k === "Habitat" && val) {
+          return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
+        }
+        return !val || row[fieldMap[k]] === val;
+      }) &&
+      (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
+      (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
+    );
+  
+    map.eachLayer(layer => {
+      if (batLayer && map.hasLayer(batLayer)) map.removeLayer(batLayer);
+      if (gridLayer && map.hasLayer(gridLayer)) map.removeLayer(gridLayer);
+    });
+  
+    if (mode === "point") {
+      seen = new Set();
+      const pointMarkers = filteredData
+        .filter(d => d.Latitude && d.Longitude)
+        .filter(d => {
+          const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
+          radius: 4,
+          fillColor: '#FFD700',
+          color: '#FFD700',
+          weight: 1,
+          fillOpacity: 0.8
+        }));
+      batLayer = L.layerGroup(pointMarkers).addTo(map);
+    } else if (mode === "grid") {
+      const matchedGridNos = new Set(filteredData.map(d => d.Grid));
+      const matchedGrids = L.geoJSON(gridGeoJson, {
+        filter: feature => matchedGridNos.has(feature.properties.Grid_No),
+        style: {
+          color: '#3388ff',
+          weight: 2,
+          fillOpacity: 0.3
+        }
       });
-
-    map.removeLayer(batLayer);
-    batMarkers = filtered.map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-      radius: 4,
-      fillColor: '#FFD700',
-      color: '#FFD700',
-      weight: 1,
-      fillOpacity: 0.8
-    }));
-    batLayer = L.layerGroup(batMarkers).addTo(map);
+      gridLayer = matchedGrids.addTo(map);
+    }
   });
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
