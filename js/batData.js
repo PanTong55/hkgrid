@@ -557,9 +557,19 @@ export async function initBatDataLayer(map, layersControl) {
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
   
+  if (window.innerWidth < 1023) {
+    panel.classList.add("collapsing");  // Mobile：預設收起
+    arrowIcon.textContent = '▶';
+  } else {
+    panel.classList.remove("collapsing"); // Desktop：預設打開
+    arrowIcon.textContent = '◀';
+  }
+  
+  // 綁定 toggle 行為
   toggleBar.addEventListener("click", () => {
     const isCollapsed = panel.classList.toggle("collapsing");
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
+  });
   
     setTimeout(() => {
       map.invalidateSize();  // 讓地圖重算尺寸
