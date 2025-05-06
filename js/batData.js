@@ -148,12 +148,22 @@ export async function initBatDataLayer(map, layersControl) {
     const idx = lockedLayers.findIndex((l) => L.stamp(l) === layerId);
   
     if (idx !== -1) {
-      layer.setStyle?.({
-        color: '#3388ff',
-        weight: 2,
-        fillColor: '#3388ff',
-        fillOpacity: 0.3
-      });
+      if (layer instanceof L.CircleMarker) {
+        layer.setStyle({
+          radius: 4,
+          fillColor: '#FFD700',
+          color: '#FFD700',
+          weight: 1,
+          fillOpacity: 0.3
+        });
+      } else {
+        layer.setStyle({
+          color: '#3388ff',
+          weight: 2,
+          fillColor: '#3388ff',
+          fillOpacity: 0.3
+        });
+      }
   
       lockedLayers.splice(idx, 1);
       tooltipElements[idx].remove();
