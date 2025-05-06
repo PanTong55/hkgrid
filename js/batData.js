@@ -396,21 +396,40 @@ export async function initBatDataLayer(map, layersControl) {
         });
       }
   
-      marker.on("click", () => {
-        if (lockedLayers.includes(marker)) {
-          const idx = lockedLayers.indexOf(marker);
-          lockedLayers.splice(idx, 1);
-          tooltipElements[idx].remove();
-          tooltipElements.splice(idx, 1);
-          manualMoved.splice(idx, 1);
-        } else {
-          if (lockedLayers.length >= 3) {
-            alert("最多只能顯示 3 個標記的資料");
-            return;
+        marker.on("click", () => {
+          if (lockedLayers.includes(marker)) {
+            const idx = lockedLayers.indexOf(marker);
+            lockedLayers.splice(idx, 1);
+            tooltipElements[idx].remove();
+            tooltipElements.splice(idx, 1);
+            manualMoved.splice(idx, 1);
+        
+            // ✅ 還原點的樣式
+            marker.setStyle({
+              radius: 4,
+              fillColor: '#FFD700',
+              color: '#FFD700',
+              weight: 1,
+              fillOpacity: 0.8
+            });
+          } else {
+            if (lockedLayers.length >= 3) {
+              alert("最多只能顯示 3 個標記的資料");
+              return;
+            }
+        
+            // ✅ 點擊選中樣式（例如紅色）
+            marker.setStyle({
+              radius: 6,
+              fillColor: '#ff4444',
+              color: '#ff4444',
+              weight: 2,
+              fillOpacity: 1
+            });
+        
+            openLockTooltip(marker, tooltipContent);
           }
-          openLockTooltip(marker, tooltipContent);
-        }
-      });
+        });
     });
     } else if (mode === "grid") {
       const matchedGridNos = new Set(filteredData.map(d => d.Grid));
