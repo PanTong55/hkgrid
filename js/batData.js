@@ -322,8 +322,11 @@ document.getElementById("batFilterSearch").addEventListener("click", () => {
       if (select) select.dispatchEvent(new Event("change"));
     });
 
-    if (map.hasLayer(batLayer)) {
+    if (batLayer && map.hasLayer(batLayer)) {
       map.removeLayer(batLayer);
+    }
+    if (gridLayer && map.hasLayer(gridLayer)) {
+      map.removeLayer(gridLayer);
     }
   });
 
