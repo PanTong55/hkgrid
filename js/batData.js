@@ -118,7 +118,7 @@ export async function initBatDataLayer(map, layersControl) {
   tooltip.setAttribute("data-layer-id", L.stamp(layer));
   tooltip.innerHTML = `
     <div class="tooltip-container">
-      <a href="#" class="tooltip-close" onclick="closeLockTooltip(event, this);">✖</a>
+      <a href="#" class="tooltip-close">✖</a>
       <div class="tooltip-content">${htmlContent}</div>
     </div>`;
   document.getElementById("map").appendChild(tooltip);
@@ -133,6 +133,12 @@ export async function initBatDataLayer(map, layersControl) {
   positionTooltip(tooltip, center);
 
   makeTooltipDraggable(tooltip);
+
+  const closeBtn = tooltip.querySelector(".tooltip-close");
+  closeBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    closeLockTooltip(layer);
+  });    
 }
 
 function closeLockTooltip(event, closeButton) {
@@ -451,11 +457,23 @@ function closeLockTooltip(event, closeButton) {
               tooltipElements[idx].remove();
               tooltipElements.splice(idx, 1);
               manualMoved.splice(idx, 1);
+              
+              layer.setStyle({
+                color: '#3388ff',
+                weight: 2,
+                fillOpacity: 0.3
+              });              
             } else {
               if (lockedLayers.length >= 3) {
                 alert("最多只能顯示 3 個格網的資料");
                 return;
               }
+              layer.setStyle({
+                color: '#333',
+                weight: 2,
+                fillColor: '#ffcc00',
+                fillOpacity: 0.7
+              });
               openLockTooltip(layer, tooltipContent);
             }
           });
