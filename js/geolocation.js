@@ -6,6 +6,10 @@ let watchId = null;
 let autoFollow = true;
 let currentRadius = 0;
 
+let isDragging = false;
+map.on("dragstart", () => isDragging = true);
+map.on("dragend", () => isDragging = false);
+
 import { makeTooltipDraggable } from './draggableTooltip.js';
 
 function easeOutCubic(t) {
@@ -198,12 +202,12 @@ export function initLocateTool(map, buttonId) {
         }
 
         const bounds = map.getBounds();
-        if (autoFollow) {
-          map.setView(latlng, 17);
-        } else if (!bounds.pad(-0.15).contains(latlng)) {
-          autoFollow = true;
-          map.setView(latlng);
-        }
+          if (autoFollow && !isDragging) {
+            map.setView(latlng, 17);
+          } else if (!bounds.pad(-0.15).contains(latlng) && !isDragging) {
+            autoFollow = true;
+            map.setView(latlng);
+          }
       },
       (err) => alert("定位失敗：" + err.message),
       {
