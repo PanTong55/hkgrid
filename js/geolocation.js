@@ -6,10 +6,6 @@ let watchId = null;
 let autoFollow = true;
 let currentRadius = 0;
 
-let isDragging = false;
-map.on("dragstart", () => isDragging = true);
-map.on("dragend", () => isDragging = false);
-
 import { makeTooltipDraggable } from './draggableTooltip.js';
 
 function easeOutCubic(t) {
@@ -156,6 +152,10 @@ export function initLocateTool(map, buttonId) {
   let watchId = null;
   let autoFollow = true;
   let currentRadius = 0;
+
+  let isDragging = false;
+  map.on("dragstart", () => isDragging = true);
+  map.on("dragend", () => isDragging = false);
 
   function enable() {
     if (watchId !== null) return; // 已啟用就不重複執行
