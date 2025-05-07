@@ -588,22 +588,4 @@ export async function initBatDataLayer(map, layersControl) {
   
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
   flatpickr("#dateEnd", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
-  
-  function setupDateValidation(inputId) {
-    const input = document.getElementById(inputId);
-    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-  
-    input.addEventListener("input", () => {
-      if (input.value && !datePattern.test(input.value)) {
-        input.classList.add("date-error");
-        input.title = "請輸入正確的日期格式：YYYY-MM-DD，例如 2024-12-07";
-      } else {
-        input.classList.remove("date-error");
-        input.title = "請輸入日期格式：YYYY-MM-DD，例如 2024-12-07";
-      }
-    });
-  }
-  
-  setupDateValidation("dateStart");
-  setupDateValidation("dateEnd");  
 }
