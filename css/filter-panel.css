@@ -188,3 +188,9 @@ select {
   width: 100%;
   box-sizing: border-box;
 }
+
+flatpickr("#dateStart", {
+  dateFormat: "Y-m-d",
+  maxDate: "today",
+  allowInput: true
+});
