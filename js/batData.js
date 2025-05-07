@@ -327,7 +327,8 @@ export async function initBatDataLayer(map, layersControl) {
       (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
       (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
     );
-  
+
+    let seen = new Set();
     if (mode === "point") {
       seen = new Set();
       const pointMarkers = filteredData
