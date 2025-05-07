@@ -309,6 +309,13 @@ export async function initBatDataLayer(map, layersControl) {
     }
   
     // 濾資料
+    function normalizeDate(dateStr) {
+      const [y, m, d] = dateStr.split("/").map(Number);
+      const mm = String(m).padStart(2, '0');
+      const dd = String(d).padStart(2, '0');
+      return `${y}-${mm}-${dd}`;
+    }
+    
     const filters = {};
     for (const key in fieldMap) {
       const select = document.getElementById("filter" + key);
@@ -318,9 +325,7 @@ export async function initBatDataLayer(map, layersControl) {
     const dateEnd = document.getElementById("dateEnd").value;
   
     const filteredData = rawData.filter(row => {
-      const rowDate = row.Date.padStart(10, "0");
-      const startDate = dateStart ? dateStart.replace(/-/g, "/") : "";
-      const endDate = dateEnd ? dateEnd.replace(/-/g, "/") : "";
+      const rowDate = normalizeDate(row.Date);  // 統一成 "YYYY-MM-DD"
     
       return Object.entries(filters).every(([k, val]) => {
         if (k === "Habitat" && val) {
@@ -328,8 +333,8 @@ export async function initBatDataLayer(map, layersControl) {
         }
         return !val || row[fieldMap[k]] === val;
       }) &&
-        (!startDate || rowDate >= startDate) &&
-        (!endDate || rowDate <= endDate);
+        (!dateStart || rowDate >= dateStart) &&
+        (!dateEnd || rowDate <= dateEnd);
     });
 
     let seen = new Set();
