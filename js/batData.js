@@ -318,24 +318,16 @@ export async function initBatDataLayer(map, layersControl) {
     const dateStartValue = document.getElementById("dateStart").value;
     const dateEndValue = document.getElementById("dateEnd").value;
     
-    // 解析 dateStart 與 dateEnd（加入時間處理）
-    const dateStart = dateStartValue ? new Date(dateStartValue) : null;
-    const dateEnd = dateEndValue ? adjustEndOfDay(dateEndValue) : null;
-    
-    const filteredData = rawData.filter(row => {
-      const rowDate = new Date(row.Date); // 明確轉換每筆資料的日期
-    
-      return (
-        Object.entries(filters).every(([k, val]) => {
-          if (k === "Habitat" && val) {
-            return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
-          }
-          return !val || row[fieldMap[k]] === val;
-        }) &&
-        (!dateStart || rowDate >= dateStart) &&
-        (!dateEnd || rowDate <= dateEnd)
-      );
-    });
+    const filteredData = rawData.filter(row =>
+      Object.entries(filters).every(([k, val]) => {
+        if (k === "Habitat" && val) {
+          return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
+        }
+        return !val || row[fieldMap[k]] === val;
+      }) &&
+      (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
+      (!dateEnd || new Date(row.Date) <= adjustEndOfDay(dateEnd))
+    );
 
     let seen = new Set();
     if (mode === "point") {
