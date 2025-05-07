@@ -309,15 +309,14 @@ export async function initBatDataLayer(map, layersControl) {
     }
   
     // 濾資料
-    function adjustEndOfDay(dateStr) {
-      const d = new Date(dateStr);
-      d.setHours(23, 59, 59, 999);  // 補到當天最後一刻
-      return d;
+    const filters = {};
+    for (const key in fieldMap) {
+      const select = document.getElementById("filter" + key);
+      filters[key] = select?.value || "";
     }
-    
-    const dateStartValue = document.getElementById("dateStart").value;
-    const dateEndValue = document.getElementById("dateEnd").value;
-    
+    const dateStart = document.getElementById("dateStart").value;
+    const dateEnd = document.getElementById("dateEnd").value;
+  
     const filteredData = rawData.filter(row =>
       Object.entries(filters).every(([k, val]) => {
         if (k === "Habitat" && val) {
@@ -326,7 +325,7 @@ export async function initBatDataLayer(map, layersControl) {
         return !val || row[fieldMap[k]] === val;
       }) &&
       (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
-      (!dateEnd || new Date(row.Date) <= adjustEndOfDay(dateEnd))
+      (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
     );
 
     let seen = new Set();
