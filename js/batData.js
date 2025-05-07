@@ -155,7 +155,7 @@ export async function initBatDataLayer(map, layersControl) {
           fillColor: '#FFD700',
           color: '#FFD700',
           weight: 1,
-          fillOpacity: 0.3
+          fillOpacity: 0.5
         });
       } else {
         layer.setStyle({
@@ -297,23 +297,6 @@ export async function initBatDataLayer(map, layersControl) {
     }
   });
 
-  let seen = new Set();
-  let batMarkers = rawData
-    .filter(d => d.Latitude && d.Longitude)
-    .filter(d => {
-      const key = `${parseFloat(d.Latitude).toFixed(5)},${parseFloat(d.Longitude).toFixed(5)}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-      radius: 4,
-      fillColor: '#FFD700',
-      color: '#FFD700',
-      weight: 1,
-      fillOpacity: 0.8
-    }));
-
   document.getElementById("batFilterSearch").addEventListener("click", () => {
     const mode = document.getElementById("displayMode").value;
   
@@ -360,7 +343,7 @@ export async function initBatDataLayer(map, layersControl) {
           fillColor: '#FFD700',
           color: '#FFD700',
           weight: 1,
-          fillOpacity: 0.3
+          fillOpacity: 0.5
         }));
       batLayer = L.layerGroup(pointMarkers).addTo(map);
     pointMarkers.forEach(marker => {
@@ -418,7 +401,7 @@ export async function initBatDataLayer(map, layersControl) {
               fillColor: '#FFD700',
               color: '#FFD700',
               weight: 1,
-              fillOpacity: 0.3
+              fillOpacity: 0.5
             });
           } else {
             if (lockedLayers.length >= 3) {
@@ -429,8 +412,8 @@ export async function initBatDataLayer(map, layersControl) {
             // ✅ 點擊選中樣式
             marker.setStyle({
               radius: 4,
-              fillColor: '#ff7300',
-              color: '#ff7300',
+              fillColor: '#FF7300',
+              color: '#FF7300',
               weight: 2,
               fillOpacity: 0.7
             });
