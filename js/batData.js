@@ -317,16 +317,20 @@ export async function initBatDataLayer(map, layersControl) {
     const dateStart = document.getElementById("dateStart").value;
     const dateEnd = document.getElementById("dateEnd").value;
   
-    const filteredData = rawData.filter(row =>
-      Object.entries(filters).every(([k, val]) => {
+    const filteredData = rawData.filter(row => {
+      const rowDate = row.Date.padStart(10, "0");
+      const startDate = dateStart ? dateStart.replace(/-/g, "/") : "";
+      const endDate = dateEnd ? dateEnd.replace(/-/g, "/") : "";
+    
+      return Object.entries(filters).every(([k, val]) => {
         if (k === "Habitat" && val) {
           return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
         }
         return !val || row[fieldMap[k]] === val;
       }) &&
-      (!dateStart || new Date(row.Date) >= new Date(dateStart)) &&
-      (!dateEnd || new Date(row.Date) <= new Date(dateEnd))
-    );
+        (!startDate || rowDate >= startDate) &&
+        (!endDate || rowDate <= endDate);
+    });
 
     let seen = new Set();
     if (mode === "point") {
