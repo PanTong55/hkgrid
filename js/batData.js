@@ -589,8 +589,8 @@ export async function initBatDataLayer(map, layersControl) {
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
   flatpickr("#dateEnd", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
 
-  function setupDateValidation(inputId) {
-    const input = document.getElementById(inputId);
+  function setupDateValidation() {
+    const inputs = [document.getElementById("dateStart"), document.getElementById("dateEnd")];
     const strictPattern = /^\d{4}-\d{2}-\d{2}$/;
     const compactPattern = /^(\d{4})[/-]?(\d{1,2})[/-]?(\d{1,2})$/;
   
@@ -598,7 +598,6 @@ export async function initBatDataLayer(map, layersControl) {
       const raw = input.value.trim();
   
       if (strictPattern.test(raw)) {
-        // 格式正確，不需更改
         input.classList.remove("date-error");
         input.title = "請輸入日期格式：YYYY-MM-DD，例如 2024-12-07";
       } else {
@@ -610,7 +609,6 @@ export async function initBatDataLayer(map, layersControl) {
           input.classList.remove("date-error");
           input.title = "請輸入日期格式：YYYY-MM-DD，例如 2024-12-07";
         } else {
-          // 無法自動修正 → 錯誤提示
           input.classList.add("date-error");
           input.title = "請輸入正確的日期格式：YYYY-MM-DD，例如 2024-12-07";
         }
