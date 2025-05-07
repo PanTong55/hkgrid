@@ -588,4 +588,37 @@ export async function initBatDataLayer(map, layersControl) {
   
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
   flatpickr("#dateEnd", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
+
+  function setupDateValidation(inputId) {
+    const input = document.getElementById(inputId);
+    const strictPattern = /^\d{4}-\d{2}-\d{2}$/;
+    const compactPattern = /^(\d{4})[/-]?(\d{1,2})[/-]?(\d{1,2})$/;
+  
+    input.addEventListener("blur", () => {
+      const raw = input.value.trim();
+  
+      if (strictPattern.test(raw)) {
+        // 格式正確，不需更改
+        input.classList.remove("date-error");
+        input.title = "請輸入日期格式：YYYY-MM-DD，例如 2024-12-07";
+      } else {
+        const match = raw.match(compactPattern);
+        if (match) {
+          const [_, y, m, d] = match;
+          const corrected = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          input.value = corrected;
+          input.classList.remove("date-error");
+          input.title = "請輸入日期格式：YYYY-MM-DD，例如 2024-12-07";
+        } else {
+          // 無法自動修正 → 錯誤提示
+          input.classList.add("date-error");
+          input.title = "請輸入正確的日期格式：YYYY-MM-DD，例如 2024-12-07";
+        }
+      }
+    });
+  }  
+  
+  setupDateValidation("dateStart");
+  setupDateValidation("dateEnd");
+  
 }
