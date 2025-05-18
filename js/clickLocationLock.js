@@ -17,6 +17,7 @@ function isClickIgnored(el) {
     el.closest("#clearBtn") ||
     el.closest("#goBtn") ||
     el.closest("#fullscreenBtn") ||
+    el.closest("#fullscreenBtn svg") ||
     el.closest("path.leaflet-interactive") ||    // ✅ Grid
     el.closest("circle.leaflet-interactive") ||      // ✅ Point
     el.tagName === "BUTTON" ||
