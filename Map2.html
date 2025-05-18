@@ -220,6 +220,29 @@
       });
       import("./js/goto.js").then((m) => m.initGotoPanel(map));
       import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
+
+      function applyScreenRotation() {
+        if (!window.screen.orientation) return;
+      
+        const angle = window.screen.orientation.angle;
+        const isMobile = window.innerWidth <= 768;
+      
+        if (!isMobile) return; // 只針對手機裝置旋轉
+      
+        if (angle === 180) {
+          document.body.style.transform = 'rotate(180deg)';
+        } else {
+          document.body.style.transform = 'rotate(0deg)';
+        }
+      }
+      
+      window.addEventListener("orientationchange", () => {
+        setTimeout(applyScreenRotation, 300); // 等瀏覽器穩定再調整
+      });
+      
+      // 初次載入也執行一次
+      applyScreenRotation();
+      
     </script>
     <div id="alpha-status">α: --</div>    
   </body>
