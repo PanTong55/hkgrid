@@ -151,7 +151,7 @@ export async function initBatDataLayer(map, layersControl) {
     if (idx !== -1) {
       if (layer instanceof L.CircleMarker) {
         layer.setStyle({
-          radius: 6,
+          radius: 5,
           fillColor: '#FFD700',
           color: '#FFD700',
           weight: 1,
@@ -349,7 +349,7 @@ export async function initBatDataLayer(map, layersControl) {
           return true;
         })
         .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-          radius: 6,
+          radius: 5,
           fillColor: '#FFD700',
           color: '#FFD700',
           weight: 1,
@@ -407,7 +407,7 @@ export async function initBatDataLayer(map, layersControl) {
         
             // ✅ 還原點的樣式
             marker.setStyle({
-              radius: 6,
+              radius: 5,
               fillColor: '#FFD700',
               color: '#FFD700',
               weight: 1,
@@ -421,9 +421,9 @@ export async function initBatDataLayer(map, layersControl) {
         
             // ✅ 點擊選中樣式
             marker.setStyle({
-              radius: 6,
+              radius: 5,
               fillColor: '#FF7300',
-              color: '#FFD700',
+              color: '#FF7300',
               weight: 2,
               fillOpacity: 0.7
             });
