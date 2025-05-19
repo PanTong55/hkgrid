@@ -106,6 +106,20 @@ export async function initMap() {
       });
       layersControl.addOverlay(hkcpLayer, "CP Boundary (OSM)");
     });
+
+    fetch("https://raw.githubusercontent.com/PanTong55/hkgrid/main/hkgrid.geojson")
+    .then((r) => r.json())
+    .then((hkgriddata) => {
+      const hkgridLayer = L.geoJSON(hkgriddata, {
+        style: {
+          color: '#3388ff',
+          weight: 2,
+          fillColor: '#3388ff',
+          fillOpacity: 0.3,
+        },
+      });
+      layersControl.addOverlay(hkgridLayer, "1km Grid");
+    });
   
   return { map, layersControl };
 }
