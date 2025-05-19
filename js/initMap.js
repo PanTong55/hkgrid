@@ -115,7 +115,7 @@ export async function initMap() {
           color: '#3388ff',
           weight: 2,
           fillColor: '#3388ff',
-          fillOpacity: 0.3,
+          fillOpacity: 0.1,
         },
       });
       layersControl.addOverlay(hkgridLayer, "1km Grid");
