@@ -151,11 +151,11 @@ export async function initBatDataLayer(map, layersControl) {
     if (idx !== -1) {
       if (layer instanceof L.CircleMarker) {
         layer.setStyle({
-          radius: 4,
+          radius: 6,
           fillColor: '#FFD700',
-          color: '#000000',
+          color: '#FFD700',
           weight: 1,
-          fillOpacity: 0.5
+          fillOpacity: 0.7
         });
       } else {
         layer.setStyle({
@@ -349,11 +349,11 @@ export async function initBatDataLayer(map, layersControl) {
           return true;
         })
         .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
-          radius: 4,
+          radius: 6,
           fillColor: '#FFD700',
-          color: '#000000',
+          color: '#FFD700',
           weight: 1,
-          fillOpacity: 0.5
+          fillOpacity: 0.7
         }));
       batLayer = L.layerGroup(pointMarkers).addTo(map);
     pointMarkers.forEach(marker => {
@@ -407,11 +407,11 @@ export async function initBatDataLayer(map, layersControl) {
         
             // ✅ 還原點的樣式
             marker.setStyle({
-              radius: 4,
+              radius: 6,
               fillColor: '#FFD700',
-              color: '#000000',
+              color: '#FFD700',
               weight: 1,
-              fillOpacity: 0.5
+              fillOpacity: 0.7
             });
           } else {
             if (lockedLayers.length >= 3) {
@@ -421,9 +421,9 @@ export async function initBatDataLayer(map, layersControl) {
         
             // ✅ 點擊選中樣式
             marker.setStyle({
-              radius: 4,
+              radius: 6,
               fillColor: '#FF7300',
-              color: '#000000',
+              color: '#FFD700',
               weight: 2,
               fillOpacity: 0.7
             });
