@@ -369,9 +369,9 @@ export async function initBatDataLayer(map, layersControl) {
       const locationName = matchedData[0]?.["Location"] || "未知地點";
   
       const tooltipContent = `
-        <strong>地點:</strong> ${locationName}<br>
-        <strong>物種數量:</strong> ${speciesSet.size} 種<br>
-        <strong>清單:</strong><br>
+        <strong>Location:</strong> ${locationName}<br>
+        <strong>Species No.:</strong> ${speciesSet.size}<br>
+        <strong>Checklist:</strong><br>
         ${[...speciesSet].sort().map((s, i) => `${i + 1}. <i>${s}</i>`).join("<br>")}
       `;
   
@@ -448,9 +448,9 @@ export async function initBatDataLayer(map, layersControl) {
           const speciesSet = new Set(matchedData.map(d => d["Species"]).filter(Boolean));
       
           const tooltipContent = `
-            <strong>網格:</strong> ${gridNo}<br>
-            <strong>物種數量:</strong> ${speciesSet.size} 種<br>
-            <strong>清單:</strong><br>
+            <strong>Grid No.:</strong> ${gridNo}<br>
+            <strong>Species No.:</strong> ${speciesSet.size}<br>
+            <strong>Checklist:</strong><br>
             ${[...speciesSet].sort().map((s, i) => `${i + 1}. <i>${s}</i>`).join("<br>")}
           `;
       
