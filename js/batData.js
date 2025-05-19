@@ -153,7 +153,7 @@ export async function initBatDataLayer(map, layersControl) {
         layer.setStyle({
           radius: 4,
           fillColor: '#FFD700',
-          color: '#FFD700',
+          color: '#000000',
           weight: 1,
           fillOpacity: 0.5
         });
@@ -351,7 +351,7 @@ export async function initBatDataLayer(map, layersControl) {
         .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
           radius: 4,
           fillColor: '#FFD700',
-          color: '#FFD700',
+          color: '#000000',
           weight: 1,
           fillOpacity: 0.5
         }));
@@ -409,7 +409,7 @@ export async function initBatDataLayer(map, layersControl) {
             marker.setStyle({
               radius: 4,
               fillColor: '#FFD700',
-              color: '#FFD700',
+              color: '#000000',
               weight: 1,
               fillOpacity: 0.5
             });
@@ -423,7 +423,7 @@ export async function initBatDataLayer(map, layersControl) {
             marker.setStyle({
               radius: 4,
               fillColor: '#FF7300',
-              color: '#FF7300',
+              color: '#000000',
               weight: 2,
               fillOpacity: 0.7
             });
