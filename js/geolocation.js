@@ -220,7 +220,8 @@ export function initLocateTool(map, buttonId) {
     
       if (window.currentHeading != null) {
         iconHtml = `
-          <div class="rotate-container">
+          <div class="rotate-container pulse-wrapper">
+            <div class="pulse-circle"></div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path d="M12 2l6 20-6-4-6 4 6-20z"
                     fill="#007aff"
