@@ -18,12 +18,24 @@ function animateMarkerTo(marker, newLatLng, duration = 400) {
     const elapsed = timestamp - startTime;
     const t = Math.min(elapsed / duration, 1);
     const eased = easeOutCubic(t);
+
     const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
 
-    marker.setLatLng([lat, lng]);
-    if (t < 1) requestAnimationFrame(step);
+    const interpolatedLatLng = L.latLng(lat, lng);
+    marker.setLatLng(interpolatedLatLng);
+
+    if (pulseCircleMarker) {
+      pulseCircleMarker.setLatLng(interpolatedLatLng);
+    }
+
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      marker.setLatLng(newLatLng);
+    }
   }
+
   requestAnimationFrame(step);
 }
 
