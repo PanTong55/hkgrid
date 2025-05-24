@@ -225,7 +225,7 @@ export function initLocateTool(map, buttonId) {
                     <path d="M12 2l6 20-6-4-6 4 6-20z"
                           fill="#007aff"
                           stroke="white"
-                          stroke-width="2"
+                          stroke-width="1.2"
                           stroke-linejoin="round" />
                   </svg>
                 </div>
