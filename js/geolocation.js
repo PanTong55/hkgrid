@@ -216,33 +216,36 @@ export function initLocateTool(map, buttonId) {
         updateAlphaStatus(pos);
 
         if (!locateMarker) {
-          let iconHtml;
+        let iconHtml, iconSize, iconAnchor;
         
-          if (window.currentHeading != null) {
-            iconHtml = `
-              <div class="rotate-container">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path d="M12 2l6 20-6-4-6 4 6-20z"
-                        fill="#007aff"
-                        stroke="white"
-                        stroke-width="1.2"
-                        stroke-linejoin="round" />
-                </svg>
-              </div>
-            `;
-          } else {
-            iconHtml = `<div class="pulse-circle"></div>`;
-          }
+        if (window.currentHeading != null) {
+          iconHtml = `
+            <div class="rotate-container">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 2l6 20-6-4-6 4 6-20z"
+                      fill="#007aff"
+                      stroke="white"
+                      stroke-width="1.2"
+                      stroke-linejoin="round" />
+              </svg>
+            </div>
+          `;
+          iconSize = [24, 24];
+          iconAnchor = [12, 12];
+        } else {
+          iconHtml = `<div class="pulse-circle"></div>`;
+          iconSize = [12, 12];
+          iconAnchor = [6, 6];
+        }
         
-          locateMarker = L.marker(latlng, {
-            icon: L.divIcon({
-              className: "lucide-locate-icon",
-              html: iconHtml,
-              iconSize: [24, 24],
-              iconAnchor: [12, 12],
-            })
-          }).addTo(map);
-        
+        locateMarker = L.marker(latlng, {
+          icon: L.divIcon({
+            className: "lucide-locate-icon",
+            html: iconHtml,
+            iconSize: iconSize,
+            iconAnchor: iconAnchor,
+          })
+        }).addTo(map);
         } else {
           animateMarkerTo(locateMarker, L.latLng(latlng));
         }
