@@ -358,17 +358,6 @@ a.tooltip-close:hover {
   pointer-events: auto;
   cursor: pointer;
 }
-.pulse-wrapper {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: scale(var(--pulse-scale, 1));
-  transition: transform 0.4s ease-out;
-}
-
 .pulse-circle {
   width: 10px;
   height: 10px;
@@ -377,4 +366,19 @@ a.tooltip-close:hover {
   border-radius: 50%;
   box-shadow: 0 0 0 rgba(0, 122, 255, 0.4);
   animation: pulse-animation 3s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
+  }
+  70% {
+    transform: scale(1.4);
+    box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
+  }
 }
