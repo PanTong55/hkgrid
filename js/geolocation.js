@@ -146,20 +146,24 @@ export function initLocateTool(map, buttonId) {
   const crsSelect = document.getElementById("crsMode");
   const refollowBtn = document.getElementById("refollowBtn");
 
-  function cancelAutoFollowWithDelay() {
-    if (watchId === null) return;
+  let refollowTimer = null;
+
+  function cancelAutoFollow(reason = "") {
+    if (!autoFollow || watchId === null) return;
+
+    console.log("取消 autoFollow", reason);
     autoFollow = false;
-    if (refollowBtn.style.display !== "block") {
-      setTimeout(() => {
-        if (!autoFollow && watchId !== null) {
-          refollowBtn.style.display = "block";
-        }
-      }, 5000);
-    }
+
+    if (refollowTimer) clearTimeout(refollowTimer);
+    refollowTimer = setTimeout(() => {
+      if (!autoFollow && watchId !== null) {
+        refollowBtn.style.display = "block";
+      }
+    }, 5000);
   }
 
   function handleUserInteraction() {
-    cancelAutoFollowWithDelay();
+    cancelAutoFollow("user interaction");
   }
 
   map.on("dragstart", handleUserInteraction);
@@ -167,8 +171,10 @@ export function initLocateTool(map, buttonId) {
 
   refollowBtn.addEventListener("click", () => {
     if (watchId === null) return;
+
     autoFollow = true;
     refollowBtn.style.display = "none";
+
     if (window.lastGeoPosition) {
       const lat = window.lastGeoPosition.coords.latitude;
       const lng = window.lastGeoPosition.coords.longitude;
@@ -181,6 +187,7 @@ export function initLocateTool(map, buttonId) {
 
     locateBtn.classList.add("active");
     autoFollow = true;
+    refollowBtn.style.display = "none";
     statusEl.style.display = "block";
     statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
 
@@ -223,9 +230,6 @@ export function initLocateTool(map, buttonId) {
         const bounds = map.getBounds();
         if (autoFollow) {
           map.setView(latlng, 17);
-        } else if (!bounds.pad(-0.15).contains(latlng)) {
-          autoFollow = true;
-          map.setView(latlng);
         }
       },
       (err) => alert("⚠️ 定位失敗：" + err.message),
@@ -258,6 +262,8 @@ export function initLocateTool(map, buttonId) {
     refollowBtn.style.display = "none";
     window.removeEventListener("deviceorientationabsolute", handleHeading);
     window.removeEventListener("deviceorientation", handleHeading);
+    autoFollow = false;
+    if (refollowTimer) clearTimeout(refollowTimer);
   }
 
   if (crsSelect) {
