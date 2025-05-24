@@ -219,7 +219,13 @@ export function initLocateTool(map, buttonId) {
           locateMarker = L.marker(latlng, {
             icon: L.divIcon({
               className: "lucide-locate-icon",
-              html: `<div class="rotate-container"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#007aff" viewBox="0 0 24 24"><path d="M12 2l6 20-6-4-6 4 6-20z"/></svg></div>`,
+              html: `
+                <div class="rotate-container" style="border: 2px solid white; border-radius: 50%; background: white; padding: 2px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#007aff" viewBox="0 0 24 24">
+                    <path d="M12 2l6 20-6-4-6 4 6-20z"/>
+                  </svg>
+                </div>
+              `,
               iconSize: [24, 24],
               iconAnchor: [12, 12],
             })
