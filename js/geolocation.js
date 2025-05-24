@@ -3,6 +3,7 @@ let accuracyCircle = null;
 let watchId = null;
 let autoFollow = true;
 let currentRadius = 0;
+let isLocateEnabled = false;
 
 import { makeTooltipDraggable } from './draggableTooltip.js';
 
@@ -20,7 +21,6 @@ function animateMarkerTo(marker, newLatLng, duration = 400) {
     const eased = easeOutCubic(t);
     const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
-
     marker.setLatLng([lat, lng]);
     if (t < 1) requestAnimationFrame(step);
   }
@@ -35,11 +35,9 @@ function animateCircleTo(circle, newLatLng, duration = 400) {
     const elapsed = timestamp - startTime;
     const t = Math.min(elapsed / duration, 1);
     const eased = easeOutCubic(t);
-
     const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
     circle.setLatLng([lat, lng]);
-
     if (t < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
@@ -54,7 +52,6 @@ function animateAccuracyCircle(targetRadius) {
     const progress = Math.min((ts - start) / duration, 1);
     const eased = initial + (targetRadius - initial) * easeOutCubic(progress);
     accuracyCircle.setRadius(eased);
-
     if (progress < 1) {
       requestAnimationFrame(step);
     } else {
@@ -79,16 +76,13 @@ export function rotateMarker(marker, angle) {
 export function handleHeading(event) {
   window.headingEventTriggered = true;
   let heading = null;
-
   if (typeof event.webkitCompassHeading !== "undefined") {
     heading = event.webkitCompassHeading;
   } else if (event.alpha != null) {
     heading = 360 - event.alpha;
   }
-
   window.currentHeading = heading;
   updateAlphaStatus(window.lastGeoPosition);
-
   if (locateMarker && heading != null) {
     rotateMarker(locateMarker, heading);
   }
@@ -105,10 +99,9 @@ export function updateAlphaStatus(pos) {
   const alt = pos.coords.altitude != null ? `${pos.coords.altitude.toFixed(1)} m` : "N/A";
   const altAcc = pos.coords.altitudeAccuracy ? `${Math.round(pos.coords.altitudeAccuracy)} m` : "N/A";
   const heading = window.currentHeading != null ? `${window.currentHeading.toFixed(2)}°` : "--";
-
   const crsMode = document.getElementById("crsMode")?.value || "wgs84";
-  let coordText = "";
 
+  let coordText = "";
   if (crsMode === "hk1980") {
     const [x, y] = proj4("EPSG:4326", "EPSG:2326", [lng, lat]);
     coordText = `X: ${Math.round(x)}, Y: ${Math.round(y)} (±${acc})`;
@@ -147,34 +140,29 @@ export function initLocateTool(map, buttonId) {
   const refollowBtn = document.getElementById("refollowBtn");
 
   let isDragging = false;
-  let dragStartTime = null;
   let dragTimer = null;
 
   function scheduleAutoFollowCancel() {
-    dragStartTime = Date.now();
+    if (!isLocateEnabled) return;
     if (dragTimer) clearTimeout(dragTimer);
     dragTimer = setTimeout(() => {
       autoFollow = false;
       refollowBtn.style.display = "block";
     }, 5000);
   }
-  
+
   map.on("dragstart", () => {
     isDragging = true;
-    scheduleAutoFollowCancel();
-  });
-  
-  map.on("dragend", () => {
-    isDragging = false;
-  });
-  
-  map.on("zoomstart", () => {
     scheduleAutoFollowCancel();
   });
 
   map.on("dragend", () => {
     isDragging = false;
-  });  
+  });
+
+  map.on("zoomstart", () => {
+    scheduleAutoFollowCancel();
+  });
 
   refollowBtn.addEventListener("click", () => {
     autoFollow = true;
@@ -189,6 +177,7 @@ export function initLocateTool(map, buttonId) {
   function enable() {
     if (watchId !== null) return;
 
+    isLocateEnabled = true;
     locateBtn.classList.add("active");
     autoFollow = true;
     statusEl.style.display = "block";
@@ -263,6 +252,7 @@ export function initLocateTool(map, buttonId) {
     if (accuracyCircle) map.removeLayer(accuracyCircle);
     locateMarker = null;
     accuracyCircle = null;
+    isLocateEnabled = false;
     locateBtn.classList.remove("active");
     statusEl.style.display = "none";
     refollowBtn.style.display = "none";
