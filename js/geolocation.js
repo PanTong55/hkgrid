@@ -251,7 +251,7 @@ export function initLocateTool(map, buttonId) {
       const el = locateMarker.getElement();
       const circle = el?.querySelector(".pulse-circle");
       if (circle) {
-        const radiusPx = Math.max(5, accuracy / 2); // 依需要調整倍率
+        const radiusPx = Math.min(100, Math.max(5, accuracy / 2));
         circle.style.setProperty("--pulse-radius", `${radiusPx}px`);
       }
     }
