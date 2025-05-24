@@ -216,25 +216,33 @@ export function initLocateTool(map, buttonId) {
         updateAlphaStatus(pos);
 
         if (!locateMarker) {
+          let iconHtml;
+        
+          if (window.currentHeading != null) {
+            iconHtml = `
+              <div class="rotate-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M12 2l6 20-6-4-6 4 6-20z"
+                        fill="#007aff"
+                        stroke="white"
+                        stroke-width="1.2"
+                        stroke-linejoin="round" />
+                </svg>
+              </div>
+            `;
+          } else {
+            iconHtml = `<div class="pulse-circle"></div>`;
+          }
+        
           locateMarker = L.marker(latlng, {
             icon: L.divIcon({
               className: "lucide-locate-icon",
-              html: `
-                <div class="rotate-container" style="width: 24px; height: 24px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M12 2l6 20-6-4-6 4 6-20z"
-                          fill="#007aff"
-                          stroke="white"
-                          stroke-width="1.2"
-                          stroke-linejoin="round" />
-                  </svg>
-                </div>
-              `,
+              html: iconHtml,
               iconSize: [24, 24],
               iconAnchor: [12, 12],
             })
           }).addTo(map);
-          lucide.createIcons();
+        
         } else {
           animateMarkerTo(locateMarker, L.latLng(latlng));
         }
