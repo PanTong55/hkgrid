@@ -172,6 +172,10 @@ export function initLocateTool(map, buttonId) {
     scheduleAutoFollowCancel();
   });
 
+  map.on("dragend", () => {
+    isDragging = false;
+  });  
+
   refollowBtn.addEventListener("click", () => {
     autoFollow = true;
     refollowBtn.style.display = "none";
