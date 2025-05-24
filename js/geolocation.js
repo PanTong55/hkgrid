@@ -50,10 +50,17 @@ function animateAccuracyCircle(targetRadius) {
   const start = performance.now();
   const initial = currentRadius;
 
+  const iconEl = locateMarker?.getElement()?.querySelector('.pulse-circle');
+
   function step(ts) {
     const progress = Math.min((ts - start) / duration, 1);
-    const eased = initial + (targetRadius - initial) * easeOutCubic(progress);
-    accuracyCircle.setRadius(eased);
+    const easedRadius = initial + (targetRadius - initial) * easeOutCubic(progress);
+    accuracyCircle.setRadius(easedRadius);
+
+    if (iconEl) {
+      const scale = Math.min(Math.max(easedRadius / 50, 1), 3);
+      iconEl.style.transform = `scale(${scale})`;
+    }
 
     if (progress < 1) {
       requestAnimationFrame(step);
@@ -61,8 +68,10 @@ function animateAccuracyCircle(targetRadius) {
       currentRadius = targetRadius;
     }
   }
+
   requestAnimationFrame(step);
 }
+
 
 export function rotateMarker(marker, angle) {
   if (!marker) return;
@@ -220,12 +229,12 @@ export function initLocateTool(map, buttonId) {
     
       if (window.currentHeading != null) {
         iconHtml = `
-          <div class="rotate-container">
+          <div class="rotate-container pulse-circle">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path d="M12 2l6 20-6-4-6 4 6-20z"
                     fill="#007aff"
                     stroke="white"
-                    stroke-width="1.2"
+                    stroke-width="2.2"
                     stroke-linejoin="round" />
             </svg>
           </div>
