@@ -159,15 +159,21 @@ export function initLocateTool(map, buttonId) {
     }, 5000);
   }
 
+  let isManualTrigger = false;
+  
+  map.getContainer().addEventListener("mousedown", () => isManualTrigger = true);
+  map.getContainer().addEventListener("touchstart", () => isManualTrigger = true);
+  
   function handleMapStart() {
-    if (watchId === null) return;
+    if (watchId === null || !isManualTrigger) return;
     isUserMovedMap = true;
   }
-
+  
   function handleMapEnd() {
     if (watchId === null || !autoFollow || !isUserMovedMap) return;
     autoFollow = false;
     isUserMovedMap = false;
+    isManualTrigger = false;
     startRefollowCountdown();
   }
 
