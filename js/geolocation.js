@@ -150,18 +150,26 @@ export function initLocateTool(map, buttonId) {
   let dragStartTime = null;
   let dragTimer = null;
 
-  map.on("dragstart", () => {
-    isDragging = true;
+  function scheduleAutoFollowCancel() {
     dragStartTime = Date.now();
     if (dragTimer) clearTimeout(dragTimer);
     dragTimer = setTimeout(() => {
       autoFollow = false;
       refollowBtn.style.display = "block";
     }, 5000);
+  }
+  
+  map.on("dragstart", () => {
+    isDragging = true;
+    scheduleAutoFollowCancel();
   });
-
+  
   map.on("dragend", () => {
     isDragging = false;
+  });
+  
+  map.on("zoomstart", () => {
+    scheduleAutoFollowCancel();
   });
 
   refollowBtn.addEventListener("click", () => {
