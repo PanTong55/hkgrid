@@ -142,18 +142,18 @@ export function initLocateTool(map, buttonId) {
   let isDragging = false;
   let dragTimer = null;
 
-  function scheduleAutoFollowCancel() {
+  function disableAutoFollowAndDelayRefollow() {
     if (!isLocateEnabled) return;
+    autoFollow = false;
     if (dragTimer) clearTimeout(dragTimer);
     dragTimer = setTimeout(() => {
-      autoFollow = false;
       refollowBtn.style.display = "block";
     }, 5000);
   }
 
   map.on("dragstart", () => {
     isDragging = true;
-    scheduleAutoFollowCancel();
+    disableAutoFollowAndDelayRefollow();
   });
 
   map.on("dragend", () => {
@@ -161,7 +161,7 @@ export function initLocateTool(map, buttonId) {
   });
 
   map.on("zoomstart", () => {
-    scheduleAutoFollowCancel();
+    disableAutoFollowAndDelayRefollow();
   });
 
   refollowBtn.addEventListener("click", () => {
@@ -178,8 +178,8 @@ export function initLocateTool(map, buttonId) {
     if (watchId !== null) return;
 
     isLocateEnabled = true;
-    locateBtn.classList.add("active");
     autoFollow = true;
+    locateBtn.classList.add("active");
     statusEl.style.display = "block";
     statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
 
@@ -219,12 +219,8 @@ export function initLocateTool(map, buttonId) {
           animateAccuracyCircle(accuracy);
         }
 
-        const bounds = map.getBounds();
         if (autoFollow && !isDragging) {
           map.setView(latlng, 17);
-        } else if (!bounds.pad(-0.15).contains(latlng) && !isDragging) {
-          autoFollow = true;
-          map.setView(latlng);
         }
       },
       (err) => alert("⚠️ 定位失敗：" + err.message),
@@ -253,6 +249,8 @@ export function initLocateTool(map, buttonId) {
     locateMarker = null;
     accuracyCircle = null;
     isLocateEnabled = false;
+    autoFollow = false;
+    if (dragTimer) clearTimeout(dragTimer);
     locateBtn.classList.remove("active");
     statusEl.style.display = "none";
     refollowBtn.style.display = "none";
