@@ -246,7 +246,16 @@ export function initLocateTool(map, buttonId) {
     } else {
       animateMarkerTo(locateMarker, L.latLng(latlng));
     }
-
+        
+    if (locateMarker && locateMarker.getElement) {
+      const el = locateMarker.getElement();
+      const circle = el?.querySelector(".pulse-circle");
+      if (circle) {
+        const radiusPx = Math.max(5, accuracy / 2); // 依需要調整倍率
+        circle.style.setProperty("--pulse-radius", `${radiusPx}px`);
+      }
+    }
+        
       if (autoFollow) {
         const currentCenter = map.getCenter();
         const newCenter = L.latLng(latlng);
