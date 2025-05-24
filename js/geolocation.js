@@ -147,13 +147,10 @@ export function initLocateTool(map, buttonId) {
   const refollowBtn = document.getElementById("refollowBtn");
 
   let refollowTimer = null;
+  let isUserMovedMap = false;
 
-  function cancelAutoFollow(reason = "") {
-    if (!autoFollow || watchId === null) return;
-
-    console.log("取消 autoFollow", reason);
-    autoFollow = false;
-
+  function startRefollowCountdown() {
+    if (watchId === null || autoFollow) return;
     if (refollowTimer) clearTimeout(refollowTimer);
     refollowTimer = setTimeout(() => {
       if (!autoFollow && watchId !== null) {
@@ -162,34 +159,22 @@ export function initLocateTool(map, buttonId) {
     }, 5000);
   }
 
-  let refollowTimer = null;
-  let isUserMovedMap = false;
-  
   function handleMapStart() {
     if (watchId === null) return;
     isUserMovedMap = true;
   }
-  
+
   function handleMapEnd() {
     if (watchId === null || !autoFollow || !isUserMovedMap) return;
-  
     autoFollow = false;
     isUserMovedMap = false;
-  
-    if (refollowTimer) clearTimeout(refollowTimer);
-    refollowTimer = setTimeout(() => {
-      if (!autoFollow && watchId !== null) {
-        refollowBtn.style.display = "block";
-      }
-    }, 5000);
+    startRefollowCountdown();
   }
 
   refollowBtn.addEventListener("click", () => {
     if (watchId === null) return;
-
     autoFollow = true;
     refollowBtn.style.display = "none";
-
     if (window.lastGeoPosition) {
       const lat = window.lastGeoPosition.coords.latitude;
       const lng = window.lastGeoPosition.coords.longitude;
@@ -198,7 +183,6 @@ export function initLocateTool(map, buttonId) {
   });
 
   function enable() {
-
     if (watchId !== null) return;
 
     locateBtn.classList.add("active");
@@ -210,8 +194,8 @@ export function initLocateTool(map, buttonId) {
     map.on("dragstart", handleMapStart);
     map.on("dragend", handleMapEnd);
     map.on("zoomstart", handleMapStart);
-    map.on("zoomend", handleMapEnd); 
-    
+    map.on("zoomend", handleMapEnd);
+
     watchId = navigator.geolocation.watchPosition(
       (pos) => {
         const latlng = [pos.coords.latitude, pos.coords.longitude];
@@ -270,12 +254,6 @@ export function initLocateTool(map, buttonId) {
   }
 
   function disable() {
-
-    map.off("dragstart", handleMapStart);
-    map.off("dragend", handleMapEnd);
-    map.off("zoomstart", handleMapStart);
-    map.off("zoomend", handleMapEnd);    
-    
     if (watchId !== null) {
       navigator.geolocation.clearWatch(watchId);
       watchId = null;
@@ -287,10 +265,16 @@ export function initLocateTool(map, buttonId) {
     locateBtn.classList.remove("active");
     statusEl.style.display = "none";
     refollowBtn.style.display = "none";
-    window.removeEventListener("deviceorientationabsolute", handleHeading);
-    window.removeEventListener("deviceorientation", handleHeading);
     autoFollow = false;
     if (refollowTimer) clearTimeout(refollowTimer);
+
+    map.off("dragstart", handleMapStart);
+    map.off("dragend", handleMapEnd);
+    map.off("zoomstart", handleMapStart);
+    map.off("zoomend", handleMapEnd);
+
+    window.removeEventListener("deviceorientationabsolute", handleHeading);
+    window.removeEventListener("deviceorientation", handleHeading);
   }
 
   if (crsSelect) {
