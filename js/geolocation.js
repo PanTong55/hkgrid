@@ -220,9 +220,19 @@ export function initLocateTool(map, buttonId) {
             icon: L.divIcon({
               className: "lucide-locate-icon",
               html: `
-                <div class="rotate-container" style="border: 2px solid white; border-radius: 50%; background: white; padding: 2px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#007aff" viewBox="0 0 24 24">
-                    <path d="M12 2l6 20-6-4-6 4 6-20z"/>
+                <div class="rotate-container" style="
+                  width: 28px;
+                  height: 28px;
+                  border: 2px solid white;
+                  border-radius: 50%;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  box-sizing: border-box;
+                ">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                    <path d="M12 2l6 20-6-4-6 4 6-20z" fill="#007aff" stroke="#007aff" stroke-width="1.5"/>
                   </svg>
                 </div>
               `,
