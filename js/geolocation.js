@@ -163,11 +163,17 @@ export function initLocateTool(map, buttonId) {
   }
 
   function handleUserInteraction() {
-    cancelAutoFollow("user interaction");
+    if (watchId === null || !autoFollow) return; // ✅ 無定位時不處理
+  
+    autoFollow = false;
+  
+    if (refollowTimer) clearTimeout(refollowTimer);
+    refollowTimer = setTimeout(() => {
+      if (!autoFollow && watchId !== null) {
+        refollowBtn.style.display = "block";
+      }
+    }, 5000);
   }
-
-  map.on("dragstart", handleUserInteraction);
-  map.on("zoomstart", handleUserInteraction);
 
   refollowBtn.addEventListener("click", () => {
     if (watchId === null) return;
@@ -191,6 +197,9 @@ export function initLocateTool(map, buttonId) {
     statusEl.style.display = "block";
     statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
 
+    map.on("dragstart", handleUserInteraction);
+    map.on("zoomstart", handleUserInteraction);
+    
     watchId = navigator.geolocation.watchPosition(
       (pos) => {
         const latlng = [pos.coords.latitude, pos.coords.longitude];
@@ -249,6 +258,10 @@ export function initLocateTool(map, buttonId) {
   }
 
   function disable() {
+
+    map.off("dragstart", handleUserInteraction);
+    map.off("zoomstart", handleUserInteraction);
+    
     if (watchId !== null) {
       navigator.geolocation.clearWatch(watchId);
       watchId = null;
