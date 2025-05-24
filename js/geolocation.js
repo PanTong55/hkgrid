@@ -1,4 +1,3 @@
-let suppressNextMovement = false;
 let locateMarker = null;
 let accuracyCircle = null;
 let watchId = null;
@@ -21,6 +20,7 @@ function animateMarkerTo(marker, newLatLng, duration = 400) {
     const eased = easeOutCubic(t);
     const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
+
     marker.setLatLng([lat, lng]);
     if (t < 1) requestAnimationFrame(step);
   }
@@ -35,9 +35,11 @@ function animateCircleTo(circle, newLatLng, duration = 400) {
     const elapsed = timestamp - startTime;
     const t = Math.min(elapsed / duration, 1);
     const eased = easeOutCubic(t);
+
     const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
     circle.setLatLng([lat, lng]);
+
     if (t < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
@@ -52,6 +54,7 @@ function animateAccuracyCircle(targetRadius) {
     const progress = Math.min((ts - start) / duration, 1);
     const eased = initial + (targetRadius - initial) * easeOutCubic(progress);
     accuracyCircle.setRadius(eased);
+
     if (progress < 1) {
       requestAnimationFrame(step);
     } else {
@@ -144,30 +147,28 @@ export function initLocateTool(map, buttonId) {
   const refollowBtn = document.getElementById("refollowBtn");
 
   let refollowTimer = null;
-  let previousCenter = null;
+  let isUserMovedMap = false;
 
-  function handleMapStart() {
-    if (watchId === null) return;
-    previousCenter = map.getCenter();
-  }
-
-  function handleMapEnd() {
-    if (suppressNextMovement) {
-      suppressNextMovement = false;
-      return;
-    }
-    
-    if (watchId === null || !autoFollow || !previousCenter) return;
-    const currentCenter = map.getCenter();
-    const distance = currentCenter.distanceTo(previousCenter);
-    if (distance < 5) return;
-    autoFollow = false;
+  function startRefollowCountdown() {
+    if (watchId === null || autoFollow) return;
     if (refollowTimer) clearTimeout(refollowTimer);
     refollowTimer = setTimeout(() => {
       if (!autoFollow && watchId !== null) {
         refollowBtn.style.display = "block";
       }
     }, 5000);
+  }
+
+  function handleMapStart() {
+    if (watchId === null) return;
+    isUserMovedMap = true;
+  }
+
+  function handleMapEnd() {
+    if (watchId === null || !autoFollow || !isUserMovedMap) return;
+    autoFollow = false;
+    isUserMovedMap = false;
+    startRefollowCountdown();
   }
 
   refollowBtn.addEventListener("click", () => {
@@ -231,8 +232,8 @@ export function initLocateTool(map, buttonId) {
           animateAccuracyCircle(accuracy);
         }
 
+        const bounds = map.getBounds();
         if (autoFollow) {
-          suppressNextMovement = true;
           map.setView(latlng, 17);
         }
       },
