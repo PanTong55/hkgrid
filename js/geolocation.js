@@ -243,8 +243,20 @@ export function initLocateTool(map, buttonId) {
           animateAccuracyCircle(accuracy);
         }
 
-        if (autoFollow) {
-          map.setView(latlng, 17);
+      if (autoFollow) {
+        const currentCenter = map.getCenter();
+        const newCenter = L.latLng(latlng);
+        const currentZoom = map.getZoom();
+      
+        const centerShift = currentCenter.distanceTo(newCenter);
+        const zoomChanged = currentZoom !== 17;
+
+        if (centerShift > 20 || zoomChanged) {
+          isManualTrigger = false;
+          isUserMovedMap = false;
+      
+          map.setView(newCenter, 17);
+        }
           lastFollowedCenter = L.latLng(latlng);
         }
       },
