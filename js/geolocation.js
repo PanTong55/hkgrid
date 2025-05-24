@@ -146,25 +146,27 @@ export function initLocateTool(map, buttonId) {
   const crsSelect = document.getElementById("crsMode");
   const refollowBtn = document.getElementById("refollowBtn");
 
-  let isDragging = false;
-  let dragStartTime = null;
-  let dragTimer = null;
+  function cancelAutoFollowWithDelay() {
+    if (watchId === null) return;
+    autoFollow = false;
+    if (refollowBtn.style.display !== "block") {
+      setTimeout(() => {
+        if (!autoFollow && watchId !== null) {
+          refollowBtn.style.display = "block";
+        }
+      }, 5000);
+    }
+  }
 
-  map.on("dragstart", () => {
-    isDragging = true;
-    dragStartTime = Date.now();
-    if (dragTimer) clearTimeout(dragTimer);
-    dragTimer = setTimeout(() => {
-      autoFollow = false;
-      refollowBtn.style.display = "block";
-    }, 5000);
-  });
+  function handleUserInteraction() {
+    cancelAutoFollowWithDelay();
+  }
 
-  map.on("dragend", () => {
-    isDragging = false;
-  });
+  map.on("dragstart", handleUserInteraction);
+  map.on("zoomstart", handleUserInteraction);
 
   refollowBtn.addEventListener("click", () => {
+    if (watchId === null) return;
     autoFollow = true;
     refollowBtn.style.display = "none";
     if (window.lastGeoPosition) {
@@ -219,9 +221,9 @@ export function initLocateTool(map, buttonId) {
         }
 
         const bounds = map.getBounds();
-        if (autoFollow && !isDragging) {
+        if (autoFollow) {
           map.setView(latlng, 17);
-        } else if (!bounds.pad(-0.15).contains(latlng) && !isDragging) {
+        } else if (!bounds.pad(-0.15).contains(latlng)) {
           autoFollow = true;
           map.setView(latlng);
         }
