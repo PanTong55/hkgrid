@@ -238,8 +238,8 @@ export function initLocateTool(map, buttonId) {
             icon: L.divIcon({
               className: "lucide-locate-icon",
               html: iconHtml,
-              iconSize: [24, 24],
-              iconAnchor: [12, 12],
+              iconSize: [16, 16],
+              iconAnchor: [8, 8],
             })
           }).addTo(map);
         
