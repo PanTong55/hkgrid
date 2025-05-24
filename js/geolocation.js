@@ -231,7 +231,7 @@ export function initLocateTool(map, buttonId) {
           </div>
         `;
       } else {
-        iconHtml = `<div class="pulse-wrapper" style="--pulse-scale:1;"><div class="pulse-circle"></div></div>`;
+        iconHtml = `<div class="pulse-circle"></div>`;
       }
     
       locateMarker = L.marker(latlng, {
@@ -246,12 +246,6 @@ export function initLocateTool(map, buttonId) {
     } else {
       animateMarkerTo(locateMarker, L.latLng(latlng));
     }
-        
-    const pulseEl = locateMarker.getElement()?.querySelector(".pulse-wrapper");
-    if (pulseEl) {
-      const scale = Math.min(5, Math.max(1, accuracy / 10));  // 可調整上下限
-      pulseEl.style.setProperty("--pulse-scale", scale.toFixed(2));
-    }        
 
       if (autoFollow) {
         const currentCenter = map.getCenter();
