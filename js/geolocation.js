@@ -1,5 +1,3 @@
-// geolocation.js
-
 let locateMarker = null;
 let accuracyCircle = null;
 let watchId = null;
@@ -99,7 +97,6 @@ export function handleHeading(event) {
 export function updateAlphaStatus(pos) {
   const statusEl = document.getElementById("alpha-status");
   if (!statusEl || !pos) return;
-
   if (window.isDraggingAlphaStatus) return;
 
   const lat = pos.coords.latitude;
@@ -110,8 +107,8 @@ export function updateAlphaStatus(pos) {
   const heading = window.currentHeading != null ? `${window.currentHeading.toFixed(2)}°` : "--";
 
   const crsMode = document.getElementById("crsMode")?.value || "wgs84";
-
   let coordText = "";
+
   if (crsMode === "hk1980") {
     const [x, y] = proj4("EPSG:4326", "EPSG:2326", [lng, lat]);
     coordText = `X: ${Math.round(x)}, Y: ${Math.round(y)} (±${acc})`;
@@ -133,7 +130,6 @@ export function initOrientationListener() {
         window.addEventListener("deviceorientationabsolute", handleHeading, true);
         setTimeout(() => {
           if (!window.headingEventTriggered) {
-            console.warn("deviceorientationabsolute 無反應，嘗試 fallback...");
             window.addEventListener("deviceorientation", handleHeading, true);
           }
         }, 3000);
@@ -148,19 +144,38 @@ export function initLocateTool(map, buttonId) {
   const locateBtn = document.getElementById(buttonId);
   const statusEl = document.getElementById("alpha-status");
   const crsSelect = document.getElementById("crsMode");
-
-  let locateMarker = null;
-  let accuracyCircle = null;
-  let watchId = null;
-  let autoFollow = true;
-  let currentRadius = 0;
+  const refollowBtn = document.getElementById("refollowBtn");
 
   let isDragging = false;
-  map.on("dragstart", () => isDragging = true);
-  map.on("dragend", () => isDragging = false);
+  let dragStartTime = null;
+  let dragTimer = null;
+
+  map.on("dragstart", () => {
+    isDragging = true;
+    dragStartTime = Date.now();
+    if (dragTimer) clearTimeout(dragTimer);
+    dragTimer = setTimeout(() => {
+      autoFollow = false;
+      refollowBtn.style.display = "block";
+    }, 5000);
+  });
+
+  map.on("dragend", () => {
+    isDragging = false;
+  });
+
+  refollowBtn.addEventListener("click", () => {
+    autoFollow = true;
+    refollowBtn.style.display = "none";
+    if (window.lastGeoPosition) {
+      const lat = window.lastGeoPosition.coords.latitude;
+      const lng = window.lastGeoPosition.coords.longitude;
+      map.setView([lat, lng], 17);
+    }
+  });
 
   function enable() {
-    if (watchId !== null) return; // 已啟用就不重複執行
+    if (watchId !== null) return;
 
     locateBtn.classList.add("active");
     autoFollow = true;
@@ -204,14 +219,14 @@ export function initLocateTool(map, buttonId) {
         }
 
         const bounds = map.getBounds();
-          if (autoFollow && !isDragging) {
-            map.setView(latlng, 17);
-          } else if (!bounds.pad(-0.15).contains(latlng) && !isDragging) {
-            autoFollow = true;
-            map.setView(latlng);
-          }
+        if (autoFollow && !isDragging) {
+          map.setView(latlng, 17);
+        } else if (!bounds.pad(-0.15).contains(latlng) && !isDragging) {
+          autoFollow = true;
+          map.setView(latlng);
+        }
       },
-      (err) => alert("定位失敗：" + err.message),
+      (err) => alert("⚠️ 定位失敗：" + err.message),
       {
         enableHighAccuracy: true,
         timeout: 10000,
@@ -238,6 +253,7 @@ export function initLocateTool(map, buttonId) {
     accuracyCircle = null;
     locateBtn.classList.remove("active");
     statusEl.style.display = "none";
+    refollowBtn.style.display = "none";
     window.removeEventListener("deviceorientationabsolute", handleHeading);
     window.removeEventListener("deviceorientation", handleHeading);
   }
@@ -250,9 +266,8 @@ export function initLocateTool(map, buttonId) {
     });
   }
 
-  const alphaStatus = document.getElementById("alpha-status");
-  if (alphaStatus) {
-    makeTooltipDraggable(alphaStatus);
+  if (statusEl) {
+    makeTooltipDraggable(statusEl);
   }
 
   return { enable, disable };
