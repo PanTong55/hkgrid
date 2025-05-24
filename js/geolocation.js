@@ -162,10 +162,19 @@ export function initLocateTool(map, buttonId) {
     }, 5000);
   }
 
-  function handleUserInteraction() {
-    if (watchId === null || !autoFollow) return; // ✅ 無定位時不處理
+  let refollowTimer = null;
+  let isUserMovedMap = false;
+  
+  function handleMapStart() {
+    if (watchId === null) return;
+    isUserMovedMap = true;
+  }
+  
+  function handleMapEnd() {
+    if (watchId === null || !autoFollow || !isUserMovedMap) return;
   
     autoFollow = false;
+    isUserMovedMap = false;
   
     if (refollowTimer) clearTimeout(refollowTimer);
     refollowTimer = setTimeout(() => {
@@ -189,6 +198,7 @@ export function initLocateTool(map, buttonId) {
   });
 
   function enable() {
+
     if (watchId !== null) return;
 
     locateBtn.classList.add("active");
@@ -197,8 +207,10 @@ export function initLocateTool(map, buttonId) {
     statusEl.style.display = "block";
     statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
 
-    map.on("dragstart", handleUserInteraction);
-    map.on("zoomstart", handleUserInteraction);
+    map.on("dragstart", handleMapStart);
+    map.on("dragend", handleMapEnd);
+    map.on("zoomstart", handleMapStart);
+    map.on("zoomend", handleMapEnd); 
     
     watchId = navigator.geolocation.watchPosition(
       (pos) => {
@@ -259,8 +271,10 @@ export function initLocateTool(map, buttonId) {
 
   function disable() {
 
-    map.off("dragstart", handleUserInteraction);
-    map.off("zoomstart", handleUserInteraction);
+    map.off("dragstart", handleMapStart);
+    map.off("dragend", handleMapEnd);
+    map.off("zoomstart", handleMapStart);
+    map.off("zoomend", handleMapEnd);    
     
     if (watchId !== null) {
       navigator.geolocation.clearWatch(watchId);
