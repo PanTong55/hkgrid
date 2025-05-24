@@ -360,11 +360,15 @@ a.tooltip-close:hover {
 }
 
 .pulse-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 10px;
   height: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
   background: #007aff;
   border: 2px solid white;
-  border-radius: 50%;
   box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
   animation: pulse-animation 3s infinite;
   --pulse-radius: 10px;
@@ -392,6 +396,7 @@ a.tooltip-close:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
 }
 
 .pulse-wrapper .pulse-circle {
