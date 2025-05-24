@@ -18,24 +18,12 @@ function animateMarkerTo(marker, newLatLng, duration = 400) {
     const elapsed = timestamp - startTime;
     const t = Math.min(elapsed / duration, 1);
     const eased = easeOutCubic(t);
-
     const lat = startLatLng.lat + (newLatLng.lat - startLatLng.lat) * eased;
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
 
-    const interpolatedLatLng = L.latLng(lat, lng);
-    marker.setLatLng(interpolatedLatLng);
-
-    if (pulseCircleMarker) {
-      pulseCircleMarker.setLatLng(interpolatedLatLng);
-    }
-
-    if (t < 1) {
-      requestAnimationFrame(step);
-    } else {
-      marker.setLatLng(newLatLng);
-    }
+    marker.setLatLng([lat, lng]);
+    if (t < 1) requestAnimationFrame(step);
   }
-
   requestAnimationFrame(step);
 }
 
@@ -205,98 +193,102 @@ export function initLocateTool(map, buttonId) {
     }
   });
 
-let pulseCircleMarker = null;
+  function enable() {
+    if (watchId !== null) return;
 
-function enable() {
-  if (watchId !== null) return;
+    locateBtn.classList.add("active");
+    autoFollow = true;
+    refollowBtn.style.display = "none";
+    statusEl.style.display = "block";
+    statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
 
-  locateBtn.classList.add("active");
-  autoFollow = true;
-  refollowBtn.style.display = "none";
-  statusEl.style.display = "block";
-  statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
+    map.on("dragstart", handleMapStart);
+    map.on("dragend", handleMapEnd);
+    map.on("zoomstart", handleMapStart);
+    map.on("zoomend", handleMapEnd);
 
-  map.on("dragstart", handleMapStart);
-  map.on("dragend", handleMapEnd);
-  map.on("zoomstart", handleMapStart);
-  map.on("zoomend", handleMapEnd);
+    watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const latlng = [pos.coords.latitude, pos.coords.longitude];
+        const accuracy = pos.coords.accuracy;
+        window.lastGeoPosition = pos;
 
-  watchId = navigator.geolocation.watchPosition(
-    (pos) => {
-      const latlng = [pos.coords.latitude, pos.coords.longitude];
-      const accuracy = pos.coords.accuracy;
-      window.lastGeoPosition = pos;
+        updateAlphaStatus(pos);
 
-      updateAlphaStatus(pos);
-
-      if (!locateMarker) {
-        // 建立主 marker
-        locateMarker = L.marker(latlng, {
-          icon: L.divIcon({
-            className: "lucide-locate-icon",
-            html: `
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path d="M12 2l6 20-6-4-6 4 6-20z"
-                      fill="#007aff"
-                      stroke="white"
-                      stroke-width="1.2"
-                      stroke-linejoin="round" />
-              </svg>
-            `,
-            iconSize: [24, 24],
-            iconAnchor: [12, 12],
-          })
-        }).addTo(map);
-
-        // 建立 pulse 動畫層
-        pulseCircleMarker = L.circleMarker(latlng, {
-          radius: Math.min(50, Math.max(10, accuracy)),
-          color: '#007aff',
-          fillOpacity: 0.15,
-          stroke: false,
-          className: 'leaflet-pulse-ring'
-        }).addTo(map);
+    if (!locateMarker) {
+      let iconHtml;
+    
+      if (window.currentHeading != null) {
+        iconHtml = `
+          <div class="rotate-container pulse-wrapper">
+            <div class="pulse-circle hollow"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path d="M12 2l6 20-6-4-6 4 6-20z"
+                    fill="#007aff"
+                    stroke="white"
+                    stroke-width="1.2"
+                    stroke-linejoin="round" />
+            </svg>
+          </div>
+        `;
       } else {
-        animateMarkerTo(locateMarker, L.latLng(latlng));
-        if (pulseCircleMarker) {
-          pulseCircleMarker.setLatLng(latlng);
-          pulseCircleMarker.setRadius(Math.min(50, Math.max(10, accuracy)));
-        }
+        iconHtml = `<div class="pulse-circle solid"></div>`;
       }
-
-      // 自動視角追蹤
+    
+      locateMarker = L.marker(latlng, {
+        icon: L.divIcon({
+          className: "lucide-locate-icon",
+          html: iconHtml,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        })
+      }).addTo(map);
+    
+    } else {
+      animateMarkerTo(locateMarker, L.latLng(latlng));
+    }
+        
+    if (locateMarker && locateMarker.getElement) {
+      const el = locateMarker.getElement();
+      const circle = el?.querySelector(".pulse-circle");
+      if (circle) {
+        const sizePx = Math.min(200, Math.max(10, accuracy));
+        circle.style.setProperty("--pulse-size", `${sizePx}px`);
+      }
+    }
+        
       if (autoFollow) {
         const currentCenter = map.getCenter();
         const newCenter = L.latLng(latlng);
         const currentZoom = map.getZoom();
-
+      
         const centerShift = currentCenter.distanceTo(newCenter);
         const zoomChanged = currentZoom !== 17;
 
         if (centerShift > 20 || zoomChanged) {
           isManualTrigger = false;
           isUserMovedMap = false;
+      
           map.setView(newCenter, 17);
         }
-
-        lastFollowedCenter = L.latLng(latlng);
+          lastFollowedCenter = L.latLng(latlng);
+        }
+      },
+      (err) => alert("⚠️ 定位失敗：" + err.message),
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
       }
-    },
-    (err) => alert("⚠️ 定位失敗：" + err.message),
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0
-    }
-  );
+    );
 
-  window.addEventListener("deviceorientationabsolute", handleHeading, true);
-  setTimeout(() => {
-    if (!window.headingEventTriggered) {
-      window.addEventListener("deviceorientation", handleHeading, true);
-    }
-  }, 3000);
-}
+    window.addEventListener("deviceorientationabsolute", handleHeading, true);
+    setTimeout(() => {
+      if (!window.headingEventTriggered) {
+        window.addEventListener("deviceorientation", handleHeading, true);
+      }
+    }, 3000);
+  }
 
   function disable() {
     if (watchId !== null) {
