@@ -11,9 +11,6 @@ function easeOutCubic(t) {
 }
 
 function animateMarkerTo(marker, newLatLng, duration = 400) {
-  const el = marker.getElement();
-  if (!el) return;
-
   const startLatLng = marker.getLatLng();
   const startTime = performance.now();
 
@@ -25,17 +22,8 @@ function animateMarkerTo(marker, newLatLng, duration = 400) {
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
 
     marker.setLatLng([lat, lng]);
-
-    const circle = el.querySelector(".pulse-circle");
-    if (circle) {
-      circle.style.transition = 'transform 0.4s ease-out';
-    }
-
-    if (t < 1) {
-      requestAnimationFrame(step);
-    }
+    if (t < 1) requestAnimationFrame(step);
   }
-
   requestAnimationFrame(step);
 }
 
@@ -227,48 +215,44 @@ export function initLocateTool(map, buttonId) {
 
         updateAlphaStatus(pos);
 
-    if (!locateMarker) {
-      let iconHtml;
-    
-      if (window.currentHeading != null) {
-        iconHtml = `
-          <div class="rotate-container pulse-wrapper">
-            <div class="pulse-circle hollow"></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-              <path d="M12 2l6 20-6-4-6 4 6-20z"
-                    fill="#007aff"
-                    stroke="white"
-                    stroke-width="1.2"
-                    stroke-linejoin="round" />
-            </svg>
-          </div>
-        `;
-      } else {
-        iconHtml = `<div class="pulse-circle solid"></div>`;
-      }
-    
-      locateMarker = L.marker(latlng, {
-        icon: L.divIcon({
-          className: "lucide-locate-icon",
-          html: iconHtml,
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
-        })
-      }).addTo(map);
-    
-    } else {
-      animateMarkerTo(locateMarker, L.latLng(latlng));
-    }
-        
-    if (locateMarker && locateMarker.getElement) {
-      const el = locateMarker.getElement();
-      const circle = el?.querySelector(".pulse-circle");
-      if (circle) {
-        const sizePx = Math.min(200, Math.max(10, accuracy));
-        circle.style.setProperty("--pulse-size", `${sizePx}px`);
-      }
-    }
-        
+        if (!locateMarker) {
+          locateMarker = L.marker(latlng, {
+            icon: L.divIcon({
+              className: "lucide-locate-icon",
+              html: `
+                <div class="rotate-container" style="width: 24px; height: 24px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 2l6 20-6-4-6 4 6-20z"
+                          fill="#007aff"
+                          stroke="white"
+                          stroke-width="1.2"
+                          stroke-linejoin="round" />
+                  </svg>
+                </div>
+              `,
+              iconSize: [24, 24],
+              iconAnchor: [12, 12],
+            })
+          }).addTo(map);
+          lucide.createIcons();
+        } else {
+          animateMarkerTo(locateMarker, L.latLng(latlng));
+        }
+
+        if (!accuracyCircle) {
+          accuracyCircle = L.circle(latlng, {
+            radius: accuracy,
+            color: "transparent",
+            weight: 0,
+            fillColor: "#1E90FF",
+            fillOpacity: 0.15,
+          }).addTo(map);
+          currentRadius = accuracy;
+        } else {
+          animateCircleTo(accuracyCircle, L.latLng(latlng));
+          animateAccuracyCircle(accuracy);
+        }
+
       if (autoFollow) {
         const currentCenter = map.getCenter();
         const newCenter = L.latLng(latlng);
