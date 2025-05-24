@@ -148,6 +148,12 @@ export function initLocateTool(map, buttonId) {
 
   let refollowTimer = null;
   let isUserMovedMap = false;
+  let isManualTrigger = false;
+  let lastFollowedCenter = null;
+
+  // 檢測滑鼠或手指開始操作地圖（只限於人為觸發）
+  map.getContainer().addEventListener("mousedown", () => isManualTrigger = true);
+  map.getContainer().addEventListener("touchstart", () => isManualTrigger = true);
 
   function startRefollowCountdown() {
     if (watchId === null || autoFollow) return;
@@ -159,16 +165,14 @@ export function initLocateTool(map, buttonId) {
     }, 5000);
   }
 
-  let isManualTrigger = false;
-  
-  map.getContainer().addEventListener("mousedown", () => isManualTrigger = true);
-  map.getContainer().addEventListener("touchstart", () => isManualTrigger = true);
-  
   function handleMapStart() {
-    if (watchId === null || !isManualTrigger) return;
-    isUserMovedMap = true;
+    if (watchId === null) return;
+
+    if (isManualTrigger) {
+      isUserMovedMap = true;
+    }
   }
-  
+
   function handleMapEnd() {
     if (watchId === null || !autoFollow || !isUserMovedMap) return;
     autoFollow = false;
@@ -185,6 +189,7 @@ export function initLocateTool(map, buttonId) {
       const lat = window.lastGeoPosition.coords.latitude;
       const lng = window.lastGeoPosition.coords.longitude;
       map.setView([lat, lng], 17);
+      lastFollowedCenter = L.latLng(lat, lng);
     }
   });
 
@@ -238,9 +243,9 @@ export function initLocateTool(map, buttonId) {
           animateAccuracyCircle(accuracy);
         }
 
-        const bounds = map.getBounds();
         if (autoFollow) {
           map.setView(latlng, 17);
+          lastFollowedCenter = L.latLng(latlng);
         }
       },
       (err) => alert("⚠️ 定位失敗：" + err.message),
@@ -297,3 +302,4 @@ export function initLocateTool(map, buttonId) {
 
   return { enable, disable };
 }
+
