@@ -1,3 +1,4 @@
+let suppressNextMovement = false;
 let locateMarker = null;
 let accuracyCircle = null;
 let watchId = null;
@@ -151,10 +152,15 @@ export function initLocateTool(map, buttonId) {
   }
 
   function handleMapEnd() {
+    if (suppressNextMovement) {
+      suppressNextMovement = false;
+      return;
+    }
+    
     if (watchId === null || !autoFollow || !previousCenter) return;
     const currentCenter = map.getCenter();
     const distance = currentCenter.distanceTo(previousCenter);
-    if (distance < 5) return; // ignore small nudges
+    if (distance < 5) return;
     autoFollow = false;
     if (refollowTimer) clearTimeout(refollowTimer);
     refollowTimer = setTimeout(() => {
@@ -226,6 +232,7 @@ export function initLocateTool(map, buttonId) {
         }
 
         if (autoFollow) {
+          suppressNextMovement = true;
           map.setView(latlng, 17);
         }
       },
