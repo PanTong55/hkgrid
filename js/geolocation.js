@@ -193,102 +193,98 @@ export function initLocateTool(map, buttonId) {
     }
   });
 
-  function enable() {
-    if (watchId !== null) return;
+let pulseCircleMarker = null;
 
-    locateBtn.classList.add("active");
-    autoFollow = true;
-    refollowBtn.style.display = "none";
-    statusEl.style.display = "block";
-    statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
+function enable() {
+  if (watchId !== null) return;
 
-    map.on("dragstart", handleMapStart);
-    map.on("dragend", handleMapEnd);
-    map.on("zoomstart", handleMapStart);
-    map.on("zoomend", handleMapEnd);
+  locateBtn.classList.add("active");
+  autoFollow = true;
+  refollowBtn.style.display = "none";
+  statusEl.style.display = "block";
+  statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
 
-    watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const latlng = [pos.coords.latitude, pos.coords.longitude];
-        const accuracy = pos.coords.accuracy;
-        window.lastGeoPosition = pos;
+  map.on("dragstart", handleMapStart);
+  map.on("dragend", handleMapEnd);
+  map.on("zoomstart", handleMapStart);
+  map.on("zoomend", handleMapEnd);
 
-        updateAlphaStatus(pos);
+  watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      const latlng = [pos.coords.latitude, pos.coords.longitude];
+      const accuracy = pos.coords.accuracy;
+      window.lastGeoPosition = pos;
 
-    if (!locateMarker) {
-      let iconHtml;
-    
-      if (window.currentHeading != null) {
-        iconHtml = `
-          <div class="rotate-container pulse-wrapper">
-            <div class="pulse-circle hollow"></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-              <path d="M12 2l6 20-6-4-6 4 6-20z"
-                    fill="#007aff"
-                    stroke="white"
-                    stroke-width="1.2"
-                    stroke-linejoin="round" />
-            </svg>
-          </div>
-        `;
+      updateAlphaStatus(pos);
+
+      if (!locateMarker) {
+        // 建立主 marker
+        locateMarker = L.marker(latlng, {
+          icon: L.divIcon({
+            className: "lucide-locate-icon",
+            html: `
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 2l6 20-6-4-6 4 6-20z"
+                      fill="#007aff"
+                      stroke="white"
+                      stroke-width="1.2"
+                      stroke-linejoin="round" />
+              </svg>
+            `,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+          })
+        }).addTo(map);
+
+        // 建立 pulse 動畫層
+        pulseCircleMarker = L.circleMarker(latlng, {
+          radius: Math.min(50, Math.max(10, accuracy)),
+          color: '#007aff',
+          fillOpacity: 0.15,
+          stroke: false,
+          className: 'leaflet-pulse-ring'
+        }).addTo(map);
       } else {
-        iconHtml = `<div class="pulse-circle solid"></div>`;
+        animateMarkerTo(locateMarker, L.latLng(latlng));
+        if (pulseCircleMarker) {
+          pulseCircleMarker.setLatLng(latlng);
+          pulseCircleMarker.setRadius(Math.min(50, Math.max(10, accuracy)));
+        }
       }
-    
-      locateMarker = L.marker(latlng, {
-        icon: L.divIcon({
-          className: "lucide-locate-icon",
-          html: iconHtml,
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
-        })
-      }).addTo(map);
-    
-    } else {
-      animateMarkerTo(locateMarker, L.latLng(latlng));
-    }
-        
-    if (locateMarker && locateMarker.getElement) {
-      const el = locateMarker.getElement();
-      const circle = el?.querySelector(".pulse-circle");
-      if (circle) {
-        const sizePx = Math.min(200, Math.max(10, accuracy));
-        circle.style.setProperty("--pulse-size", `${sizePx}px`);
-      }
-    }
-        
+
+      // 自動視角追蹤
       if (autoFollow) {
         const currentCenter = map.getCenter();
         const newCenter = L.latLng(latlng);
         const currentZoom = map.getZoom();
-      
+
         const centerShift = currentCenter.distanceTo(newCenter);
         const zoomChanged = currentZoom !== 17;
 
         if (centerShift > 20 || zoomChanged) {
           isManualTrigger = false;
           isUserMovedMap = false;
-      
           map.setView(newCenter, 17);
         }
-          lastFollowedCenter = L.latLng(latlng);
-        }
-      },
-      (err) => alert("⚠️ 定位失敗：" + err.message),
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    );
 
-    window.addEventListener("deviceorientationabsolute", handleHeading, true);
-    setTimeout(() => {
-      if (!window.headingEventTriggered) {
-        window.addEventListener("deviceorientation", handleHeading, true);
+        lastFollowedCenter = L.latLng(latlng);
       }
-    }, 3000);
-  }
+    },
+    (err) => alert("⚠️ 定位失敗：" + err.message),
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+  );
+
+  window.addEventListener("deviceorientationabsolute", handleHeading, true);
+  setTimeout(() => {
+    if (!window.headingEventTriggered) {
+      window.addEventListener("deviceorientation", handleHeading, true);
+    }
+  }, 3000);
+}
 
   function disable() {
     if (watchId !== null) {
