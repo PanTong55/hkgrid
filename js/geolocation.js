@@ -11,6 +11,9 @@ function easeOutCubic(t) {
 }
 
 function animateMarkerTo(marker, newLatLng, duration = 400) {
+  const el = marker.getElement();
+  if (!el) return;
+
   const startLatLng = marker.getLatLng();
   const startTime = performance.now();
 
@@ -22,8 +25,17 @@ function animateMarkerTo(marker, newLatLng, duration = 400) {
     const lng = startLatLng.lng + (newLatLng.lng - startLatLng.lng) * eased;
 
     marker.setLatLng([lat, lng]);
-    if (t < 1) requestAnimationFrame(step);
+
+    const circle = el.querySelector(".pulse-circle");
+    if (circle) {
+      circle.style.transition = 'transform 0.4s ease-out';
+    }
+
+    if (t < 1) {
+      requestAnimationFrame(step);
+    }
   }
+
   requestAnimationFrame(step);
 }
 
