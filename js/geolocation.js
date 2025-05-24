@@ -240,7 +240,7 @@ export function initLocateTool(map, buttonId) {
 
         const bounds = map.getBounds();
         if (autoFollow) {
-          map.setView(latlng, 17, { animate: false });
+          map.setView(latlng, 17);
         }
       },
       (err) => alert("⚠️ 定位失敗：" + err.message),
