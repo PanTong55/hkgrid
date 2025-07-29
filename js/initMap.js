@@ -34,14 +34,14 @@ export async function initMap() {
         attribution:
           'Image ©2002 NASA/USGS | Image ©2016 NASA/USGS | Contains modified Copernicus Sentinel data [2022] | ' +
           '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
-          '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">'
+          '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" class="landsd-logo">'
       };
   const landsdAttr = isMobile()
     ? {}
     : {
         attribution:
           '<a href="https://api.portal.hkmapservice.gov.hk/disclaimer" target="_blank">&copy; 地圖資料由地政總署提供</a> ' +
-          '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" style="height:14px; vertical-align:middle;">'
+          '<img src="https://api.hkmapservice.gov.hk/mapapi/landsdlogo.jpg" class="landsd-logo">'
       };
   
   // 建立各底圖圖層

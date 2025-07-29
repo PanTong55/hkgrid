@@ -202,6 +202,10 @@ a.tooltip-close:hover {
 
 #clearBtn {
   background: #f8bfc4;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-right: 8px;
 }
 
 #clearBtn:hover {
@@ -214,6 +218,9 @@ a.tooltip-close:hover {
 #goBtn {
   background: #3d7728;
   color: white;
+  border: none;
+  padding: 6px 20px;
+  border-radius: 6px;
 }
 
 #goBtn:hover {
@@ -287,6 +294,37 @@ a.tooltip-close:hover {
 
 .single-btn:hover {
   background: #f4f4f4;
+}
+
+#fullscreenBtn {
+  top: 95px;
+  left: 10px;
+}
+
+#homeBtn {
+  top: 130px;
+  left: 10px;
+}
+
+#gotoToggleBtn {
+  top: 165px;
+  left: 10px;
+}
+
+#drawPointBtn {
+  top: 200px;
+  left: 10px;
+}
+
+#locateBtn {
+  top: 235px;
+  left: 10px;
+}
+
+.toolbar-icon {
+  width: 14px;
+  height: 14px;
+  color: black;
 }
 
 #drawPointBtn.active,
@@ -367,6 +405,52 @@ a.tooltip-close:hover {
   align-items: center;
   transform-origin: center;
 }
+
+#refollowBtn {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #007aff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#last-modified {
+  text-align: center;
+  font-size: 12px;
+  color: gray;
+  margin-top: 30px;
+}
+
+.landsd-logo {
+  height: 14px;
+  vertical-align: middle;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  margin-right: 6px;
+  border-radius: 2px;
+}
+
+.legend-color-0 { background: #fde0dd; }
+.legend-color-1 { background: #fbb4b9; }
+.legend-color-2 { background: #f768a1; }
+.legend-color-3 { background: #c51b8a; }
+.legend-color-4 { background: #7a0177; }
 
 .pulse-circle {
   width: 12px;
