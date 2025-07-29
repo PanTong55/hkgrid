@@ -586,4 +586,7 @@ export async function initBatDataLayer(map, layersControl) {
   
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
   flatpickr("#dateEnd", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
+
+  const { setupSidebarCombos } = await import('./sidebarCombo.js');
+  setupSidebarCombos();
 }
