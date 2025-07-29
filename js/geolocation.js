@@ -200,7 +200,7 @@ export function initLocateTool(map, buttonId) {
     autoFollow = true;
     refollowBtn.style.display = "none";
     statusEl.style.display = "block";
-    statusEl.innerHTML = '<div style="text-align: center;">取得座標中...</div>';
+    statusEl.innerHTML = '<div class="text-center">取得座標中...</div>';
 
     map.on("dragstart", handleMapStart);
     map.on("dragend", handleMapEnd);

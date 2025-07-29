@@ -15,8 +15,8 @@ export function initGotoPanel(map) {
 
     panel.style.display = isOpen ? "none" : "block";
     toggleBtn.innerHTML = isOpen
-      ? '<i data-lucide="crosshair" style="width: 14px; height: 14px; color: black;"></i>'
-      : '<i data-lucide="chevrons-left" style="width: 14px; height: 14px; color: black;"></i>';
+      ? '<i data-lucide="crosshair" class="toolbar-icon"></i>'
+      : '<i data-lucide="chevrons-left" class="toolbar-icon"></i>';
     lucide.createIcons();
   });
 

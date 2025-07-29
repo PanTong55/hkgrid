@@ -20,7 +20,7 @@ export function initBatGrid(map, layersControl) {
     for (let i = 0; i < grades.length; i++) {
       const to = grades[i + 1] - 1;
       const label = to ? `${grades[i]}–${to}` : `> ${grades[i] - 1}`;
-      div.innerHTML += `<i style="background:${colors[i]}; width:14px;height:14px;display:inline-block;margin-right:6px;border-radius:2px;"></i> ${label}<br>`;
+      div.innerHTML += `<i class="legend-swatch legend-color-${i}"></i> ${label}<br>`;
     }
     return div;
   };
