@@ -52,7 +52,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
-  padding: 8px 12px;
+  padding: 8px 16px;
   font-size: 14px;
   font-weight: 600;
   color: #111827;
@@ -63,15 +63,15 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%239ca3af'%3E%3Cpath d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%239ca3af' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 16px 16px;
+  background-position: right 12px center;
+  background-size: 10px 6px;
   cursor: pointer;
 }
 
 #bat-filter-panel select.form-control:hover {
-  background-color: #f9fafb;
+  background-color: #f3f4f6;
 }
 
 #filter-toggle-bar {
@@ -217,5 +217,5 @@ select {
 }
 
 select:hover {
-  background-color: #f9fafb;
+  background-color: #f3f4f6;
 }
