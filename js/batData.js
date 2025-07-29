@@ -549,13 +549,11 @@ export async function initBatDataLayer(map, layersControl) {
   const panel = document.getElementById("bat-filter-panel");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
-  const hongKongBounds = [
-    [22.15, 113.825],
-    [22.55, 114.4],
-  ];
   function resizeAndFit() {
+    // Only recalculate the map size without altering the current
+    // center/zoom so the view stays the same when the sidebar
+    // collapses or expands.
     map.invalidateSize();
-    map.fitBounds(hongKongBounds);
   }
   
   if (window.innerWidth < 1023) {
