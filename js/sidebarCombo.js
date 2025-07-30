@@ -3,6 +3,17 @@ export function setupSidebarCombos(container = document) {
   selects.forEach((select) => replaceSelectWithCombo(select));
 }
 
+export function rebuildSidebarCombos(container = document) {
+  const selects = container.querySelectorAll('.filter-content select');
+  selects.forEach((select) => {
+    const next = select.nextElementSibling;
+    if (next && next.classList.contains('sidebar-combo')) {
+      next.remove();
+    }
+  });
+  setupSidebarCombos(container);
+}
+
 function replaceSelectWithCombo(select) {
   const isSingle = select.hasAttribute('data-single');
   const preserve = select.hasAttribute('data-preserve-default');
