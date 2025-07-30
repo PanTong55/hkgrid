@@ -93,23 +93,6 @@ export async function initMap() {
 
   const layersControl = L.control.layers(baseMaps, {}, { collapsed: true }).addTo(map);
 
-  let baseLayerCategory = 'street';
-  map.getBaseLayerCategory = () => baseLayerCategory;
-
-  function updateLineColors() {
-    const lines = document.querySelectorAll('#tooltipLines .tooltip-line');
-    const color = baseLayerCategory === 'satellite' ? '#fff' : '#555';
-    lines.forEach((line) => line.setAttribute('stroke', color));
-  }
-
-  map.on('baselayerchange', (e) => {
-    const name = e.name.toLowerCase();
-    baseLayerCategory = name.includes('satellite') || name.includes('hybrid') ? 'satellite' : 'street';
-    updateLineColors();
-  });
-
-  updateLineColors();
-
   fetch("https://raw.githubusercontent.com/PanTong55/hkgrid/main/OSM_CP.geojson")
     .then((r) => r.json())
     .then((hkcpData) => {

@@ -1,6 +1,3 @@
-import { makeTooltipDraggable } from './draggableTooltip.js';
-import { attachTooltipLine } from './tooltipLine.js';
-
 export function initGotoPanel(map) {
   const panel = document.getElementById("gotoPanel");
   const toggleBtn = document.getElementById("gotoToggleBtn");
@@ -8,7 +5,6 @@ export function initGotoPanel(map) {
   const clearBtn = document.getElementById("clearBtn");
   const gotoTooltips = {};
   const gotoMarkers = [];
-  const gotoLines = {};
 
   // ✅ 防止干擾地圖操作
   L.DomEvent.disableClickPropagation(panel);
@@ -69,10 +65,6 @@ export function initGotoPanel(map) {
         if (existing) {
           existing.remove();
           delete gotoTooltips[markerId];
-          if (gotoLines[markerId]) {
-            gotoLines[markerId].remove();
-            delete gotoLines[markerId];
-          }
         } else {
           updateGotoMarkerPopup(marker); // ✅ 加這行確保是最新座標
           const newContent = currentTooltipContent(marker);
@@ -106,10 +98,6 @@ export function initGotoPanel(map) {
       if (gotoTooltips[id]) {
         gotoTooltips[id].remove();
         delete gotoTooltips[id];
-      }
-      if (gotoLines[id]) {
-        gotoLines[id].remove();
-        delete gotoLines[id];
       }
     });
     gotoMarkers.length = 0;
@@ -184,9 +172,6 @@ function createPointTooltip(marker, content) {
       <div class="tooltip-content">${content}</div>
     </div>`;
   document.getElementById("map").appendChild(tooltip);
-  const lineObj = attachTooltipLine(map, () => marker.getLatLng(), tooltip);
-  gotoLines[L.stamp(marker)] = lineObj;
-  makeTooltipDraggable(tooltip, { onDrag: () => lineObj.update() });
   return tooltip;
 }
 
@@ -224,8 +209,6 @@ function moveGotoTooltip(marker) {
   if (top < 0) top = 10;
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
-  const line = gotoLines[L.stamp(marker)];
-  if (line) line.update();
 }
 
 window.deleteGotoMarker = function (event, markerId) {
@@ -236,12 +219,8 @@ window.deleteGotoMarker = function (event, markerId) {
     if (gotoTooltips[markerId]) gotoTooltips[markerId].remove();
     gotoMarkers.splice(idx, 1);
     delete gotoTooltips[markerId];
-    if (gotoLines[markerId]) {
-      gotoLines[markerId].remove();
-      delete gotoLines[markerId];
-    }
   }
-};
+};  
 
 function currentTooltipContent(marker) {
   const latlng = marker.getLatLng();
