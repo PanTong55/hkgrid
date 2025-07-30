@@ -561,6 +561,8 @@ export async function initBatDataLayer(map, layersControl) {
     if (gridLayer && map.hasLayer(gridLayer)) {
       map.removeLayer(gridLayer);
     }
+
+    rebuildSidebarCombos();
   });
 
   const panel = document.getElementById("bat-filter-panel");
@@ -604,6 +606,6 @@ export async function initBatDataLayer(map, layersControl) {
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
   flatpickr("#dateEnd", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
 
-  const { setupSidebarCombos } = await import('./sidebarCombo.js');
+  const { setupSidebarCombos, rebuildSidebarCombos } = await import('./sidebarCombo.js');
   setupSidebarCombos();
 }
