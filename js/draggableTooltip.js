@@ -15,6 +15,7 @@ export function makeTooltipDraggable(tooltip, options = {}) {
 
     isDragging = true;
     window.isDraggingAlphaStatus = true; // ✅ 拖動中：暫停 status 更新
+    window.isDraggingTooltip = true;      // ✅ 拖動中：避免觸發點擊鎖定
 
     if (e.type.startsWith('touch')) {
       const touch = e.touches[0];
@@ -53,6 +54,7 @@ export function makeTooltipDraggable(tooltip, options = {}) {
     if (isDragging) {
       isDragging = false;
       window.isDraggingAlphaStatus = false; // ✅ 拖動結束：允許更新
+      window.isDraggingTooltip = false;      // ✅ 拖動結束：恢復點擊鎖定
       tooltip.style.cursor = 'default';
       tooltip.style.transition = 'opacity 0.2s ease';
       tooltip.style.opacity = '1';
