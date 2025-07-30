@@ -549,19 +549,17 @@ export async function initBatDataLayer(map, layersControl) {
   const panel = document.getElementById("bat-filter-panel");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
-  const hongKongBounds = [
-    [22.15, 113.825],
-    [22.55, 114.4],
-  ];
-  function resizeAndFit() {
+  function resizeMap() {
+    const center = map.getCenter();
+    const zoom = map.getZoom();
     map.invalidateSize();
-    map.fitBounds(hongKongBounds);
+    map.setView(center, zoom);
   }
   
   if (window.innerWidth < 1023) {
     panel.classList.add("collapsing");  // Mobile：預設收起
     arrowIcon.textContent = '▶';
-    setTimeout(resizeAndFit, 310);
+    setTimeout(resizeMap, 310);
   } else {
     panel.classList.remove("collapsing"); // Desktop：預設打開
     arrowIcon.textContent = '◀';
@@ -571,7 +569,7 @@ export async function initBatDataLayer(map, layersControl) {
   toggleBar.addEventListener("click", () => {
     const isCollapsed = panel.classList.toggle("collapsing");
     arrowIcon.textContent = isCollapsed ? '▶' : '◀';
-    setTimeout(resizeAndFit, 310);
+    setTimeout(resizeMap, 310);
   });
   
   // resize 行為
@@ -583,7 +581,7 @@ export async function initBatDataLayer(map, layersControl) {
       panel.classList.remove("collapsing");
       arrowIcon.textContent = '◀';
     }
-    setTimeout(resizeAndFit, 310);
+    setTimeout(resizeMap, 310);
   });
   
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
