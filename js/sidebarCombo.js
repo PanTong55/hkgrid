@@ -4,6 +4,8 @@ export function setupSidebarCombos(container = document) {
 }
 
 function replaceSelectWithCombo(select) {
+  // clear any default selection so button shows "Select"
+  select.selectedIndex = -1;
   const combo = document.createElement('div');
   combo.className = 'sidebar-combo';
 
@@ -62,16 +64,33 @@ function replaceSelectWithCombo(select) {
   list.addEventListener('click', (e) => {
     const li = e.target.closest('li');
     if (!li) return;
-    li.classList.toggle('selected');
-    const option = select.querySelector(`option[value="${CSS.escape(li.dataset.value)}"]`);
-    if (li.classList.contains('selected')) {
-      option.selected = true;
+    const value = li.dataset.value;
+    const option = select.querySelector(`option[value="${CSS.escape(value)}"]`);
+    const allLi = list.querySelector('li[data-value=""]');
+    const allOption = select.querySelector('option[value=""]');
+
+    if (value === '') {
+      list.querySelectorAll('li').forEach((other) => {
+        if (other !== li) {
+          other.classList.remove('selected');
+          const opt = select.querySelector(`option[value="${CSS.escape(other.dataset.value)}"]`);
+          if (opt) opt.selected = false;
+        }
+      });
+      li.classList.add('selected');
+      if (allOption) allOption.selected = true;
     } else {
-      option.selected = false;
+      if (allLi) allLi.classList.remove('selected');
+      if (allOption) allOption.selected = false;
+
+      li.classList.toggle('selected');
+      option.selected = li.classList.contains('selected');
     }
     updateToggleText();
     select.dispatchEvent(new Event('change'));
   });
+
+  select.addEventListener('change', updateToggleText);
 
   function updateToggleText() {
     const selected = list.querySelectorAll('li.selected .combo-label');
