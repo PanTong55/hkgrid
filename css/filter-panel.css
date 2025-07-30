@@ -306,3 +306,7 @@ select:hover {
   font-weight: bold;
 }
 
+.sidebar-combo .scientific-label {
+  font-style: italic;
+}
+
