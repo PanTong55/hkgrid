@@ -179,6 +179,10 @@ export async function initBatDataLayer(map, layersControl) {
     }
   }
 
+  function removeAllLockTooltips() {
+    lockedLayers.slice().forEach((l) => closeLockTooltip(l));
+  }
+
   function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
     const getEl = id => document.getElementById("filter" + id);
     const allFields = ["Family", "Genus", "Species", "CommonEng", "CommonChi"];
@@ -304,6 +308,8 @@ export async function initBatDataLayer(map, layersControl) {
   });
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
+    removeAllLockTooltips();
+    hoverTooltip.style.display = "none";
     const mode = document.getElementById("displayMode").value;
   
     // 先清除圖層（不能用 map.eachLayer，那是讀取不是清除）
@@ -522,6 +528,8 @@ export async function initBatDataLayer(map, layersControl) {
   });
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
+    removeAllLockTooltips();
+    hoverTooltip.style.display = "none";
     for (const key in fieldMap) {
       const select = document.getElementById("filter" + key);
       if (select) {
