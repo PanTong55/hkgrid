@@ -3,6 +3,7 @@ const tooltipElements = [];
 const manualMoved = [];
 const hoverTooltip = document.getElementById("hoverTooltip");
 import { makeTooltipDraggable } from './draggableTooltip.js';
+import { setupSidebarCombos, rebuildSidebarCombos } from './sidebarCombo.js';
 
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
@@ -91,6 +92,8 @@ export async function initBatDataLayer(map, layersControl) {
       });
     }
   }
+
+  setupSidebarCombos();
 
   const triggeredFields = new Set();
 
@@ -202,6 +205,7 @@ export async function initBatDataLayer(map, layersControl) {
         const allValues = initialDropdownValues[f] || [];
         setOptions(getEl(f), allValues);
       });
+      rebuildSidebarCombos();
       triggeredFields.delete(changedField);
       return;
     }
@@ -214,6 +218,7 @@ export async function initBatDataLayer(map, layersControl) {
 
       const currentFamily = getEl("Family").value;
       if (!currentFamily) {
+        rebuildSidebarCombos();
         triggeredFields.delete(changedField);
         return;
       }
@@ -221,6 +226,7 @@ export async function initBatDataLayer(map, layersControl) {
       const filtered = rawData.filter(r => r[fieldMap["Family"]] === currentFamily);
       const genusSet = [...new Set(filtered.map(r => r[fieldMap["Genus"]]).filter(Boolean))].sort();
       setOptions(getEl("Genus"), genusSet);
+      rebuildSidebarCombos();
       triggeredFields.delete(changedField);
       return;
     }
@@ -250,6 +256,7 @@ export async function initBatDataLayer(map, layersControl) {
       setOptions(getEl("CommonEng"), newEng);
       setOptions(getEl("CommonChi"), newChi);
 
+      rebuildSidebarCombos();
       triggeredFields.delete(changedField);
       return;
     }
@@ -285,6 +292,7 @@ export async function initBatDataLayer(map, layersControl) {
       });
     }
 
+    rebuildSidebarCombos();
     triggeredFields.delete(changedField);
   }
 
@@ -544,6 +552,8 @@ export async function initBatDataLayer(map, layersControl) {
     if (gridLayer && map.hasLayer(gridLayer)) {
       map.removeLayer(gridLayer);
     }
+
+    rebuildSidebarCombos();
   });
 
   const panel = document.getElementById("bat-filter-panel");
