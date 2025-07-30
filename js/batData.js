@@ -152,8 +152,8 @@ export async function initBatDataLayer(map, layersControl) {
       if (layer instanceof L.CircleMarker) {
         layer.setStyle({
           radius: 5,
-          fillColor: '#FFD700',
-          color: '#FFD700',
+          fillColor: '#3388ff',
+          color: '#3388ff',
           weight: 1,
           fillOpacity: 0.7
         });
