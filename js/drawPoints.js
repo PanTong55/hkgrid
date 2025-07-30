@@ -1,3 +1,5 @@
+import { attachTooltipLine, detachTooltipLine, updateTooltipLine, updateTooltipLineTarget } from './tooltipLine.js';
+
 export function initDrawPoint(map, crsModeSelect) {
   let drawMode = false;
   const drawnPoints = [];
@@ -68,6 +70,7 @@ export function initDrawPoint(map, crsModeSelect) {
         <div class="tooltip-content">${content}</div>
       </div>`;
     document.getElementById("map").appendChild(tooltip);
+    attachTooltipLine(tooltip, marker.getLatLng());
     return tooltip;
   }
 
@@ -109,6 +112,8 @@ export function initDrawPoint(map, crsModeSelect) {
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
+    updateTooltipLineTarget(tooltip, marker.getLatLng());
+    updateTooltipLine(tooltip);
   }
 
   map.on("move zoom", () => {
@@ -121,7 +126,10 @@ export function initDrawPoint(map, crsModeSelect) {
     const idx = drawnPoints.findIndex((m) => L.stamp(m) === markerId);
     if (idx !== -1) {
       map.removeLayer(drawnPoints[idx]);
-      if (drawnTooltips[markerId]) drawnTooltips[markerId].remove();
+      if (drawnTooltips[markerId]) {
+        detachTooltipLine(drawnTooltips[markerId]);
+        drawnTooltips[markerId].remove();
+      }
       drawnPoints.splice(idx, 1);
       delete drawnTooltips[markerId];
     }

@@ -46,6 +46,7 @@ export async function initMap() {
   
   // 建立各底圖圖層
   const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", osmAttr).addTo(map);
+  window.currentBasemapName = "Street (OSM)";
   const esriSatellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", esriAttr);
   const cartoLight = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", cartoAttr);
   const cartoDark = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", cartoAttr);
