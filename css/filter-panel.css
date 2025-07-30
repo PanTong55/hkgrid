@@ -234,6 +234,9 @@ select:hover {
   border-radius: 6px;
   text-align: left;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-combo .combo-dropdown {
@@ -266,17 +269,20 @@ select:hover {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 150px;
+  max-height: 210px;
   overflow-y: auto;
 }
 
 .sidebar-combo .combo-options li {
-  display: flex;
   align-items: center;
   padding: 4px 8px;
   cursor: pointer;
   font-size:12px;
   white-space: nowrap;
+  width: fit-content;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-combo .combo-options li:hover {
@@ -286,6 +292,8 @@ select:hover {
 .sidebar-combo .combo-check {
   width: 16px;
   height: 16px;
+  vertical-align: middle;
+
   margin-right: 6px;
   flex-shrink: 0;
   visibility: hidden;
