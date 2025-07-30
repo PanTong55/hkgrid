@@ -100,9 +100,9 @@ a.tooltip-close:hover {
   }
 }
 
-/* CRS 與比例尺容器 */
 #coord-scale-wrapper {
   position: absolute;
+  height:20px;
   bottom: 10px;
   left: 10px;
   background: rgba(255, 255, 255, 0.95);
@@ -118,7 +118,7 @@ a.tooltip-close:hover {
   gap: 12px;
   flex-wrap: nowrap;
   z-index: 1001;
-  pointer-events: none; /* 防止遮住地圖點擊，可視情況使用 */
+  pointer-events: none;
 }
 
 #coord-scale-wrapper select {
