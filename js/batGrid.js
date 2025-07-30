@@ -1,5 +1,4 @@
 import { makeTooltipDraggable } from './draggableTooltip.js';
-import { attachTooltipLine } from './tooltipLine.js';
 
 export function initBatGrid(map, layersControl) {
   const gridLayer = L.geoJSON(null);
@@ -10,11 +9,6 @@ export function initBatGrid(map, layersControl) {
   const lockedLayers = [];
   const tooltipElements = [];
   const manualMoved = [];
-  const tooltipLines = [];
-
-  map.on('move zoom', () => {
-    tooltipLines.forEach((l) => l.update());
-  });
 
   const legend = L.control({ position: "bottomright" });
   legend.onAdd = function () {
@@ -142,13 +136,11 @@ export function initBatGrid(map, layersControl) {
     lockedLayers.push(layer);
     tooltipElements.push(tooltip);
     manualMoved.push(false);
-    const lineObj = attachTooltipLine(map, () => layer.getBounds().getCenter(), tooltip);
-    tooltipLines.push(lineObj);
 
     const center = map.latLngToContainerPoint(layer.getBounds().getCenter());
     positionTooltip(tooltip, center);
 
-    makeTooltipDraggable(tooltip, { onDrag: () => lineObj.update() });
+    makeTooltipDraggable(tooltip);
   }
 
   function closeLockTooltip(event, closeButton) {
@@ -166,12 +158,8 @@ export function initBatGrid(map, layersControl) {
       tooltipElements[idx].remove();
       tooltipElements.splice(idx, 1);
       manualMoved.splice(idx, 1);
-      if (tooltipLines[idx]) {
-        tooltipLines[idx].remove();
-        tooltipLines.splice(idx, 1);
-      }
     }
-  }
+  }  
 
   function positionTooltip(domElement, point) {
     const mapSize = map.getSize();

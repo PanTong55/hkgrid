@@ -1,10 +1,8 @@
 const lockedLayers = [];
 const tooltipElements = [];
 const manualMoved = [];
-const tooltipLines = [];
 const hoverTooltip = document.getElementById("hoverTooltip");
 import { makeTooltipDraggable } from './draggableTooltip.js';
-import { attachTooltipLine } from './tooltipLine.js';
 
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
@@ -15,10 +13,6 @@ export async function initBatDataLayer(map, layersControl) {
 
   let batLayer = null;
   let gridLayer = null;
-
-  map.on('move zoom', () => {
-    tooltipLines.forEach((l) => l.update());
-  });
   
   const fieldMap = {
     Location: "Location",
@@ -133,17 +127,13 @@ export async function initBatDataLayer(map, layersControl) {
   lockedLayers.push(layer);
   tooltipElements.push(tooltip);
   manualMoved.push(false);
-  const lineObj = attachTooltipLine(map,
-    () => (layer.getLatLng ? layer.getLatLng() : layer.getBounds().getCenter()),
-    tooltip);
-  tooltipLines.push(lineObj);
 
   const center = map.latLngToContainerPoint(
     layer.getLatLng ? layer.getLatLng() : layer.getBounds().getCenter()
   );
   positionTooltip(tooltip, center);
 
-  makeTooltipDraggable(tooltip, { onDrag: () => lineObj.update() });
+  makeTooltipDraggable(tooltip);
 
   const closeBtn = tooltip.querySelector(".tooltip-close");
   if (closeBtn) {
@@ -180,10 +170,6 @@ export async function initBatDataLayer(map, layersControl) {
       tooltipElements[idx].remove();
       tooltipElements.splice(idx, 1);
       manualMoved.splice(idx, 1);
-      if (tooltipLines[idx]) {
-        tooltipLines[idx].remove();
-        tooltipLines.splice(idx, 1);
-      }
     }
   }
 
