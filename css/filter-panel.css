@@ -311,3 +311,7 @@ select:hover {
   font-style: italic;
 }
 
+.sidebar-combo .scientific-label .no-italic {
+  font-style: normal;
+}
+

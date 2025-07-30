@@ -7,7 +7,17 @@ function replaceSelectWithCombo(select) {
   const isSingle = select.hasAttribute('data-single');
   const preserve = select.hasAttribute('data-preserve-default');
   const isScientific = select.id === 'filterGenus' || select.id === 'filterSpecies';
-  const NO_ITALIC = ['sp.', 'sp.1', 'sp.2', 'sp.3', 'Unknown', 'All'];
+  const NO_ITALIC = ['sp.', 'sp.1', 'sp.2', 'sp.3', 'Unknown', 'All', 'NA'];
+
+  const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const formatScientificText = (text) => {
+    let formatted = text;
+    NO_ITALIC.forEach((token) => {
+      const regex = new RegExp(escapeRegExp(token), 'g');
+      formatted = formatted.replace(regex, `<span class="no-italic">${token}</span>`);
+    });
+    return formatted;
+  };
 
   if (!preserve) {
     // clear any default selection so button shows "Select"
@@ -41,9 +51,12 @@ function replaceSelectWithCombo(select) {
     const li = document.createElement('li');
     li.dataset.value = opt.value;
     const text = opt.textContent;
-    const italic = isScientific && !NO_ITALIC.includes(text);
+    const italic = isScientific && !NO_ITALIC.some((token) => text.includes(token));
     if (italic) opt.style.fontStyle = 'italic';
-    li.innerHTML = `<i data-lucide="check" class="combo-check"></i><span class="combo-label${italic ? ' scientific-label' : ''}">${text}</span>`;
+    const labelHtml = isScientific
+      ? `<span class="combo-label scientific-label">${formatScientificText(text)}</span>`
+      : `<span class="combo-label">${text}</span>`;
+    li.innerHTML = `<i data-lucide="check" class="combo-check"></i>${labelHtml}`;
     if (opt.selected) {
       li.classList.add('selected');
     }
