@@ -227,7 +227,7 @@ select:hover {
 }
 
 .sidebar-combo .combo-toggle {
-  width: 100%;
+  width: 150px;
   padding: 6px 12px;
   background: #fff;
   border: 1px solid #d1d5db;
@@ -241,7 +241,7 @@ select:hover {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  width: fit-content;
   background: #fff;
   padding: 4px 0;
   border-radius: 8px;
@@ -275,6 +275,7 @@ select:hover {
   align-items: center;
   padding: 4px 8px;
   cursor: pointer;
+  font-size:12px;
 }
 
 .sidebar-combo .combo-options li:hover {
