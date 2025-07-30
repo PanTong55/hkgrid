@@ -3,6 +3,7 @@ const tooltipElements = [];
 const manualMoved = [];
 const hoverTooltip = document.getElementById("hoverTooltip");
 import { makeTooltipDraggable } from './draggableTooltip.js';
+import { setupSidebarCombos, rebuildSidebarCombos } from './sidebarCombo.js';
 
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
@@ -203,6 +204,7 @@ export async function initBatDataLayer(map, layersControl) {
         setOptions(getEl(f), allValues);
       });
       triggeredFields.delete(changedField);
+      rebuildSidebarCombos(document.getElementById("bat-filter-panel"));
       return;
     }
 
@@ -222,6 +224,7 @@ export async function initBatDataLayer(map, layersControl) {
       const genusSet = [...new Set(filtered.map(r => r[fieldMap["Genus"]]).filter(Boolean))].sort();
       setOptions(getEl("Genus"), genusSet);
       triggeredFields.delete(changedField);
+      rebuildSidebarCombos(document.getElementById("bat-filter-panel"));
       return;
     }
 
@@ -251,6 +254,7 @@ export async function initBatDataLayer(map, layersControl) {
       setOptions(getEl("CommonChi"), newChi);
 
       triggeredFields.delete(changedField);
+      rebuildSidebarCombos(document.getElementById("bat-filter-panel"));
       return;
     }
 
@@ -286,6 +290,7 @@ export async function initBatDataLayer(map, layersControl) {
     }
 
     triggeredFields.delete(changedField);
+    rebuildSidebarCombos(document.getElementById("bat-filter-panel"));
   }
 
   ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
@@ -538,6 +543,8 @@ export async function initBatDataLayer(map, layersControl) {
       if (select) select.dispatchEvent(new Event("change"));
     });
 
+    rebuildSidebarCombos(document.getElementById("bat-filter-panel"));
+
     if (batLayer && map.hasLayer(batLayer)) {
       map.removeLayer(batLayer);
     }
@@ -586,4 +593,6 @@ export async function initBatDataLayer(map, layersControl) {
   
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
   flatpickr("#dateEnd", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
+
+  setupSidebarCombos(document.getElementById("bat-filter-panel"));
 }
