@@ -350,8 +350,8 @@ export async function initBatDataLayer(map, layersControl) {
         })
         .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
           radius: 5,
-          fillColor: '#FFD700',
-          color: '#FFD700',
+          fillColor: '#3388ff',
+          color: '#3388ff',
           weight: 1,
           fillOpacity: 0.7
         }));
@@ -408,8 +408,8 @@ export async function initBatDataLayer(map, layersControl) {
             // ✅ 還原點的樣式
             marker.setStyle({
               radius: 5,
-              fillColor: '#FFD700',
-              color: '#FFD700',
+              fillColor: '#3388ff',
+              color: '#3388ff',
               weight: 1,
               fillOpacity: 0.7
             });
@@ -422,8 +422,8 @@ export async function initBatDataLayer(map, layersControl) {
             // ✅ 點擊選中樣式
             marker.setStyle({
               radius: 5,
-              fillColor: '#FF7300',
-              color: '#FF7300',
+              fillColor: '#ffcc00',
+              color: '#333',
               weight: 2,
               fillOpacity: 0.7
             });
