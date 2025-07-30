@@ -162,12 +162,13 @@ export async function initBatDataLayer(map, layersControl) {
           fillOpacity: 0.7
         });
       } else {
-        layer.setStyle({
-          color: '#3388ff',
-          weight: 2,
-          fillColor: '#3388ff',
-          fillOpacity: 0.3
-        });
+                layer.setStyle({
+                  color: '#3388ff',
+                  weight: 2,
+                  fillColor: '#3388ff',
+                  fillOpacity: 0.3
+                });
+                layer.bringToBack();
       }
   
       lockedLayers.splice(idx, 1);
@@ -411,28 +412,30 @@ export async function initBatDataLayer(map, layersControl) {
             tooltipElements.splice(idx, 1);
             manualMoved.splice(idx, 1);
         
-            // ✅ 還原點的樣式
-            marker.setStyle({
-              radius: 5,
-              fillColor: '#3388ff',
-              color: '#3388ff',
-              weight: 1,
-              fillOpacity: 0.7
-            });
+              // ✅ 還原點的樣式
+              marker.setStyle({
+                radius: 5,
+                fillColor: '#3388ff',
+                color: '#3388ff',
+                weight: 1,
+                fillOpacity: 0.7
+              });
+              marker.bringToBack();
           } else {
             if (lockedLayers.length >= 3) {
               alert("最多只能顯示 3 個標記的資料");
               return;
             }
         
-            // ✅ 點擊選中樣式
-            marker.setStyle({
-              radius: 5,
-              fillColor: '#ffcc00',
-              color: '#333',
-              weight: 2,
-              fillOpacity: 0.7
-            });
+              // ✅ 點擊選中樣式
+              marker.setStyle({
+                radius: 5,
+                fillColor: '#ffcc00',
+                color: '#333',
+                weight: 2,
+                fillOpacity: 0.7
+              });
+              marker.bringToFront();
         
             openLockTooltip(marker, tooltipContent);
           }
@@ -496,18 +499,20 @@ export async function initBatDataLayer(map, layersControl) {
                 weight: 2,
                 fillColor: '#3388ff',
                 fillOpacity: 0.3
-              });              
+              });
+              layer.bringToBack();
             } else {
               if (lockedLayers.length >= 3) {
                 alert("最多只能顯示 3 個格網的資料");
                 return;
               }
-              layer.setStyle({
-                color: '#333',
-                weight: 2,
-                fillColor: '#ffcc00',
-                fillOpacity: 0.7
-              });
+                layer.setStyle({
+                  color: '#333',
+                  weight: 2,
+                  fillColor: '#ffcc00',
+                  fillOpacity: 0.7
+                });
+                layer.bringToFront();
               openLockTooltip(layer, tooltipContent);
             }
           });
