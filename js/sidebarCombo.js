@@ -4,8 +4,15 @@ export function setupSidebarCombos(container = document) {
 }
 
 function replaceSelectWithCombo(select) {
-  // clear any default selection so button shows "Select"
-  select.selectedIndex = -1;
+  const isSingle = select.hasAttribute('data-single');
+  const preserve = select.hasAttribute('data-preserve-default');
+  const isScientific = select.id === 'filterGenus' || select.id === 'filterSpecies';
+  const NO_ITALIC = ['sp.', 'sp.1', 'sp.2', 'sp.3', 'Unknown', 'All'];
+
+  if (!preserve) {
+    // clear any default selection so button shows "Select"
+    select.selectedIndex = -1;
+  }
   const combo = document.createElement('div');
   combo.className = 'sidebar-combo';
 
@@ -22,6 +29,9 @@ function replaceSelectWithCombo(select) {
   searchInput.type = 'text';
   searchInput.className = 'combo-search';
   searchInput.placeholder = 'Search...';
+  if (isSingle) {
+    searchInput.style.display = 'none';
+  }
   dropdown.appendChild(searchInput);
 
   const list = document.createElement('ul');
@@ -30,7 +40,10 @@ function replaceSelectWithCombo(select) {
   Array.from(select.options).forEach((opt) => {
     const li = document.createElement('li');
     li.dataset.value = opt.value;
-    li.innerHTML = `<i data-lucide="check" class="combo-check"></i><span class="combo-label">${opt.textContent}</span>`;
+    const text = opt.textContent;
+    const italic = isScientific && !NO_ITALIC.includes(text);
+    if (italic) opt.style.fontStyle = 'italic';
+    li.innerHTML = `<i data-lucide="check" class="combo-check"></i><span class="combo-label${italic ? ' scientific-label' : ''}">${text}</span>`;
     if (opt.selected) {
       li.classList.add('selected');
     }
@@ -54,12 +67,14 @@ function replaceSelectWithCombo(select) {
     }
   });
 
-  searchInput.addEventListener('input', () => {
-    const term = searchInput.value.toLowerCase();
-    list.querySelectorAll('li').forEach((li) => {
-      li.style.display = li.textContent.toLowerCase().includes(term) ? '' : 'none';
+  if (!isSingle) {
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.toLowerCase();
+      list.querySelectorAll('li').forEach((li) => {
+        li.style.display = li.textContent.toLowerCase().includes(term) ? '' : 'none';
+      });
     });
-  });
+  }
 
   list.addEventListener('click', (e) => {
     const li = e.target.closest('li');
@@ -69,7 +84,16 @@ function replaceSelectWithCombo(select) {
     const allLi = list.querySelector('li[data-value=""]');
     const allOption = select.querySelector('option[value=""]');
 
-    if (value === '') {
+    if (isSingle) {
+      list.querySelectorAll('li').forEach((other) => {
+        other.classList.remove('selected');
+        const opt = select.querySelector(`option[value="${CSS.escape(other.dataset.value)}"]`);
+        if (opt) opt.selected = false;
+      });
+      li.classList.add('selected');
+      option.selected = true;
+      combo.classList.remove('open');
+    } else if (value === '') {
       list.querySelectorAll('li').forEach((other) => {
         if (other !== li) {
           other.classList.remove('selected');

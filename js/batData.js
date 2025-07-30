@@ -53,8 +53,15 @@ export async function initBatDataLayer(map, layersControl) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
+        if ((key === "Genus" || key === "Species") && !["sp.", "sp.1", "sp.2", "sp.3", "Unknown", "All"].includes(val)) {
+          opt.style.fontStyle = "italic";
+        }
         select.appendChild(opt);
       });
+
+      if (key === "DataSource") {
+        select.value = "Hong Kong Bat Acoustic Project";
+      }
 
       // === ComboBox enhancement ===
       select.addEventListener("input", e => {
