@@ -12,6 +12,7 @@ export function enableClickLock() {
 
 function isClickIgnored(el) {
   return (
+    el.closest(".floatingTooltip") ||
     el.closest("#coord-scale-wrapper") ||
     el.closest("#gotoPanel") ||
     el.closest("#clearBtn") ||
@@ -31,6 +32,7 @@ function isClickIgnored(el) {
 
 export function initClickLocationLock(map, coordDisplay, crsModeSelect) {
   map.on("click", (e) => {
+    if (window.isDraggingTooltip) return; // ⛔ 拖拉 Tooltip 時不鎖定
     const el = e.originalEvent.target;
     if (isClickIgnored(el)) return;
     
