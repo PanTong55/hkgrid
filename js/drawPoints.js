@@ -1,7 +1,11 @@
+import { attachTooltipLine } from './tooltipLine.js';
+import { makeTooltipDraggable } from './draggableTooltip.js';
+
 export function initDrawPoint(map, crsModeSelect) {
   let drawMode = false;
   const drawnPoints = [];
   const drawnTooltips = {};
+  const drawnLines = {};
 
   const drawPointBtn = document.getElementById("drawPointBtn");
 
@@ -68,6 +72,9 @@ export function initDrawPoint(map, crsModeSelect) {
         <div class="tooltip-content">${content}</div>
       </div>`;
     document.getElementById("map").appendChild(tooltip);
+    const lineObj = attachTooltipLine(map, () => marker.getLatLng(), tooltip);
+    drawnLines[markerId] = lineObj;
+    makeTooltipDraggable(tooltip, { onDrag: () => lineObj.update() });
     return tooltip;
   }
 
@@ -109,6 +116,8 @@ export function initDrawPoint(map, crsModeSelect) {
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
+    const lineObj = drawnLines[id];
+    if (lineObj) lineObj.update();
   }
 
   map.on("move zoom", () => {
@@ -122,6 +131,10 @@ export function initDrawPoint(map, crsModeSelect) {
     if (idx !== -1) {
       map.removeLayer(drawnPoints[idx]);
       if (drawnTooltips[markerId]) drawnTooltips[markerId].remove();
+      if (drawnLines[markerId]) {
+        drawnLines[markerId].remove();
+        delete drawnLines[markerId];
+      }
       drawnPoints.splice(idx, 1);
       delete drawnTooltips[markerId];
     }
