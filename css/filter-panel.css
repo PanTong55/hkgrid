@@ -311,3 +311,7 @@ select:hover {
   font-style: italic;
 }
 
+.sidebar-combo .non-italic {
+  font-style: normal;
+}
+
