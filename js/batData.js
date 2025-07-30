@@ -3,6 +3,7 @@ const tooltipElements = [];
 const manualMoved = [];
 const hoverTooltip = document.getElementById("hoverTooltip");
 import { makeTooltipDraggable } from './draggableTooltip.js';
+const NO_ITALIC = ["sp.", "sp.1", "sp.2", "sp.3", "Unknown", "All", "NA"];
 
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
@@ -53,7 +54,7 @@ export async function initBatDataLayer(map, layersControl) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
-        if ((key === "Genus" || key === "Species") && !["sp.", "sp.1", "sp.2", "sp.3", "Unknown", "All"].includes(val)) {
+        if ((key === "Genus" || key === "Species") && !NO_ITALIC.some(token => val.includes(token))) {
           opt.style.fontStyle = "italic";
         }
         select.appendChild(opt);
@@ -79,6 +80,9 @@ export async function initBatDataLayer(map, layersControl) {
           const opt = document.createElement("option");
           opt.value = val;
           opt.textContent = val;
+          if ((key === "Genus" || key === "Species") && !NO_ITALIC.some(token => val.includes(token))) {
+            opt.style.fontStyle = "italic";
+          }
           select.appendChild(opt);
         });
         select.value = currentValue;
@@ -199,6 +203,9 @@ export async function initBatDataLayer(map, layersControl) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
+        if ((selectEl.id === "filterGenus" || selectEl.id === "filterSpecies") && !NO_ITALIC.some(token => val.includes(token))) {
+          opt.style.fontStyle = "italic";
+        }
         selectEl.appendChild(opt);
       });
       selectEl.value = "";
@@ -530,6 +537,9 @@ export async function initBatDataLayer(map, layersControl) {
           const opt = document.createElement("option");
           opt.value = val;
           opt.textContent = val;
+          if ((key === "Genus" || key === "Species") && !NO_ITALIC.some(token => val.includes(token))) {
+            opt.style.fontStyle = "italic";
+          }
           select.appendChild(opt);
         });
 
