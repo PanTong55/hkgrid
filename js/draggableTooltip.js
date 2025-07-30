@@ -1,4 +1,5 @@
-export function makeTooltipDraggable(tooltip, onDragEnd = null) {
+export function makeTooltipDraggable(tooltip, options = {}) {
+  const { onDragEnd = null, onDrag = null } = options;
   let isDragging = false;
   let offsetX, offsetY;
 
@@ -38,6 +39,7 @@ export function makeTooltipDraggable(tooltip, onDragEnd = null) {
 
     tooltip.style.left = `${clientX - offsetX}px`;
     tooltip.style.top = `${clientY - offsetY}px`;
+    if (typeof onDrag === 'function') onDrag();
   }
 
   function endDrag() {
