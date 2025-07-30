@@ -16,9 +16,6 @@ export function rebuildSidebarCombos(container = document) {
 
 function replaceSelectWithCombo(select) {
   const isSingle = select.hasAttribute('data-single');
-  if (!isSingle) {
-    select.setAttribute('multiple', 'multiple');
-  }
   const preserve = select.hasAttribute('data-preserve-default');
   const isScientific = select.id === 'filterGenus' || select.id === 'filterSpecies';
   const NO_ITALIC = ['sp.', 'sp.1', 'sp.2', 'sp.3', 'Unknown', 'All', 'NA'];

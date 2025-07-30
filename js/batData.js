@@ -333,25 +333,19 @@ export async function initBatDataLayer(map, layersControl) {
     const filters = {};
     for (const key in fieldMap) {
       const select = document.getElementById("filter" + key);
-      if (!select) continue;
-      const values = Array.from(select.selectedOptions)
-        .map(opt => opt.value)
-        .filter(v => v);
-      filters[key] = values;
+      filters[key] = select?.value || "";
     }
     const dateStart = document.getElementById("dateStart").value;
     const dateEnd = document.getElementById("dateEnd").value;
   
     const filteredData = rawData.filter(row => {
       const rowDate = normalizeDate(row.Date);  // 統一成 "YYYY-MM-DD"
-
-      return Object.entries(filters).every(([k, vals]) => {
-        if (!vals.length) return true;
-        if (k === "Habitat") {
-          const rowVals = row[fieldMap[k]].split(',').map(v => v.trim());
-          return vals.some(v => rowVals.includes(v));
+    
+      return Object.entries(filters).every(([k, val]) => {
+        if (k === "Habitat" && val) {
+          return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
         }
-        return vals.includes(row[fieldMap[k]]);
+        return !val || row[fieldMap[k]] === val;
       }) &&
         (!dateStart || rowDate >= dateStart) &&
         (!dateEnd || rowDate <= dateEnd);
