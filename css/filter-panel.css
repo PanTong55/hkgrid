@@ -269,7 +269,7 @@ select:hover {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 210px;
+  max-height: 215px;
   overflow-y: auto;
 }
 
@@ -279,7 +279,6 @@ select:hover {
   cursor: pointer;
   font-size:12px;
   white-space: nowrap;
-  width: fit-content;
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
