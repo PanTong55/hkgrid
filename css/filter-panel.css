@@ -280,6 +280,7 @@ select:hover {
   font-size:12px;
   white-space: nowrap;
   max-width: 200px;
+  min-width: 133px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
