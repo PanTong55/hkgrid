@@ -1,4 +1,5 @@
 import { makeTooltipDraggable } from './draggableTooltip.js';
+import { attachTooltipLine, detachTooltipLine, updateTooltipLine } from './tooltipLine.js';
 
 export function initBatGrid(map, layersControl) {
   const gridLayer = L.geoJSON(null);
@@ -100,6 +101,7 @@ export function initBatGrid(map, layersControl) {
       if (lockedLayers.includes(layer)) {
         const idx = lockedLayers.indexOf(layer);
         lockedLayers.splice(idx, 1);
+        detachTooltipLine(tooltipElements[idx]);
         tooltipElements[idx].remove();
         tooltipElements.splice(idx, 1);
         manualMoved.splice(idx, 1);
@@ -137,10 +139,15 @@ export function initBatGrid(map, layersControl) {
     tooltipElements.push(tooltip);
     manualMoved.push(false);
 
-    const center = map.latLngToContainerPoint(layer.getBounds().getCenter());
+    const targetLatLng = layer.getBounds().getCenter();
+    const center = map.latLngToContainerPoint(targetLatLng);
     positionTooltip(tooltip, center);
 
-    makeTooltipDraggable(tooltip);
+    makeTooltipDraggable(tooltip, {
+      onDrag: () => updateTooltipLine(tooltip),
+      onDragEnd: () => updateTooltipLine(tooltip)
+    });
+    attachTooltipLine(tooltip, targetLatLng);
   }
 
   function closeLockTooltip(event, closeButton) {
@@ -155,6 +162,7 @@ export function initBatGrid(map, layersControl) {
       const count = speciesData[gridNo] ? speciesData[gridNo].count : 0;
       layer.setStyle(getGridStyle(count));  // ✅ 還原樣式
       lockedLayers.splice(idx, 1);
+      detachTooltipLine(tooltipElements[idx]);
       tooltipElements[idx].remove();
       tooltipElements.splice(idx, 1);
       manualMoved.splice(idx, 1);

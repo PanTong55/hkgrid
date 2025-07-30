@@ -138,6 +138,7 @@
           <button id="goBtn">Go</button>
         </div>
         <div id="hoverTooltip" class="hover-tooltip"></div>
+        <svg id="tooltip-lines"></svg>
       </div>
     </div>
 
@@ -148,6 +149,7 @@
     <script type="module">
       import { initMap } from "./js/initMap.js";
       const { map, layersControl } = await initMap();
+      import("./js/tooltipLine.js").then((m) => m.initTooltipLine(map));
 
       const crsModeSelect = document.getElementById("crsMode");
       const coordDisplay = document.getElementById("mouseCoords");

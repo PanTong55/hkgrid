@@ -1,3 +1,5 @@
+import { attachTooltipLine, detachTooltipLine, updateTooltipLine, updateTooltipLineTarget } from './tooltipLine.js';
+
 export function initGotoPanel(map) {
   const panel = document.getElementById("gotoPanel");
   const toggleBtn = document.getElementById("gotoToggleBtn");
@@ -63,6 +65,7 @@ export function initGotoPanel(map) {
         const markerId = L.stamp(marker);
         const existing = gotoTooltips[markerId];
         if (existing) {
+          detachTooltipLine(existing);
           existing.remove();
           delete gotoTooltips[markerId];
         } else {
@@ -96,6 +99,7 @@ export function initGotoPanel(map) {
       map.removeLayer(m);
       const id = L.stamp(m);
       if (gotoTooltips[id]) {
+        detachTooltipLine(gotoTooltips[id]);
         gotoTooltips[id].remove();
         delete gotoTooltips[id];
       }
@@ -172,6 +176,7 @@ function createPointTooltip(marker, content) {
       <div class="tooltip-content">${content}</div>
     </div>`;
   document.getElementById("map").appendChild(tooltip);
+  attachTooltipLine(tooltip, marker.getLatLng());
   return tooltip;
 }
 
@@ -209,6 +214,8 @@ function moveGotoTooltip(marker) {
   if (top < 0) top = 10;
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;
+  updateTooltipLineTarget(tooltip, latlng);
+  updateTooltipLine(tooltip);
 }
 
 window.deleteGotoMarker = function (event, markerId) {
@@ -216,11 +223,14 @@ window.deleteGotoMarker = function (event, markerId) {
   const idx = gotoMarkers.findIndex((m) => L.stamp(m) === markerId);
   if (idx !== -1) {
     map.removeLayer(gotoMarkers[idx]);
-    if (gotoTooltips[markerId]) gotoTooltips[markerId].remove();
+    if (gotoTooltips[markerId]) {
+      detachTooltipLine(gotoTooltips[markerId]);
+      gotoTooltips[markerId].remove();
+    }
     gotoMarkers.splice(idx, 1);
     delete gotoTooltips[markerId];
   }
-};  
+};
 
 function currentTooltipContent(marker) {
   const latlng = marker.getLatLng();

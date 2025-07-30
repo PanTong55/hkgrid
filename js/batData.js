@@ -3,6 +3,7 @@ const tooltipElements = [];
 const manualMoved = [];
 const hoverTooltip = document.getElementById("hoverTooltip");
 import { makeTooltipDraggable } from './draggableTooltip.js';
+import { attachTooltipLine, detachTooltipLine, updateTooltipLine } from './tooltipLine.js';
 
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
@@ -128,12 +129,15 @@ export async function initBatDataLayer(map, layersControl) {
   tooltipElements.push(tooltip);
   manualMoved.push(false);
 
-  const center = map.latLngToContainerPoint(
-    layer.getLatLng ? layer.getLatLng() : layer.getBounds().getCenter()
-  );
+  const targetLatLng = layer.getLatLng ? layer.getLatLng() : layer.getBounds().getCenter();
+  const center = map.latLngToContainerPoint(targetLatLng);
   positionTooltip(tooltip, center);
 
-  makeTooltipDraggable(tooltip);
+  makeTooltipDraggable(tooltip, {
+    onDrag: () => updateTooltipLine(tooltip),
+    onDragEnd: () => updateTooltipLine(tooltip)
+  });
+  attachTooltipLine(tooltip, targetLatLng);
 
   const closeBtn = tooltip.querySelector(".tooltip-close");
   if (closeBtn) {
@@ -167,6 +171,7 @@ export async function initBatDataLayer(map, layersControl) {
       }
   
       lockedLayers.splice(idx, 1);
+      detachTooltipLine(tooltipElements[idx]);
       tooltipElements[idx].remove();
       tooltipElements.splice(idx, 1);
       manualMoved.splice(idx, 1);
@@ -401,6 +406,7 @@ export async function initBatDataLayer(map, layersControl) {
           if (lockedLayers.includes(marker)) {
             const idx = lockedLayers.indexOf(marker);
             lockedLayers.splice(idx, 1);
+            detachTooltipLine(tooltipElements[idx]);
             tooltipElements[idx].remove();
             tooltipElements.splice(idx, 1);
             manualMoved.splice(idx, 1);
@@ -480,6 +486,7 @@ export async function initBatDataLayer(map, layersControl) {
             if (lockedLayers.includes(layer)) {
               const idx = lockedLayers.indexOf(layer);
               lockedLayers.splice(idx, 1);
+              detachTooltipLine(tooltipElements[idx]);
               tooltipElements[idx].remove();
               tooltipElements.splice(idx, 1);
               manualMoved.splice(idx, 1);
