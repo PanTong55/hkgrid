@@ -3,7 +3,6 @@ const tooltipElements = [];
 const manualMoved = [];
 const hoverTooltip = document.getElementById("hoverTooltip");
 import { makeTooltipDraggable } from './draggableTooltip.js';
-const NO_ITALIC = ["sp.", "sp.1", "sp.2", "sp.3", "Unknown", "All", "NA"];
 
 export async function initBatDataLayer(map, layersControl) {
   const response = await fetch('https://opensheet.elk.sh/1Al_sWwiIU6DtQv6sMFvXb9wBUbBiE-zcYk8vEwV82x8/sheet2');
@@ -54,15 +53,8 @@ export async function initBatDataLayer(map, layersControl) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
-        if ((key === "Genus" || key === "Species") && !NO_ITALIC.some(token => val.includes(token))) {
-          opt.style.fontStyle = "italic";
-        }
         select.appendChild(opt);
       });
-
-      if (key === "DataSource") {
-        select.value = "Hong Kong Bat Acoustic Project";
-      }
 
       // === ComboBox enhancement ===
       select.addEventListener("input", e => {
@@ -80,9 +72,6 @@ export async function initBatDataLayer(map, layersControl) {
           const opt = document.createElement("option");
           opt.value = val;
           opt.textContent = val;
-          if ((key === "Genus" || key === "Species") && !NO_ITALIC.some(token => val.includes(token))) {
-            opt.style.fontStyle = "italic";
-          }
           select.appendChild(opt);
         });
         select.value = currentValue;
@@ -203,9 +192,6 @@ export async function initBatDataLayer(map, layersControl) {
         const opt = document.createElement("option");
         opt.value = val;
         opt.textContent = val;
-        if ((selectEl.id === "filterGenus" || selectEl.id === "filterSpecies") && !NO_ITALIC.some(token => val.includes(token))) {
-          opt.style.fontStyle = "italic";
-        }
         selectEl.appendChild(opt);
       });
       selectEl.value = "";
@@ -333,33 +319,20 @@ export async function initBatDataLayer(map, layersControl) {
     const filters = {};
     for (const key in fieldMap) {
       const select = document.getElementById("filter" + key);
-      if (select) {
-        const values = Array.from(select.options)
-          .filter(o => o.selected && o.value !== "")
-          .map(o => o.value);
-        filters[key] = values;
-      } else {
-        filters[key] = [];
-      }
+      filters[key] = select?.value || "";
     }
     const dateStart = document.getElementById("dateStart").value;
     const dateEnd = document.getElementById("dateEnd").value;
   
     const filteredData = rawData.filter(row => {
       const rowDate = normalizeDate(row.Date);  // 統一成 "YYYY-MM-DD"
-
-      const passFilters = Object.entries(filters).every(([k, vals]) => {
-        if (!Array.isArray(vals) || vals.length === 0) return true;
-
-        if (k === "Habitat") {
-          const rowVals = row[fieldMap[k]].split(',').map(v => v.trim());
-          return vals.some(v => rowVals.includes(v));
+    
+      return Object.entries(filters).every(([k, val]) => {
+        if (k === "Habitat" && val) {
+          return row[fieldMap[k]].split(',').map(v => v.trim()).includes(val);
         }
-
-        return vals.includes(row[fieldMap[k]]);
-      });
-
-      return passFilters &&
+        return !val || row[fieldMap[k]] === val;
+      }) &&
         (!dateStart || rowDate >= dateStart) &&
         (!dateEnd || rowDate <= dateEnd);
     });
@@ -550,9 +523,6 @@ export async function initBatDataLayer(map, layersControl) {
           const opt = document.createElement("option");
           opt.value = val;
           opt.textContent = val;
-          if ((key === "Genus" || key === "Species") && !NO_ITALIC.some(token => val.includes(token))) {
-            opt.style.fontStyle = "italic";
-          }
           select.appendChild(opt);
         });
 
@@ -574,18 +544,18 @@ export async function initBatDataLayer(map, layersControl) {
     if (gridLayer && map.hasLayer(gridLayer)) {
       map.removeLayer(gridLayer);
     }
-
-    rebuildSidebarCombos();
   });
 
   const panel = document.getElementById("bat-filter-panel");
   const toggleBar = document.getElementById("filter-toggle-bar");
   const arrowIcon = document.getElementById("filterToggleArrow");
+  const hongKongBounds = [
+    [22.15, 113.825],
+    [22.55, 114.4],
+  ];
   function resizeAndFit() {
-    // Only recalculate the map size without altering the current
-    // center/zoom so the view stays the same when the sidebar
-    // collapses or expands.
     map.invalidateSize();
+    map.fitBounds(hongKongBounds);
   }
   
   if (window.innerWidth < 1023) {
@@ -618,7 +588,4 @@ export async function initBatDataLayer(map, layersControl) {
   
   flatpickr("#dateStart", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
   flatpickr("#dateEnd", {dateFormat: "Y-m-d", maxDate: "today", allowInput: true});
-
-  const { setupSidebarCombos, rebuildSidebarCombos } = await import('./sidebarCombo.js');
-  setupSidebarCombos();
 }

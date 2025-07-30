@@ -27,8 +27,8 @@
           <h3>All Bat Data Filter</h3>
           <div class="form-row">
             <label for="displayMode">Display Mode:</label>
-            <select id="displayMode" class="sidebar-combo" data-preserve-default data-single>
-              <option value="point" selected>Point Mode</option>
+            <select id="displayMode" class="form-control">
+              <option value="point">Point Mode</option>
               <option value="grid">Grid Mode</option>
             </select>
           </div>          
@@ -44,63 +44,63 @@
           
           <div class="form-row">
             <label for="filterLocation">Location:</label>
-            <select id="filterLocation" class="sidebar-combo" multiple>
+            <select id="filterLocation" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterHabitat">Habitat:</label>
-            <select id="filterHabitat" class="sidebar-combo" multiple>
+            <select id="filterHabitat" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterDataSource">Data Source:</label>
-            <select id="filterDataSource" class="sidebar-combo" data-preserve-default multiple>
+            <select id="filterDataSource" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterRecorders">Recorders:</label>
-            <select id="filterRecorders" class="sidebar-combo" multiple>
+            <select id="filterRecorders" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterFamily">Family:</label>
-            <select id="filterFamily" class="sidebar-combo" multiple>
+            <select id="filterFamily" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterGenus">Genus:</label>
-            <select id="filterGenus" class="sidebar-combo" multiple>
+            <select id="filterGenus" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterSpecies">Scientific name:</label>
-            <select id="filterSpecies" class="sidebar-combo" multiple>
+            <select id="filterSpecies" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterCommonEng">English Name:</label>
-            <select id="filterCommonEng" class="sidebar-combo" multiple>
+            <select id="filterCommonEng" class="form-control">
               <option value="">All</option>
             </select>
           </div>
 
           <div class="form-row">
             <label for="filterCommonChi">Chinese Name:</label>
-            <select id="filterCommonChi" class="sidebar-combo" multiple>
+            <select id="filterCommonChi" class="form-control">
               <option value="">All</option>
             </select>
           </div>
@@ -222,7 +222,7 @@
       });
       import("./js/goto.js").then((m) => m.initGotoPanel(map));
       import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
-
+      
     </script>
     <div id="alpha-status">α: --</div>    
   </body>
