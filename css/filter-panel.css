@@ -26,7 +26,7 @@
   width: 300px;
   max-width: 300px;
   opacity: 1;
-  overflow: hidden;
+  overflow: visible;
   transition: max-width 0.3s ease, opacity 0.3s ease;
 }
 
@@ -101,7 +101,7 @@
 .filter-content {
   padding: 12px;
   flex: 1;
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .form-row {
@@ -276,6 +276,7 @@ select:hover {
   padding: 4px 8px;
   cursor: pointer;
   font-size:12px;
+  white-space: nowrap;
 }
 
 .sidebar-combo .combo-options li:hover {
