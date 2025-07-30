@@ -184,13 +184,24 @@ export async function initBatDataLayer(map, layersControl) {
     }
   }
 
-  function updateLinkedDropdowns(changedField, selectedValue, rawData, fieldMap) {
+  function updateLinkedDropdowns(changedField, selectedValues, rawData, fieldMap) {
     const getEl = id => document.getElementById("filter" + id);
     const allFields = ["Family", "Genus", "Species", "CommonEng", "CommonChi"];
     const speciesFields = ["Species", "CommonEng", "CommonChi"];
 
     if (triggeredFields.has(changedField)) return;
     triggeredFields.add(changedField);
+
+    if (!Array.isArray(selectedValues)) {
+      selectedValues = selectedValues ? [selectedValues] : [];
+    }
+
+    if (selectedValues.length > 1) {
+      triggeredFields.delete(changedField);
+      return;
+    }
+
+    const selectedValue = selectedValues[0];
 
     function setOptions(selectEl, values) {
       const currentText = selectEl.value.toLowerCase();
@@ -302,14 +313,17 @@ export async function initBatDataLayer(map, layersControl) {
     triggeredFields.delete(changedField);
   }
 
-  ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
-    const select = document.getElementById("filter" + field);
-    if (select) {
-      select.addEventListener("change", e => {
-        updateLinkedDropdowns(field, e.target.value, rawData, fieldMap);
-      });
-    }
-  });
+    ["Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(field => {
+      const select = document.getElementById("filter" + field);
+      if (select) {
+        select.addEventListener("change", e => {
+          const vals = Array.from(select.options)
+            .filter(o => o.selected && o.value !== "")
+            .map(o => o.value);
+          updateLinkedDropdowns(field, vals, rawData, fieldMap);
+        });
+      }
+    });
 
   document.getElementById("batFilterSearch").addEventListener("click", () => {
     const mode = document.getElementById("displayMode").value;
