@@ -361,6 +361,7 @@ export async function initBatDataLayer(map, layersControl) {
           return true;
         })
         .map(d => L.circleMarker([parseFloat(d.Latitude), parseFloat(d.Longitude)], {
+          pane: 'markerPane',
           radius: 5,
           fillColor: '#3388ff',
           color: '#3388ff',
