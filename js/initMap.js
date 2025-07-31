@@ -1,6 +1,10 @@
 // js/initMap.js
 export async function initMap() {
   const map = L.map("map");
+  map.createPane('hkgridPane');
+  const hkgridPane = map.getPane('hkgridPane');
+  hkgridPane.style.zIndex = 350;
+  hkgridPane.style.pointerEvents = 'none';
   const hongKongBounds = [
     [22.15, 113.825],
     [22.55, 114.4],
@@ -112,6 +116,8 @@ export async function initMap() {
     .then((r) => r.json())
     .then((hkgriddata) => {
       const hkgridLayer = L.geoJSON(hkgriddata, {
+        pane: 'hkgridPane',
+        interactive: false,
         style: {
           color: '#3388ff',
           weight: 2,
