@@ -18,6 +18,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/global.css" />
     <link rel="stylesheet" href="css/filter-panel.css">
+      <script>
+      window.onload = function() {
+        var password = prompt("請輸入密碼以進入本頁面：");
+        if (password !== "HKBRmap0505") {
+          alert("密碼錯誤，頁面將自動關閉。");
+          window.close();
+          window.location.href = "about:blank";
+        }
+      };
+      </script>
   </head>
 
   <body>
