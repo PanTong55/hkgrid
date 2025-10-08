@@ -116,6 +116,7 @@
           </div>
 
           <div class="form-row">
+            <button id="batFilterReload" class="btn btn-reload">Reload</button>
             <button id="batFilterReset" class="btn btn-reset">Reset</button>
             <button id="batFilterSearch" class="btn btn-success">Search</button>
           </div>
@@ -233,7 +234,9 @@
         });        
       });
       import("./js/goto.js").then((m) => m.initGotoPanel(map));
-      import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
+  window.map = map;
+  window.layersControl = layersControl;
+  import("./js/batData.js").then((m) => m.initBatDataLayer(map, layersControl));
       
     </script>
     <div id="alpha-status">α: --</div>    

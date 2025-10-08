@@ -151,13 +151,31 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
+
 .btn-success {
   background-color: #28a745;
   color: white;
   border-color: #28a745;
+  width: 100px;
 }
 .btn-success:hover {
   background-color: #218838;
+}
+
+.btn-reload {
+  background-color: #bee5eb;
+  color: #0c5460;
+  border-color: #bee5eb;
+  margin-right: 20px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  width: 100px;
+}
+.btn-reload:hover {
+  background-color: #abdde5;
 }
 
 .btn-reset {

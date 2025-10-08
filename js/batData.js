@@ -529,6 +529,10 @@ export async function initBatDataLayer(map, layersControl) {
   });
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
+  document.getElementById("batFilterReload").addEventListener("click", async () => {
+    // 重新載入 bat data layer
+    await initBatDataLayer(window.map, window.layersControl);
+  });
     removeAllLockTooltips();
     hoverTooltip.style.display = "none";
     for (const key in fieldMap) {
