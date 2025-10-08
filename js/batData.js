@@ -530,7 +530,15 @@ export async function initBatDataLayer(map, layersControl) {
 
   document.getElementById("batFilterReset").addEventListener("click", () => {
   document.getElementById("batFilterReload").addEventListener("click", async () => {
-    // 重新載入 bat data layer
+    // 重新載入 bat data layer 並重建 filter panel dropdown
+    // 先清空所有 dropdown
+    ["Location", "Habitat", "DataSource", "Recorders", "Family", "Genus", "Species", "CommonEng", "CommonChi"].forEach(key => {
+      const select = document.getElementById("filter" + key);
+      if (select) {
+        select.innerHTML = "<option value=''>All</option>";
+      }
+    });
+    // 重新執行 initBatDataLayer 會根據新資料重建 dropdown list
     await initBatDataLayer(window.map, window.layersControl);
   });
     removeAllLockTooltips();
